@@ -112,6 +112,14 @@ Route::prefix('pos')->name('pos.')->group(function () {
 
 });
 
+Route::get('/feeds', [ShopController::class, 'allProducts'])
+    ->name('shop.products');
+
+Route::get('/feeds/{category}', [ShopController::class, 'category'])
+    ->whereIn('category', ['pig', 'pet', 'poultry', 'byproduct'])
+    ->name('shop.category');
+
+
 /*
 |--------------------------------------------------------------------------
 | POS Items CRUD

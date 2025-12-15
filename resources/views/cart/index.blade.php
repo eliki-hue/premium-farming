@@ -154,9 +154,10 @@
         <span>🛒</span> My Cart
     </h2>
 
-    <a href="{{ route('shop.products') }}" class="btn btn-continue btn-sm">
-        ← Continue Shopping
-    </a>
+    <a href="{{ url()->previous() }}" class="btn btn-continue btn-sm">
+    ← Continue Shopping
+</a>
+
 </div>
 
 
