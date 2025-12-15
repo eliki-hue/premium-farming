@@ -1,6 +1,6 @@
 @extends('layouts.shop')
 
-@section('title', 'Products')
+@section('title', 'Pet Feeds')
 
 @section('content')
 
@@ -14,159 +14,224 @@
         font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 1px;
-        color: #000 !important;
     }
 
-    .scroll-container {
-        display: flex;
-        gap: 25px;
-        overflow-x: auto;
-        padding-bottom: 20px;
-        scroll-behavior: smooth;
-        padding-top: 10px;
-    }
-
-    .scroll-container::-webkit-scrollbar {
-        height: 8px;
-    }
-
-    .scroll-container::-webkit-scrollbar-thumb {
-        background: #d1d5db;
+    .section-divider {
+        height: 3px;
+        width: 100px;
+        background: linear-gradient(to right, #065f46, #a7f3d0);
+        margin: 15px auto 35px;
         border-radius: 20px;
     }
 
-    .scroll-container::-webkit-scrollbar-track {
-        background: #f0f0f0;
+    /* ===== TABLE ===== */
+    .table tbody tr {
+        vertical-align: middle;
+    }
+
+    .table td, .table th {
+        padding: 15px 12px;
+        line-height: 1.5;
+        border-right: 1px solid #6b7280;
+    }
+
+    .table th {
+        font-size: 16px;
+        letter-spacing: 0.5px;
+    }
+
+    .table td:last-child {
+        border-right: 0;
+    }
+
+    .table tbody tr td {
+        border-bottom: 1px solid #6b7280;
+    }
+
+    .table tbody tr:hover {
+        background: #f0fdf4;
+        transition: .25s ease;
+    }
+
+    /* ===== PRODUCT GRID ===== */
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        margin-top: 20px;
     }
 
     .product-card {
-        min-width: 320px;
-        max-width: 320px;
-        border-radius: 12px;
+        border-radius: 14px;
         border: 1px solid #d1d5db;
         background: #fff;
         transition: all .3s ease;
-        flex-shrink: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
     }
 
     .product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-    }
-
-    .card-title {
-        font-size: 20px;
-        font-weight: 800;
-        color: #000 !important;
-    }
-
-    .card-text {
-        font-size: 15px;
-        color: #000 !important;
-        line-height: 1.6;
-    }
-
-    .price-tag {
-        font-size: 18px;
-        font-weight: 800;
-        color: #000 !important;
-    }
-
-    .btn-buy {
-        background: #065f46;
-        font-weight: 700;
-        color: #fff !important;
-        padding: 10px 0;
-        border-radius: 8px;
-        letter-spacing: .5px;
-    }
-
-    .btn-buy:hover {
-        background: #064e3b;
-        color: #fff !important;
+        transform: translateY(-6px);
+        box-shadow: 0 15px 30px rgba(6,95,70,.25);
+        border-color: #065f46;
     }
 
     .product-img {
         height: 240px;
         object-fit: cover;
-        border-top-left-radius: 12px;
-        border-top-right-radius: 12px;
         width: 100%;
     }
+
+    /* ===== BADGES ===== */
+    .feed-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: #065f46;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 6px 12px;
+        border-radius: 20px;
+    }
+
+    .feed-badge.calf { background: #dc2626; }
+    .feed-badge.dog { background: #2563eb; }
+    .feed-badge.rabbit { background: #f59e0b; color: #000; }
+
+    /* ===== BUTTON ===== */
+    .btn-buy {
+        background: linear-gradient(135deg, #065f46, #047857);
+        font-weight: 700;
+        color: #fff !important;
+        padding: 12px 0;
+        border-radius: 10px;
+        transition: all .3s ease;
+    }
+
+    .btn-buy:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 25px rgba(6,95,70,.35);
+    }
+
+    ul li {
+        list-style: none;
+        margin-bottom: 6px;
+    }
+
+    /* ul li::before {
+        content: "🐾 ";
+    } */
 </style>
 
-<div class="container py-5">
+<div class="container py-5" style="background:#f8fafc;border-radius:18px;">
 
-    <h2 class="text-center mb-4 product-title">Our Products</h2>
+    <h2 class="text-center product-title">Pet Feeds</h2>
+    <div class="section-divider"></div>
 
-    <div class="scroll-container">
+    {{-- FEED EXPLANATION --}}
+    <div class="bg-white border rounded-lg shadow-sm p-4 mb-5">
+        <h4 class="fw-bold text-center mb-3">Overview of Pet Feeds</h4>
+        <p class="mb-3">
+            Our pet feeds are formulated to meet the nutritional needs of calves, dogs, and rabbits. Each feed type provides targeted protein, energy, and vitamins to support growth, health, and overall well-being.
+        </p>
 
-        <!-- Product 1 -->
+        <div class="table-responsive mt-4">
+            <table class="table table-bordered border-dark align-middle shadow text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="border border-dark">Feed Type</th>
+                        <th class="border border-dark">Target Animal</th>
+                        <th class="border border-dark">Protein / Energy</th>
+                        <th class="border border-dark">Primary Goal</th>
+                        <th class="border border-dark">Key Features</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="table-danger">
+                        <td class="fw-bold border border-dark">Calf Pellets</td>
+                        <td class="border border-dark">Young calves (0–6 months)</td>
+                        <td class="border border-dark">High protein, moderate energy</td>
+                        <td class="border border-dark">Supports healthy growth & immune system</td>
+                        <td class="border border-dark">Easily digestible, enriched with vitamins & minerals</td>
+                    </tr>
+                    <tr class="table-primary">
+                        <td class="fw-bold border border-dark">Dog Meal</td>
+                        <td class="border border-dark">All breeds, puppies & adult dogs</td>
+                        <td class="border border-dark">Balanced protein & fats</td>
+                        <td class="border border-dark">Supports growth, coat health, and energy levels</td>
+                        <td class="border border-dark">Contains essential amino acids & vitamins</td>
+                    </tr>
+                    <tr class="table-warning">
+                        <td class="fw-bold border border-dark">Rabbit Pellets</td>
+                        <td class="border border-dark">Rabbits (all ages)</td>
+                        <td class="border border-dark">Moderate protein, high fiber</td>
+                        <td class="border border-dark">Supports gut health & steady growth</td>
+                        <td class="border border-dark">Contains essential fiber and minerals</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{-- FEED PRODUCTS GRID --}}
+    <div class="product-grid">
+
+        {{-- Calf Pellets --}}
         <div class="product-card">
-            <img src="{{ asset('images/dairyhigh.jpeg') }}" class="product-img">
-
+            <div class="position-relative">
+                <span class="feed-badge calf">Calf</span>
+                <img src="{{ asset('images/calf_pellets.jpeg') }}" class="product-img">
+            </div>
             <div class="p-3">
-                <h5 class="card-title">Dairy Meal</h5>
-                <p class="card-text">
-                    Premium dairy feed formulated to enhance milk production and animal health.
-                </p>
-                <h6 class="price-tag mb-3">Ksh 2,500</h6>
-
-                <form action="{{ route('cart.add') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="id" value="1">
-                    <input type="hidden" name="name" value="Dairy Meal">
-                    <input type="hidden" name="price" value="2500">
-                    <input type="hidden" name="image" value="images/dairyhigh.jpeg">
-
-                    <button class="btn btn-buy w-100">Add to Cart</button>
-                </form>
+                <h5 class="fw-bold">Calf Pellets</h5>
+                <p>Supports healthy growth, strong bones, and immunity in young calves.</p>
+                <ul class="small">
+                    <li>High protein</li>
+                    <li>Vitamins & minerals</li>
+                    <li>Easily digestible</li>
+                </ul>
+                <h6 class="fw-bold mb-3">Ksh 3,500</h6>
+                <button class="btn btn-buy w-100">Add to Cart</button>
             </div>
         </div>
 
-        <!-- Product 2 -->
+        {{-- Dog Meal --}}
         <div class="product-card">
-            <img src="{{ asset('images/kienyeji.jpeg') }}" class="product-img">
-
+            <div class="position-relative">
+                <span class="feed-badge dog">Dog</span>
+                <img src="{{ asset('images/dog_meal.jpeg') }}" class="product-img">
+            </div>
             <div class="p-3">
-                <h5 class="card-title">Layers Mash</h5>
-                <p class="card-text">
-                    High-performance nutritious feed that boosts egg production.
-                </p>
-                <h6 class="price-tag mb-3">Ksh 1,800</h6>
-
-                <form action="{{ route('cart.add') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="id" value="2">
-                    <input type="hidden" name="name" value="Layers Mash">
-                    <input type="hidden" name="price" value="1800">
-                    <input type="hidden" name="image" value="images/kienyeji.jpeg">
-
-                    <button class="btn btn-buy w-100">Add to Cart</button>
-                </form>
+                <h5 class="fw-bold">Dog Meal</h5>
+                <p>Balanced nutrition for puppies and adult dogs to support growth and coat health.</p>
+                <ul class="small">
+                    <li>High-quality protein</li>
+                    <li>Balanced fats</li>
+                    <li>Essential vitamins & minerals</li>
+                </ul>
+                <h6 class="fw-bold mb-3">Ksh 2,800</h6>
+                <button class="btn btn-buy w-100">Add to Cart</button>
             </div>
         </div>
 
-        <!-- Product 3 -->
+        {{-- Rabbit Pellets --}}
         <div class="product-card">
-            <img src="{{ asset('images/dairy.jpeg') }}" class="product-img">
-
+            <div class="position-relative">
+                <span class="feed-badge rabbit">Rabbit</span>
+                <img src="{{ asset('images/rabbit_pellets.jpeg') }}" class="product-img">
+            </div>
             <div class="p-3">
-                <h5 class="card-title">Dairymeal</h5>
-                <p class="card-text">
-                    High-quality feed formulated for optimal nutrition and livestock growth.
-                </p>
-                <h6 class="price-tag mb-3">Ksh 2,450</h6>
-
-                <form action="{{ route('cart.add') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="id" value="3">
-                    <input <input type="hidden" name="name" value="Dairymeal">
-                    <input type="hidden" name="price" value="2450">
-                    <input type="hidden" name="image" value="images/dairy.jpeg">
-
-                    <button class="btn btn-buy w-100">Add to Cart</button>
-                </form>
+                <h5 class="fw-bold">Rabbit Pellets</h5>
+                <p>High-fiber feed supporting gut health and steady growth in rabbits.</p>
+                <ul class="small">
+                    <li>Moderate protein</li>
+                    <li>Rich in fiber</li>
+                    <li>Contains essential minerals</li>
+                </ul>
+                <h6 class="fw-bold mb-3">Ksh 2,200</h6>
+                <button class="btn btn-buy w-100">Add to Cart</button>
             </div>
         </div>
 
