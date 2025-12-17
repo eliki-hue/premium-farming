@@ -1,239 +1,424 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ $title ?? config('app.name', 'POS System') }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Premium Farming Feeds - Quality, Nutrition, Growth')</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-green: #2d5f4e;
+            --primary-green-dark: #1e4436;
+            --accent-orange: #e89b4b;
+            --accent-orange-dark: #d68a3a;
+            --light-bg: #f8f9f5;
+            --text-dark: #1a1a1a;
+            --text-muted: #6b7280;
+        }
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<style>
-:root {
-    --primary: #1d4ed8;
-    --primary-soft: #eff6ff;
-    --dark: #0f172a;
-    --muted: #64748b;
-    --light: #f8fafc;
-}
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
 
-/* ===== GLOBAL ===== */
-body {
-    margin: 0;
-    font-family: "Inter", system-ui, sans-serif;
-    background: var(--light);
-}
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
 
-/* ===== SIDEBAR ===== */
-.sidebar {
-    width: 260px;
-    background: linear-gradient(180deg, #0d39a1, #1e293b);
-    color: #fff;
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    padding: 20px 15px;
-}
+        /* Navigation Styles */
+        .navbar {
+            background-color: rgba(45, 95, 78, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
 
-.logo-box {
-    text-align: center;
-    margin-bottom: 35px;
-}
+        .navbar.scrolled {
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
 
-.logo-box img {
-    width: 110px;
-    border-radius: 10px;
-}
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+        }
 
-.logo-box h5 {
-    margin-top: 12px;
-    font-weight: 700;
-}
+        .brand-icon {
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            overflow: hidden;
+            border: 2px solid var(--accent-orange);
+        }
 
-.menu-title {
-    font-size: 11px;
-    letter-spacing: 1px;
-    color: #94a3b8;
-    margin: 18px 0 10px;
-}
+        .brand-icon i {
+            color: var(--primary-green);
+            font-size: 1.5rem;
+        }
 
-.sidebar a {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: #e5e7eb;
-    text-decoration: none;
-    padding: 11px 14px;
-    border-radius: 10px;
-    font-size: 15px;
-    transition: 0.2s;
-}
+        .brand-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
 
-.sidebar a:hover,
-.sidebar a.active {
-    background: rgba(255,255,255,0.12);
-    color: #fff;
-}
+        .brand-text small {
+            display: block;
+            font-size: 0.65rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            opacity: 0.9;
+        }
 
-/* ===== TOPBAR ===== */
-.topbar {
-    height: 70px;
-    background: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 25px;
-    position: fixed;
-    left: 260px;
-    right: 0;
-    top: 0;
-    z-index: 100;
-}
+        .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            padding: 0.5rem 1.2rem !important;
+            transition: all 0.3s ease;
+            position: relative;
+        }
 
-.search input {
-    border-radius: 30px;
-    padding: 7px 16px;
-    width: 280px;
-    border: 1px solid #cbd5e1;
-}
+        .navbar-nav .nav-link:hover {
+            color: var(--accent-orange) !important;
+        }
 
-.top-icons {
-    display: flex;
-    align-items: center;
-    gap: 22px;
-}
+        .navbar-nav .nav-link.active {
+            color: var(--accent-orange) !important;
+        }
 
-/* Notification */
-.notify {
-    position: relative;
-    cursor: pointer;
-}
+        .navbar-nav .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 1.2rem;
+            right: 1.2rem;
+            height: 2px;
+            background-color: var(--accent-orange);
+        }
 
-.notify span {
-    position: absolute;
-    top: -6px;
-    right: -8px;
-    background: red;
-    color: #fff;
-    font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 50%;
-}
+        .navbar-icons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
 
-/* Dropdowns */
-.dropdown-menu {
-    border-radius: 12px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-    border: none;
-}
+        .navbar-icons a {
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
 
-/* ===== CONTENT ===== */
-.content {
-    margin-left: 260px;
-    padding: 100px 30px 30px;
-    min-height: 100vh;
-}
+        .navbar-icons a:hover {
+            color: var(--accent-orange);
+            transform: scale(1.1);
+        }
 
-/* ===== POS CARDS ===== */
-.card {
-    border-radius: 16px;
-    border: none;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.07);
-}
-</style>
+        /* Footer Styles */
+        footer {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-dark) 100%);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+
+        footer h5 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        footer p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+        }
+
+        footer ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        footer ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        footer ul li a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        footer ul li a:hover {
+            color: var(--accent-orange);
+            transform: translateX(5px);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-icons a {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            background-color: var(--accent-orange);
+            transform: translateY(-3px);
+        }
+
+        .contact-info {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-info i {
+            color: var(--accent-orange);
+            font-size: 1.2rem;
+            margin-top: 3px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 3rem;
+            padding-top: 2rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: flex-end;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-orange);
+        }
+
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 991px) {
+            .footer-links {
+                justify-content: center;
+                margin-top: 1rem;
+            }
+        }
+    </style>
+
+    @stack('styles')
 </head>
 
 <body>
-
-<!-- SIDEBAR -->
-<div class="sidebar">
-
-    <div class="logo-box">
-        <img src="{{ asset('images/logo.jpeg') }}">
-        <h5>Premium Farming Feeds</h5>
-        <small class="text-secondary">POS Management</small>
-    </div>
-
-    <div class="menu-title">MAIN</div>
-    <a href="{{ route('dashboard') }}">
-        <i class="bi bi-speedometer2"></i> Dashboard
-    </a>
-
-    <div class="menu-title">POINT OF SALE</div>
-    <a href="{{ route('pos.sell') }}">
-        <i class="bi bi-cart-check"></i> POS Sell
-    </a>
-    <a href="{{ route('pos.categories') }}">
-        <i class="bi bi-tags"></i> Categories
-    </a>
-    <a href="{{ route('pos.conversion') }}">
-        <i class="bi bi-shop"></i> Conversion
-    </a>
-    <a href="{{ route('pos.goods-received') }}">
-        <i class="bi bi-box-seam"></i> Goods Received
-    </a>
-    <a href="{{ route('pos.update-prices') }}">
-        <i class="bi bi-cash-stack"></i> Update Prices
-    </a>
-    <a href="/reports/sales">
-        <i class="bi bi-bar-chart-line"></i> Sales Report
-    </a>
-
-    <div class="menu-title">ACCOUNT</div>
-    <a href="/profile">
-        <i class="bi bi-person"></i> Profile
-    </a>
-    <a href="/logout" class="text-danger">
-        <i class="bi bi-box-arrow-right"></i> Logout
-    </a>
-
-</div>
-
-<!-- TOP BAR -->
-<div class="topbar">
-
-    <div class="search">
-        <input type="text" placeholder="Search products, invoices...">
-    </div>
-
-    <div class="top-icons">
-
-        <!-- Notifications -->
-        <div class="dropdown">
-            <div class="notify" data-bs-toggle="dropdown">
-                <i class="bi bi-bell fs-5 text-primary"></i>
-                <span>2</span>
-            </div>
-            <ul class="dropdown-menu dropdown-menu-end p-3" style="width:280px">
-                <li class="fw-bold mb-2">Notifications</li>
-                <li class="small text-muted">Low stock on Chick Mash</li>
-                <li class="small text-muted">New sale recorded</li>
-            </ul>
-        </div>
-
-        <!-- User -->
-        <div class="dropdown">
-            <a data-bs-toggle="dropdown" class="text-decoration-none text-dark">
-                <i class="bi bi-person-circle fs-4"></i>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url('/') }}">
+                <div class="brand-icon">
+                    <img src="{{ asset('images/logo.jpeg') }}" alt="Premium Farming Feeds Logo">
+                </div>
+                <div class="brand-text">
+                    Premium
+                    <small>Farming Feeds</small>
+                </div>
             </a>
-            <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="/profile">My Profile</a></li>
-                <li><a class="dropdown-item" href="/settings">Settings</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item text-danger" href="/logout">Logout</a></li>
-            </ul>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="background-color: rgba(255,255,255,0.1); border: none;">
+                <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url('/') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/products') }}">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/about') }}">About Us</a>
+                    </li>
+                </ul>
+                
+                <div class="navbar-icons">
+                    <a href="{{ url('/account') }}"><i class="bi bi-person"></i></a>
+                    <a href="{{ url('/cart') }}"><i class="bi bi-cart3"></i></a>
+                </div>
+            </div>
         </div>
+    </nav>
 
-    </div>
-</div>
+    <!-- Main Content -->
+    <main style="padding-top: 80px;">
+        @yield('content')
+    </main>
 
-<!-- CONTENT -->
-<div class="content">
-    @yield('content')
-</div>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="brand-icon">
+                            <img src="{{ asset('images/logo.jpeg') }}" alt="Premium Farming Feeds Logo">
+                        </div>
+                        <div>
+                            <h5 class="mb-0">Premium</h5>
+                            <small style="opacity: 0.8;">Farming Feeds</small>
+                        </div>
+                    </div>
+                    <p>Providing quality, nutrition, and growth solutions for your farming needs. Premium feeds for premium results.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="bi bi-facebook"></i></a>
+                        <a href="#"><i class="bi bi-instagram"></i></a>
+                        <a href="#"><i class="bi bi-twitter-x"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 mb-4 mb-lg-0">
+                    <h5>Quick Links</h5>
+                    <ul>
+                        <li><a href="{{ url('/') }}">Home</a></li>
+                        <li><a href="{{ url('/products') }}">Products</a></li>
+                        <li><a href="{{ url('/about') }}">About Us</a></li>
+                        <li><a href="{{ url('/contact') }}">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-4 mb-4 mb-lg-0">
+                    <h5>Categories</h5>
+                    <ul>
+                        <li><a href="{{ url('/products?category=poultry') }}">Poultry Feeds</a></li>
+                        <li><a href="{{ url('/products?category=pigs') }}">Pig Feeds</a></li>
+                        <li><a href="{{ url('/products?category=cattle') }}">Cattle Feeds</a></li>
+                        <li><a href="{{ url('/products?category=concentrates') }}">Concentrates</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-4">
+                    <h5>Contact Us</h5>
+                    <div class="contact-info">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <div>Nairobi, Kenya</div>
+                    </div>
+                    <div class="contact-info">
+                        <i class="bi bi-telephone-fill"></i>
+                        <div>+254 700 000 000</div>
+                    </div>
+                    <div class="contact-info">
+                        <i class="bi bi-envelope-fill"></i>
+                        <div>info@premiumfeeds.co.ke</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="row align-items-center">
+                    <div class="col-md-6 text-center text-md-start">
+                        <p class="mb-0" style="opacity: 0.8;">© 2025 Premium Farming Feeds. All rights reserved.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="footer-links">
+                            <a href="{{ url('/privacy') }}">Privacy Policy</a>
+                            <a href="{{ url('/terms') }}">Terms of Service</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Add scrolled class to navbar on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Set active nav link based on current page
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentPath || 
+                    (currentPath === '/' && link.getAttribute('href') === '{{ url('/') }}')) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+
+    @stack('scripts')
 </body>
 </html>

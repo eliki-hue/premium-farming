@@ -26,6 +26,8 @@ use App\Http\Controllers\ConversionController;
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\HomeController;
+
 
 
 /*
@@ -34,9 +36,84 @@ use App\Http\Controllers\OrderController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () {
-    return view('home');
-});
+
+
+
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Placeholder routes for other pages
+Route::get('/products', function () {
+    return view('products');
+})->name('products');
+
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
+
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
+
+Route::get('/cart', function () {
+    return view('cart');
+})->name('cart');
+
+Route::get('/account', function () {
+    return view('account');
+})->name('account');
+
+// Authentication Routes
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+
+Route::post('/login', function () {
+    // Add login logic here
+    return redirect()->route('home')->with('success', 'Logged in successfully!');
+})->name('login.submit');
+
+Route::get('/register', function () {
+    return view('auth.register');
+})->name('register');
+
+Route::post('/register', function () {
+    // Add registration logic here
+    return redirect()->route('login')->with('success', 'Account created! Please login.');
+})->name('register.submit');
+
+Route::get('/password/reset', function () {
+    return view('auth.forgot-password');
+})->name('password.request');
+
+Route::post('/logout', function () {
+    // Add logout logic here
+    return redirect()->route('home')->with('success', 'Logged out successfully!');
+})->name('logout');
+
+// Cart Routes
+Route::get('/cart', function () {
+    return view('cart');
+})->name('cart');
+
+
+// Checkout (requires authentication)
+Route::get('/checkout', function () {
+    return view('checkout');
+})->name('checkout');
+
+// Static Pages
+Route::get('/privacy', function () {
+    return view('privacy');
+})->name('privacy');
+
+Route::get('/terms', function () {
+    return view('terms');
+})->name('terms');
+
+
+
+
 
 Route::get('/dashboard', [POSController::class, 'index'])
     ->middleware(['auth', 'verified'])
@@ -167,7 +244,7 @@ Route::prefix('pos')->group(function () {
 | CATEGORY BLADE ROUTES (NEW)
 |--------------------------------------------------------------------------
 */
-
+Route::resource('categories', CategoryController::class)->except(['show']);
 Route::view('/category/poultry', 'categories.poultry')->name('category.poultry');
 Route::view('/category/dairy', 'categories.dairy')->name('category.dairy');
 Route::view('/category/swine', 'categories.swine')->name('category.swine');
@@ -250,3 +327,4 @@ Route::resource('petty-cash', PettyCashController::class);
 Route::resource('pos-returns', PosReturnController::class);
 
 require __DIR__.'/auth.php';
+
