@@ -1,232 +1,176 @@
 @extends('layouts.app')
 
 @section('content')
+
 @php
-    // pageTitle is used in main layout topbar
-    $pageTitle = 'POS - New Sale';
+$categories = [
+    'Poultry Feeds' => [
+        'Chick Mash 50kg',
+        'Growers Mash 50kg',
+        'Layers Mash 50kg',
+        'Super Layers 50kg',
+    ],
+    'Pig Feeds' => [
+        'Pig Starter 50kg',
+        'Pig Grower 50kg',
+        'Pig Fattener 50kg',
+        'Sow & Weaner 50kg',
+    ],
+    'Pet Feeds' => [
+        'Dog Meal 20kg',
+        'Dog Meal 10kg',
+    ],
+    'By-Products' => [
+        'Maize Germ',
+        'Wheat Bran',
+        'Pollard',
+    ],
+];
 @endphp
 
-<div class="p-3">
+<style>
+.panel{background:#fff;padding:15px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+.cart-item{display:flex;justify-content:space-between}
+.total-box{background:#2563eb;color:#fff;padding:12px;border-radius:6px;text-align:center;font-weight:bold}
+</style>
 
-    <div class="bg-white shadow rounded p-3 mb-4">
-        <h2 class="h6 mb-3">Current Sale</h2>
+<div class="container">
 
-        <!-- Items Table -->
-        <div class="table-responsive">
-            <table class="table table-sm table-bordered mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Item</th>
-                        <th style="width:80px">Qty</th>
-                        <th style="width:100px">Unit</th>
-                        <th style="width:110px">Unit Price</th>
-                        <th style="width:110px">Discount</th>
-                        <th style="width:120px">VAT Mode</th>
-                        <th style="width:110px">Tax</th>
-                        <th style="width:120px">Subtotal</th>
-                        <th style="width:100px">Action</th>
-                    </tr>
-                </thead>
-                <tbody id="saleItems">
-                    <!-- JS will populate -->
-                </tbody>
-            </table>
-        </div>
-    </div>
+<h4 class="fw-bold text-primary mb-3">POS – New Sale</h4>
 
-    <!-- Add Item Row -->
-    <div class="bg-white shadow rounded p-3 mb-4 d-flex flex-wrap gap-2 align-items-center">
-        <div style="min-width:280px; flex:1;">
-            <label class="form-label mb-1">Product</label>
-            <select id="productSelect" class="form-select">
-                <option value="">Select Item</option>
-                @if(!empty($products) && $products->count())
-                    @foreach($products as $product)
-                        <option value="{{ $product->id }}" data-price="{{ $product->price }}">
-                            {{ $product->name }}
-                        </option>
-                    @endforeach
-                @else
-                    <!-- fallback demo options so page doesn't break -->
-                    <option value="1" data-price="100">Maize Germ</option>
-                    <option value="2" data-price="150">Dairy Meal</option>
-                    <option value="3" data-price="80">Growers Mash</option>
-                @endif
-            </select>
-        </div>
+{{-- ADD ITEM --}}
+<div class="panel mb-4">
+<h6 class="fw-bold mb-3">Add Item</h6>
 
-        <div style="width:100px">
-            <label class="form-label mb-1">Qty</label>
-            <input id="qty" type="number" class="form-control" value="1">
-        </div>
+<form method="POST" action="{{ route('cart.add') }}" class="row g-2">
+@csrf
 
-        <div style="width:110px">
-            <label class="form-label mb-1">Unit</label>
-            <select id="unit" class="form-select">
-                <option>pcs</option>
-                <option>kg</option>
-                <option>bag</option>
-            </select>
-        </div>
+<div class="col-md-3">
+<label class="form-label">Category</label>
+<select id="categorySelect" class="form-select">
+<option value="">Select Category</option>
+@foreach($categories as $cat => $items)
+<option value="{{ $cat }}">{{ $cat }}</option>
+@endforeach
+</select>
+</div>
 
-        <div style="width:120px">
-            <label class="form-label mb-1">Unit Price</label>
-            <input id="unitPrice" type="number" class="form-control">
-        </div>
+<div class="col-md-3">
+<label class="form-label">Product</label>
+<select id="productSelect" class="form-select">
+<option value="">Select Product</option>
+</select>
+</div>
 
-        <div style="width:120px">
-            <label class="form-label mb-1">Discount</label>
-            <input id="discount" type="number" class="form-control" value="0">
-        </div>
+<div class="col-md-2">
+<label class="form-label">Quantity</label>
+<input name="quantity" type="number" value="1" class="form-control">
+</div>
 
-        <div style="width:140px">
-            <label class="form-label mb-1">VAT Mode</label>
-            <select id="vatMode" class="form-select">
-                <option value="non-vatable">Non-Vatable</option>
-                <option value="inclusive">Inclusive</option>
-                <option value="exclusive">Exclusive</option>
-            </select>
-        </div>
+<div class="col-md-2">
+<label class="form-label">Unit</label>
+<select name="unit" class="form-select">
+<option>kg</option>
+<option>bag</option>
+<option>pcs</option>
+</select>
+</div>
 
-        <div class="align-self-end">
-            <button id="addItemBtn" class="btn btn-success">Add Item</button>
-        </div>
-    </div>
+<div class="col-md-2">
+<label class="form-label">Price</label>
+<input name="price" type="number" class="form-control" placeholder="Price">
+</div>
 
-    <!-- Totals & Actions -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <div>Subtotal: <strong id="subtotal">0.00</strong></div>
-            <div>Tax: <strong id="taxTotal">0.00</strong></div>
-            <div class="fs-5">Total: <strong id="total">0.00</strong></div>
-        </div>
+{{-- hidden product name --}}
+<input type="hidden" name="name" id="productName">
 
-        <div class="d-flex gap-2">
-            <button id="cashBtn" class="btn btn-primary">Cash</button>
-            <button id="mobileBtn" class="btn btn-warning text-dark">Mobile Pay</button>
-            <button id="cardBtn" class="btn btn-secondary">Card</button>
-        </div>
-    </div>
+<div class="col-md-12">
+<button class="btn btn-success w-100 mt-2">Add to Sale</button>
+</div>
+
+</form>
+</div>
+
+{{-- CURRENT SALE --}}
+<div class="panel mb-4">
+<h6 class="fw-bold mb-3">Current Sale</h6>
+
+@php $total=0; @endphp
+@forelse(session('cart',[]) as $item)
+@php $total += $item['price']*$item['quantity']; @endphp
+<div class="cart-item">
+<span>{{ $item['name'] }} ({{ $item['quantity'] }} {{ $item['unit'] }})</span>
+<span>Ksh {{ number_format($item['price']*$item['quantity']) }}</span>
+</div>
+@empty
+<p class="text-muted">No items</p>
+@endforelse
+
+<hr>
+
+<div class="total-box mb-3">
+TOTAL: Ksh {{ number_format($total) }}
+</div>
+
+<form method="POST" action="{{ route('cart.complete') }}">
+@csrf
+<input name="amount_paid" class="form-control mb-2" placeholder="Amount Paid">
+<button class="btn btn-success w-100">Complete Sale</button>
+</form>
+
+<div class="d-flex gap-2 mt-2">
+<form method="POST" action="{{ route('cart.hold') }}" class="w-50">@csrf
+<button class="btn btn-warning w-100">Hold</button>
+</form>
+
+<form method="POST" action="{{ route('cart.clear') }}" class="w-50">@csrf
+<button class="btn btn-danger w-100">Clear</button>
+</form>
+</div>
+</div>
+
+{{-- HELD SALES --}}
+<div class="panel">
+<h6 class="fw-bold mb-3">Held Sales</h6>
+
+@forelse(session('holds',[]) as $id=>$sale)
+<form method="POST" action="{{ route('cart.resume',$id) }}">
+@csrf
+<button class="btn btn-outline-primary w-100 mb-2">
+{{ $id }} – {{ $sale['time'] }}
+</button>
+</form>
+@empty
+<p class="text-muted">No held sales</p>
+@endforelse
+</div>
 
 </div>
 
-@push('scripts')
+{{-- JS --}}
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    let saleItems = [];
+const data = @json($categories);
 
-    const productSelect = document.getElementById('productSelect');
-    const qty = document.getElementById('qty');
-    const unit = document.getElementById('unit');
-    const unitPrice = document.getElementById('unitPrice');
-    const discount = document.getElementById('discount');
-    const vatMode = document.getElementById('vatMode');
-    const saleItemsTbody = document.getElementById('saleItems');
+const categorySelect = document.getElementById('categorySelect');
+const productSelect  = document.getElementById('productSelect');
+const productName    = document.getElementById('productName');
 
-    function renderTable(){
-        saleItemsTbody.innerHTML = '';
-        let sub = 0, taxTotal = 0, total = 0;
+categorySelect.addEventListener('change', function () {
+    productSelect.innerHTML = '<option value="">Select Product</option>';
 
-        saleItems.forEach((it, i) => {
-            sub += (it.subtotal - it.tax);
-            taxTotal += it.tax;
-            total += it.subtotal;
+    if (!this.value) return;
 
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${it.name}</td>
-                <td>${it.qty}</td>
-                <td>${it.unit}</td>
-                <td>${it.unitPrice.toFixed(2)}</td>
-                <td>${it.discount.toFixed(2)}</td>
-                <td>${it.vatMode}</td>
-                <td>${it.tax.toFixed(2)}</td>
-                <td>${it.subtotal.toFixed(2)}</td>
-                <td><button class="btn btn-sm btn-danger" onclick="removeItem(${i})">Remove</button></td>
-            `;
-            saleItemsTbody.appendChild(tr);
-        });
-
-        document.getElementById('subtotal').textContent = sub.toFixed(2);
-        document.getElementById('taxTotal').textContent = taxTotal.toFixed(2);
-        document.getElementById('total').textContent = total.toFixed(2);
-    }
-
-    window.removeItem = function(idx){
-        saleItems.splice(idx,1);
-        renderTable();
-    }
-
-    productSelect.addEventListener('change', function(){
-        const opt = this.options[this.selectedIndex];
-        if(opt && opt.dataset && opt.dataset.price){
-            unitPrice.value = opt.dataset.price;
-        }
+    data[this.value].forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item;
+        opt.textContent = item;
+        productSelect.appendChild(opt);
     });
+});
 
-    document.getElementById('addItemBtn').addEventListener('click', function(){
-        const selected = productSelect.options[productSelect.selectedIndex];
-        if(!selected || !selected.value){
-            alert('Please select a product');
-            return;
-        }
-
-        const q = parseFloat(qty.value) || 1;
-        const u = unit.value || 'pcs';
-        const p = parseFloat(unitPrice.value) || parseFloat(selected.dataset.price) || 0;
-        const d = parseFloat(discount.value) || 0;
-        const v = vatMode.value || 'non-vatable';
-        const taxRate = 0.16;
-
-        let subtotal = q * p - d;
-        let tax = 0;
-        if(v === 'inclusive'){
-            tax = subtotal - (subtotal / (1 + taxRate));
-        } else if(v === 'exclusive'){
-            tax = subtotal * taxRate;
-            subtotal += tax;
-        }
-
-        saleItems.push({
-            product_id: selected.value,
-            name: selected.text,
-            qty: q,
-            unit: u,
-            unitPrice: p,
-            discount: d,
-            vatMode: v,
-            tax: tax,
-            subtotal: subtotal
-        });
-
-        // reset small inputs
-        qty.value = 1;
-        unitPrice.value = '';
-        discount.value = 0;
-        productSelect.value = '';
-
-        renderTable();
-    });
-
-    // quick handlers for payment buttons (hook into storeSale route later)
-    document.getElementById('cashBtn').addEventListener('click', function(){
-        if(saleItems.length === 0){ alert('Add at least one item'); return; }
-        // TODO: POST to /pos/storeSale or open payment modal
-        alert('Record sale (implement backend call). Total: ' + document.getElementById('total').textContent);
-    });
-
-    document.getElementById('mobileBtn').addEventListener('click', function(){
-        if(saleItems.length === 0){ alert('Add at least one item'); return; }
-        alert('Mobile payment (implement backend integration).');
-    });
-
-    document.getElementById('cardBtn').addEventListener('click', function(){
-        if(saleItems.length === 0){ alert('Add at least one item'); return; }
-        alert('Card payment (implement backend integration).');
-    });
-
+productSelect.addEventListener('change', function () {
+    productName.value = this.value;
 });
 </script>
-@endpush
 
 @endsection

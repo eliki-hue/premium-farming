@@ -57,7 +57,7 @@
 <p><strong>Receipt No:</strong> {{ $receiptNumber }}</p>
 <p><strong>Date:</strong> {{ $date }}</p>
 <p><strong>Served By:</strong> {{ $servedBy }}</p>
-<p><strong>Payment Method:</strong> {{ $receipt['payment'] }}</p>
+<p><strong>Payment Method:</strong> {{ $receipt['payment'] ?? 'Cash' }}</p>
 
 <div class="line"></div>
 

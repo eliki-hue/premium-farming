@@ -84,26 +84,30 @@ class CartController extends Controller
     }
 
     // Complete sale and generate receipt
-    public function complete(Request $request)
-    {
-        $cart = session()->get('cart', []);
-        if(empty($cart)) return redirect()->back()->with('error', 'No items to complete.');
+   public function complete(Request $request)
+{
+    $cart = session('cart', []);
 
-        $total = 0;
-        foreach($cart as $item) $total += $item['price'] * $item['quantity'];
-
-        session()->put('receipt', [
-            'items' => $cart,
-            'total' => $total,
-            'paid' => $request->paid_amount,
-            'balance' => $request->paid_amount - $total,
-            'served_by' => auth()->user()->name ?? 'Cashier'
-        ]);
-
-        session()->forget('cart');
-
-        return redirect()->route('pos.receipt');
+    if (empty($cart)) {
+        return back()->with('error', 'Cart is empty');
     }
+
+    $receipt = [
+        'items' => $cart,
+        'total' => collect($cart)->sum(fn($i) => $i['price'] * $i['quantity']),
+        'payment' => $request->payment_method ?? 'Cash',
+        'time' => now()->format('Y-m-d H:i'),
+    ];
+
+    session([
+        'receipt' => $receipt
+    ]);
+
+    session()->forget('cart');
+
+    return redirect()->route('pos.receipt');
+}
+
 
     // Display receipt
     public function receipt()
