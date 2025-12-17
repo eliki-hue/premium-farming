@@ -20,6 +20,10 @@ use App\Http\Controllers\PettyCashController;
 use App\Http\Controllers\PosReturnController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\ConversionController;
+
+
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
 
@@ -112,13 +116,20 @@ Route::prefix('pos')->name('pos.')->group(function () {
 
 });
 
-Route::get('/feeds', [ShopController::class, 'allProducts'])
+Route::get('/feeds', [ShopController::class, 'Products'])
     ->name('shop.products');
 
 Route::get('/feeds/{category}', [ShopController::class, 'category'])
     ->whereIn('category', ['pig', 'pet', 'poultry', 'byproduct'])
     ->name('shop.category');
 
+Route::get('/pos/held-sales', [CartController::class, 'heldSales'])
+    ->name('pos.held.sales');
+
+Route::post('/cart/hold', [CartController::class, 'hold'])->name('cart.hold');
+Route::post('/cart/resume/{index}', [CartController::class, 'resume'])->name('cart.resume');
+Route::post('/cart/complete', [CartController::class, 'complete'])->name('cart.complete');
+Route::get('/pos/receipt', fn() => view('pos.receipt'))->name('pos.receipt');
 
 /*
 |--------------------------------------------------------------------------
@@ -139,6 +150,18 @@ Route::prefix('shop')->group(function () {
 
 });
 
+Route::get('/pos/conversion', function () {
+    return view('pos.conversion');
+})->name('pos.conversion');
+Route::prefix('pos')->group(function () {
+
+    // Conversion page (form)
+    Route::get('conversion', [ConversionController::class, 'index'])->name('pos.conversion');
+
+    // Store conversion (POST)
+    Route::post('conversion', [ConversionController::class, 'store'])->name('pos.convert.store');
+
+});
 /*
 |--------------------------------------------------------------------------
 | CATEGORY BLADE ROUTES (NEW)

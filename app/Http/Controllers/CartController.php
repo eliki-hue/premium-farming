@@ -6,86 +6,111 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    // Display cart
-    public function index()
+    // Display POS page with current cart
+    public function sell()
     {
         $cart = session()->get('cart', []);
-        return view('cart.index', compact('cart'));
+        $heldSales = session()->get('held_sales', []);
+        return view('pos.sell', compact('cart', 'heldSales'));
     }
 
     // Add product to cart
-    public function add(Request $request)
+   public function add(Request $request)
+{
+    $cart = session()->get('cart', []);
+    $name = $request->name;
+
+    if (isset($cart[$name])) {
+        $cart[$name]['quantity'] += $request->quantity ?? 1;
+    } else {
+        $cart[$name] = [
+            'name' => $name,
+            'price' => $request->price,
+            'quantity' => $request->quantity ?? 1,
+            'unit' => $request->unit ?? 'pcs', // ✅ ALWAYS SET
+        ];
+    }
+
+    session()->put('cart', $cart);
+    return back();
+}
+
+    // Hold current sale
+    public function hold()
     {
-        $id = $request->id;
         $cart = session()->get('cart', []);
+        if(empty($cart)) return redirect()->back()->with('error', 'No items to hold.');
 
-        // If item already exists, increase quantity
-        if(isset($cart[$id])) {
-            $cart[$id]['quantity']++;
-        } else {
-            // Add new item
-            $cart[$id] = [
-                "name" => $request->name,
-                "quantity" => 1,
-                "price" => $request->price,
-                "image" => $request->image
-            ];
-        }
+        $heldSales = session()->get('held_sales', []);
+        $holdId = 'HOLD-' . time();
+        $heldSales[$holdId] = [
+            'items' => $cart,
+            'time' => now()->format('d M Y H:i')
+        ];
 
-        session()->put('cart', $cart);
-        return redirect()->back()->with('success', 'Product added to cart successfully!');
+        session()->put('held_sales', $heldSales);
+        session()->forget('cart');
+
+        return redirect()->back()->with('success', 'Sale held successfully.');
     }
 
-    public function increment(Request $request)
-{
-    $cart = session()->get('cart', []);
+    // Resume held sale
+    public function resume($holdId)
+    {
+        $heldSales = session()->get('held_sales', []);
+        if(!isset($heldSales[$holdId])) return redirect()->back()->with('error', 'Held sale not found.');
 
-    $id = $request->id;
+        session(['cart' => $heldSales[$holdId]['items']]);
+        unset($heldSales[$holdId]);
+        session(['held_sales' => $heldSales]);
 
-    if (isset($cart[$id])) {
-        $cart[$id]['quantity'] += 1;
+        return redirect()->back()->with('success', 'Held sale resumed.');
     }
 
-    session()->put('cart', $cart);
-
-    return response()->json(['success' => true, 'quantity' => $cart[$id]['quantity']]);
-}
-
-
-public function decrement(Request $request)
-{
-    $cart = session()->get('cart', []);
-
-    $id = $request->id;
-
-    if (isset($cart[$id]) && $cart[$id]['quantity'] > 1) {
-        $cart[$id]['quantity'] -= 1;
-    }
-
-    session()->put('cart', $cart);
-
-    return response()->json(['success' => true, 'quantity' => $cart[$id]['quantity']]);
-}
-
-
-    // Remove a single product
+    // Remove item from cart
     public function remove(Request $request)
     {
         $cart = session()->get('cart', []);
-        if(isset($cart[$request->id])) {
-            unset($cart[$request->id]);
-            session()->put('cart', $cart);
-        }
-
-        return redirect()->back()->with('success', 'Item removed');
+        if(isset($cart[$request->id])) unset($cart[$request->id]);
+        session()->put('cart', $cart);
+        return redirect()->back()->with('success', 'Item removed.');
     }
 
     // Clear cart
     public function clear()
     {
         session()->forget('cart');
-        return redirect()->back()->with('success', 'Cart cleared successfully!');
+        return redirect()->back()->with('success', 'Cart cleared!');
     }
 
+    // Complete sale and generate receipt
+    public function complete(Request $request)
+    {
+        $cart = session()->get('cart', []);
+        if(empty($cart)) return redirect()->back()->with('error', 'No items to complete.');
 
+        $total = 0;
+        foreach($cart as $item) $total += $item['price'] * $item['quantity'];
+
+        session()->put('receipt', [
+            'items' => $cart,
+            'total' => $total,
+            'paid' => $request->paid_amount,
+            'balance' => $request->paid_amount - $total,
+            'served_by' => auth()->user()->name ?? 'Cashier'
+        ]);
+
+        session()->forget('cart');
+
+        return redirect()->route('pos.receipt');
+    }
+
+    // Display receipt
+    public function receipt()
+    {
+        $receipt = session()->get('receipt', []);
+        if(empty($receipt)) return redirect()->route('pos.sell')->with('error', 'No receipt found.');
+
+        return view('pos.receipt', compact('receipt'));
+    }
 }
