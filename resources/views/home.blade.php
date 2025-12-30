@@ -1,707 +1,332 @@
-@extends('layouts.app')
+@extends('layouts.app', ['mode' => 'pos'])
 
-@section('title', 'GreenHarvest - Farm Fresh, Naturally Grown')
+@section('title', 'Premium Farming Feeds - POS Dashboard')
 
 @push('styles')
 <style>
-    /* Hero Section */
-    .hero-section {
-        position: relative;
-        height: 90vh;
-        min-height: 600px;
-        background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.4)),
-                    url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2232&auto=format&fit=crop') center/cover no-repeat;
-        display: flex;
-        align-items: center;
-        color: white;
-        overflow: hidden;
-    }
-
-    .hero-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background-color: rgba(232, 155, 75, 0.9);
-        padding: 10px 24px;
-        border-radius: 30px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        margin-bottom: 2rem;
-        animation: fadeInUp 0.8s ease 0.2s forwards;
-        opacity: 0;
-    }
-
-    .hero-badge i {
-        font-size: 1.2rem;
-    }
-
-    .hero-title {
-        font-size: 5rem;
-        font-weight: 800;
-        line-height: 1.1;
-        margin-bottom: 1.5rem;
-        animation: fadeInUp 0.8s ease 0.4s forwards;
-        opacity: 0;
-    }
-
-    .hero-title .accent {
-        color: var(--accent-orange);
-        display: block;
-    }
-
-    .hero-subtitle {
-        font-size: 1.3rem;
-        font-family: 'Poppins', sans-serif;
-        font-weight: 400;
-        margin-bottom: 3rem;
-        max-width: 600px;
-        line-height: 1.6;
-        animation: fadeInUp 0.8s ease 0.6s forwards;
-        opacity: 0;
-    }
-
-    .hero-buttons {
-        display: flex;
-        gap: 1.5rem;
-        flex-wrap: wrap;
-        animation: fadeInUp 0.8s ease 0.8s forwards;
-        opacity: 0;
-    }
-
-    .btn-primary-custom {
-        background-color: var(--accent-orange);
-        color: white;
-        padding: 16px 40px;
-        border-radius: 8px;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        transition: all 0.3s ease;
-        border: 2px solid var(--accent-orange);
-    }
-
-    .btn-primary-custom:hover {
-        background-color: var(--accent-orange-dark);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(232, 155, 75, 0.4);
-    }
-
-    .btn-secondary-custom {
-        background-color: transparent;
-        color: white;
-        padding: 16px 40px;
-        border-radius: 8px;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        transition: all 0.3s ease;
-        border: 2px solid rgba(255, 255, 255, 0.5);
-    }
-
-    .btn-secondary-custom:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-        border-color: white;
-        color: white;
-        transform: translateY(-2px);
-    }
-
-    /* Features Section */
-    .features-section {
-        background-color: var(--light-bg);
-        padding: 6rem 0;
-    }
-
-    .feature-card {
-        text-align: center;
-        padding: 2rem;
-        transition: all 0.3s ease;
-        animation: fadeInUp 0.6s ease forwards;
-        opacity: 0;
-    }
-
-    .feature-card:nth-child(1) { animation-delay: 0.1s; }
-    .feature-card:nth-child(2) { animation-delay: 0.2s; }
-    .feature-card:nth-child(3) { animation-delay: 0.3s; }
-    .feature-card:nth-child(4) { animation-delay: 0.4s; }
-
-    .feature-icon {
-        width: 80px;
-        height: 80px;
-        background: linear-gradient(135deg, rgba(232, 155, 75, 0.1) 0%, rgba(45, 95, 78, 0.1) 100%);
-        border-radius: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1.5rem;
-        font-size: 2rem;
-        color: var(--primary-green);
-        transition: all 0.3s ease;
-    }
-
-    .feature-card:hover .feature-icon {
-        transform: scale(1.1) rotate(5deg);
-        background: linear-gradient(135deg, var(--accent-orange) 0%, var(--primary-green) 100%);
-        color: white;
-    }
-
-    .feature-card h3 {
-        font-size: 1.4rem;
-        margin-bottom: 1rem;
-        color: var(--text-dark);
-    }
-
-    .feature-card p {
-        color: var(--text-muted);
-        margin: 0;
-    }
-
-    /* Categories Section */
-    .categories-section {
-        padding: 6rem 0;
-    }
-
-    .section-header {
-        text-align: center;
-        margin-bottom: 4rem;
-    }
-
-    .section-header h2 {
-        font-size: 3.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        color: var(--text-dark);
-    }
-
-    .section-header p {
-        font-size: 1.2rem;
-        color: var(--text-muted);
-        max-width: 700px;
-        margin: 0 auto;
-    }
-
-    .category-card {
-        text-align: center;
-        padding: 2rem;
-        background: white;
-        border-radius: 16px;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        border: 2px solid transparent;
-        animation: fadeInUp 0.6s ease forwards;
-        opacity: 0;
-    }
-
-    .category-card:nth-child(1) { animation-delay: 0.1s; }
-    .category-card:nth-child(2) { animation-delay: 0.2s; }
-    .category-card:nth-child(3) { animation-delay: 0.3s; }
-    .category-card:nth-child(4) { animation-delay: 0.4s; }
-
-    .category-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        border-color: var(--accent-orange);
-    }
-
-    .category-icon {
-        width: 100px;
-        height: 100px;
-        background-color: var(--light-bg);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1.5rem;
-        font-size: 3rem;
-        transition: all 0.3s ease;
-    }
-
-    .category-card:hover .category-icon {
-        background-color: var(--accent-orange);
-        transform: scale(1.1);
-    }
-
-    .category-card h3 {
-        font-size: 1.5rem;
-        margin: 0;
-        color: var(--text-dark);
-    }
-
-    /* Products Section */
-    .products-section {
-        background-color: var(--light-bg);
-        padding: 6rem 0;
-    }
-
-    .section-header-with-link {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 3rem;
-    }
-
-    .section-header-with-link h2 {
-        font-size: 3rem;
-        font-weight: 700;
-        margin: 0;
-    }
-
-    .section-header-with-link p {
-        color: var(--text-muted);
-        margin: 0.5rem 0 0 0;
-    }
-
-    .view-all-btn {
-        background-color: white;
-        color: var(--primary-green);
-        padding: 12px 30px;
-        border-radius: 8px;
-        border: 2px solid var(--primary-green);
-        text-decoration: none;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .view-all-btn:hover {
-        background-color: var(--primary-green);
-        color: white;
-        transform: translateX(5px);
-    }
-
-    .product-card {
-        background: white;
-        border-radius: 16px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        height: 100%;
-        border: 2px solid transparent;
-        animation: fadeInUp 0.6s ease forwards;
-        opacity: 0;
-    }
-
-    .product-card:nth-child(1) { animation-delay: 0.1s; }
-    .product-card:nth-child(2) { animation-delay: 0.2s; }
-    .product-card:nth-child(3) { animation-delay: 0.3s; }
-    .product-card:nth-child(4) { animation-delay: 0.4s; }
-
-    .product-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        border-color: var(--accent-orange);
-    }
-
-    .product-image-wrapper {
-        position: relative;
-        height: 280px;
-        overflow: hidden;
-        background-color: #f5f5f5;
-    }
-
-    .product-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: all 0.5s ease;
-    }
-
-    .product-card:hover .product-image {
-        transform: scale(1.1);
-    }
-
-    .product-badges {
-        position: absolute;
-        top: 1rem;
-        left: 1rem;
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    .badge-organic {
-        background-color: var(--primary-green);
-        color: white;
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .badge-sale {
-        background-color: #dc3545;
-        color: white;
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: 600;
-    }
-
-    .product-content {
-        padding: 1.5rem;
-    }
-
-    .product-category {
-        color: var(--text-muted);
-        font-size: 0.75rem;
-        font-weight: 600;
-        letter-spacing: 1px;
-        margin-bottom: 0.5rem;
-    }
-
-    .product-name {
-        font-size: 1.3rem;
-        font-weight: 600;
-        margin-bottom: 0.8rem;
-        color: var(--text-dark);
-    }
-
-    .product-rating {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .stars {
-        color: #fbbf24;
-        display: flex;
-        gap: 2px;
-    }
-
-    .rating-text {
-        color: var(--text-muted);
-        font-size: 0.9rem;
-    }
-
-    .product-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .product-price {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .price-current {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: var(--primary-green);
-    }
-
-    .price-old {
-        font-size: 1rem;
-        color: var(--text-muted);
-        text-decoration: line-through;
-    }
-
-    .price-unit {
-        font-size: 0.8rem;
-        color: var(--text-muted);
-    }
-
-    /* CTA Section */
-    .cta-section {
-        background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-dark) 100%);
-        padding: 6rem 0;
-        color: white;
-        text-align: center;
-    }
-
-    .cta-section h2 {
-        font-size: 3.5rem;
-        font-weight: 700;
-        margin-bottom: 1.5rem;
-    }
-
-    .cta-section p {
-        font-size: 1.3rem;
-        margin-bottom: 3rem;
-        opacity: 0.9;
-        max-width: 800px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .cta-buttons {
-        display: flex;
-        gap: 1.5rem;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .btn-cta-primary {
-        background-color: var(--accent-orange);
-        color: white;
-        padding: 16px 40px;
-        border-radius: 8px;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        transition: all 0.3s ease;
-        border: 2px solid var(--accent-orange);
-    }
-
-    .btn-cta-primary:hover {
-        background-color: var(--accent-orange-dark);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(232, 155, 75, 0.4);
-        color: white;
-    }
-
-    .btn-cta-secondary {
-        background-color: transparent;
-        color: white;
-        padding: 16px 40px;
-        border-radius: 8px;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        transition: all 0.3s ease;
-        border: 2px solid rgba(255, 255, 255, 0.5);
-    }
-
-    .btn-cta-secondary:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-        border-color: white;
-        color: white;
-        transform: translateY(-2px);
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .hero-title {
-            font-size: 3rem;
-        }
-
-        .hero-subtitle {
-            font-size: 1.1rem;
-        }
-
-        .section-header h2,
-        .cta-section h2 {
-            font-size: 2.5rem;
-        }
-
-        .section-header-with-link {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1.5rem;
-        }
-    }
+.hero {
+    background: linear-gradient(rgba(0,0,0,.4), rgba(0,0,0,.4)),
+                url('https://images.unsplash.com/photo-1500382017468-9049fed747ef') center/cover;
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    color: #fff;
+}
+.hero h1 { font-size: 3.5rem; font-weight: 800; }
+.section { padding: 5rem 0; }
+.card-soft {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    transition: .3s;
+}
+.card-soft:hover { transform: translateY(-6px); }
+.price { font-size: 1.6rem; font-weight: 700; color: #2563eb; }
+.badge-premium {
+    background: #16a34a;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: .75rem;
+}
+
+/* POS Sidebar Styles */
+.sidebar-nav {
+    background: #f8fafc;
+    border-right: 1px solid #e2e8f0;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 280px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    margin: 4px 16px;
+    border-radius: 12px;
+    transition: all 0.2s;
+    text-decoration: none;
+    color: #64748b;
+    font-weight: 500;
+}
+.nav-item:hover {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    transform: translateX(4px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+.nav-item i { 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    font-size: 16px;
+}
+.pos-header {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 24px 20px;
+    margin-bottom: 24px;
+}
+.stats-card {
+    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+    border-radius: 16px;
+    padding: 20px;
+    margin: 24px 16px;
+}
+.main-content {
+    margin-left: 280px;
+    padding: 24px;
+}
+@media (max-width: 768px) {
+    .sidebar-nav { transform: translateX(-100%); }
+    .main-content { margin-left: 0; }
+}
 </style>
 @endpush
 
 @section('content')
-<!-- Hero Section -->
-<section class="hero-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="hero-badge">
-                    <i class="bi bi-patch-check-fill"></i>
-                    Premium Quality Feeds
+<div class="flex min-h-screen">
+    <!-- CLASSIC POS SIDEBAR -->
+    <nav class="sidebar-nav px-4 py-6 space-y-2">
+        <!-- POS Header -->
+        <div class="pos-header rounded-2xl shadow-2xl">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-cash-register text-white text-xl"></i>
                 </div>
-                <h1 class="hero-title">
-                    Quality, Nutrition,
-                    <span class="accent">Maximum Growth</span>
-                </h1>
-                <p class="hero-subtitle">
-                    High-quality, balanced rations designed for optimal livestock health, faster growth, and increased production. Trusted by farmers across the region.
-                </p>
-                <div class="hero-buttons">
-                    <a href="{{ url('/products') }}" class="btn-primary-custom">
-                        Shop Now
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
-                    <a href="{{ url('/about') }}" class="btn-secondary-custom">
-                        Learn More
-                    </a>
+                <div>
+                    <h3 class="font-bold text-xl">POS Dashboard</h3>
                 </div>
             </div>
         </div>
-    </div>
-</section>
 
-<!-- Features Section -->
-<section class="features-section">
-    <div class="container">
-        <div class="row g-4">
-            @foreach($features as $feature)
-            <div class="col-lg-3 col-md-6">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="bi bi-{{ $feature['icon'] }}"></i>
-                    </div>
-                    <h3>{{ $feature['title'] }}</h3>
-                    <p>{{ $feature['description'] }}</p>
+        <!-- Main POS Menu -->
+        <div class="space-y-1">
+            <a href="{{ route('pos.sell') }}" class="nav-item group">
+                <div class="bg-emerald-100 group-hover:bg-white text-emerald-600 group-hover:text-emerald-500">
+                    <i class="fas fa-cash-register"></i>
                 </div>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
+                <span>Quick POS Sale</span>
+            </a>
 
-<!-- Categories Section -->
-<section class="categories-section">
-    <div class="container">
-        <div class="section-header">
-            <h2>Shop by Category</h2>
-            <p>Premium feeds for every livestock need, formulated for specific animals and growth stages.</p>
-        </div>
-        
-        <div class="row g-4">
-            @foreach($categories as $category)
-            <div class="col-lg-3 col-md-6">
-                <a href="{{ url('/products?category=' . $category['slug']) }}" style="text-decoration: none;">
-                    <div class="category-card">
-                        <div class="category-icon">
-                            {{ $category['icon'] }}
-                        </div>
-                        <h3>{{ $category['name'] }}</h3>
-                        @if(isset($category['description']))
-                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.5rem;">
-                            {{ $category['description'] }}
-                        </p>
-                        @endif
-                    </div>
-                </a>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
+            <a href="{{ route('pos.categories') }}" class="nav-item group">
+                <div class="bg-blue-100 group-hover:bg-white text-blue-600 group-hover:text-blue-500">
+                    <i class="fas fa-th-large"></i>
+                </div>
+                <span>Categories</span>
+            </a>
 
-<!-- Featured Products Section -->
-<section class="products-section">
-    <div class="container">
-        <div class="section-header-with-link">
-            <div>
-                <h2>Featured Products</h2>
-                <p>Top-quality feeds for optimal livestock performance</p>
-            </div>
-            <a href="{{ url('/products') }}" class="view-all-btn">
-                View All Products
-                <i class="bi bi-arrow-right"></i>
+            {{-- ✅ FIXED: Uses shop.products route --}}
+            <a href="{{ route('shop.products') }}" class="nav-item group">
+                <div class="bg-indigo-100 group-hover:bg-white text-indigo-600 group-hover:text-indigo-500">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <span>Products</span>
+            </a>
+
+            <a href="{{ route('pos.stores') }}" class="nav-item group">
+                <div class="bg-purple-100 group-hover:bg-white text-purple-600 group-hover:text-purple-500">
+                    <i class="fas fa-store"></i>
+                </div>
+                <span>Stores</span>
+            </a>
+
+            <a href="{{ route('pos.goods-received') }}" class="nav-item group">
+                <div class="bg-orange-100 group-hover:bg-white text-orange-600 group-hover:text-orange-500">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <span>Goods Received</span>
+            </a>
+
+            <a href="{{ route('pos.update-prices') }}" class="nav-item group">
+                <div class="bg-amber-100 group-hover:bg-white text-amber-600 group-hover:text-amber-500">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <span>Update Prices</span>
             </a>
         </div>
-        
-        <div class="row g-4">
-            @foreach($featuredProducts as $product)
-            <div class="col-lg-3 col-md-6">
-                <div class="product-card">
-                    <div class="product-image-wrapper">
-                        @php
-                            $imageMap = [
-                                'kienyeji-mash.jpg' => 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?q=80&w=1000',
-                                'broiler-finisher.jpg' => 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?q=80&w=1000',
-                                'sow-weaner.jpg' => 'https://images.unsplash.com/photo-1516467508483-a7212febe31a?q=80&w=1000',
-                                'dairy-meal.jpg' => 'https://images.unsplash.com/photo-1560493676-04071c5f467b?q=80&w=1000'
-                            ];
-                        @endphp
-                        <img src="{{ $imageMap[$product['image']] }}" alt="{{ $product['name'] }}" class="product-image">
-                        
-                        <div class="product-badges">
-                            @if($product['is_premium'])
-                            <span class="badge-organic">
-                                <i class="bi bi-star-fill"></i> Premium
-                            </span>
-                            @endif
-                            @if($product['is_sale'])
-                            <span class="badge-sale">Sale</span>
-                            @endif
+
+        <!-- Divider -->
+        <div class="my-6">
+            <hr class="border-gray-200">
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="stats-card">
+            <div class="text-xs text-gray-500 uppercase font-bold tracking-wide mb-2">Today Sales</div>
+            <div class="text-3xl font-bold text-emerald-600">KSh 45,230</div>
+            <div class="text-sm text-gray-500 flex items-center gap-2">
+                <i class="fas fa-receipt"></i>
+                23 transactions
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content flex-1">
+        <!-- HERO -->
+        <section class="hero mb-12 rounded-3xl overflow-hidden">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl">
+                    <h1 class="mb-8 leading-tight">Quality Feeds,<br>Maximum Production</h1>
+                    <p class="lead text-xl mb-8 opacity-90">Trusted livestock nutrition for poultry, dairy and pig farmers across Kenya.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="{{ route('pos.sell') }}" class="btn btn-warning btn-lg px-8 py-4 font-bold shadow-xl hover:shadow-2xl">
+                            Start POS Sale
+                        </a>
+                        {{-- ✅ FIXED: Uses shop.products route --}}
+                        <a href="{{ route('shop.products') }}" class="btn btn-outline-light btn-lg px-8 py-4 font-bold border-2 hover:bg-white hover:text-gray-900">
+                            Browse Products
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURES -->
+        <section class="section">
+            <div class="container mx-auto">
+                <div class="row g-5">
+                    @php
+                    $features = [
+                        ['icon' => 'award', 'title' => 'Premium Quality', 'description' => 'Scientifically formulated feeds for maximum livestock performance.'],
+                        ['icon' => 'leaf', 'title' => 'Natural Ingredients', 'description' => 'Made from high-quality grains and trusted raw materials.'],
+                        ['icon' => 'truck', 'title' => 'Reliable Supply', 'description' => 'Consistent availability for farmers and agro-vets.'],
+                        ['icon' => 'people', 'title' => 'Farmer Trusted', 'description' => 'Trusted by 5000+ farmers across Kenya.'],
+                    ];
+                    @endphp
+                    @foreach($features as $feature)
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card-soft text-center h-100">
+                            <div class="bg-gradient-to-br from-emerald-100 to-green-100 w-20 h-20 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                                <i class="bi bi-{{ $feature['icon'] }} text-2xl text-emerald-600"></i>
+                            </div>
+                            <h5 class="fw-bold text-xl mb-3">{{ $feature['title'] }}</h5>
+                            <p class="text-muted lead">{{ $feature['description'] }}</p>
                         </div>
                     </div>
-                    
-                    <div class="product-content">
-                        <div class="product-category">{{ $product['category'] }}</div>
-                        <h3 class="product-name">{{ $product['name'] }}</h3>
-                        
-                        <div class="product-rating">
-                            <div class="stars">
-                                @for($i = 0; $i < 5; $i++)
-                                    @if($i < floor($product['rating']))
-                                        <i class="bi bi-star-fill"></i>
-                                    @elseif($i < $product['rating'])
-                                        <i class="bi bi-star-half"></i>
-                                    @else
-                                        <i class="bi bi-star"></i>
-                                    @endif
-                                @endfor
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+        <!-- CATEGORIES - ✅ PERFECTLY MATCHES YOUR ROUTES -->
+        <section class="section bg-gradient-to-b from-gray-50 to-white">
+            <div class="container mx-auto">
+                <h2 class="text-center fw-bold text-4xl mb-12 text-gray-800">Shop by Category</h2>
+                <div class="row g-5">
+                    @php
+                    $categories = [
+                        ['name' => 'Poultry Feeds', 'route' => 'category.poultry', 'icon' => '🐔', 'description' => 'Broiler, layers & kienyeji feeds'],
+                        ['name' => 'Dairy Feeds', 'route' => 'category.dairy', 'icon' => '🐄', 'description' => 'Feeds for higher milk production'],
+                        ['name' => 'Swine Feeds', 'route' => 'category.swine', 'icon' => '🐖', 'description' => 'Grower, finisher & sow feeds'],
+                        ['name' => 'Pet Feeds', 'route' => 'category.pet-feeds', 'icon' => '🐶', 'description' => 'Dog, cat & rabbit nutrition'],
+                        ['name' => 'By-products', 'route' => 'category.by-products', 'icon' => '🌾', 'description' => 'Maize germ, wheat bran & supplements'],
+                        ['name' => 'Goat Feeds', 'route' => 'category.goat-feeds', 'icon' => '🐐', 'description' => 'Dairy & meat goat feeds'],
+                    ];
+                    @endphp
+                    @foreach($categories as $cat)
+                    <div class="col-lg-2 col-md-3 col-sm-6">
+                        <a href="{{ route($cat['route']) }}" class="card-soft text-center h-100 hover:shadow-2xl transition-all duration-300">
+                            <div class="bg-gradient-to-br from-blue-500 to-indigo-600 text-white w-20 h-20 rounded-2xl mx-auto mb-6 flex items-center justify-center text-3xl shadow-xl">
+                                {{ $cat['icon'] }}
                             </div>
-                            <span class="rating-text">({{ $product['reviews'] }})</span>
-                        </div>
-                        
-                        <div class="product-footer">
-                            <div class="product-price">
-                                <div>
-                                    <span class="price-current">KES {{ number_format($product['price']) }}</span>
-                                    @if($product['old_price'])
-                                    <span class="price-old">KES {{ number_format($product['old_price']) }}</span>
-                                    @endif
+                            <h5 class="fw-bold text-xl mb-3 text-gray-800">{{ $cat['name'] }}</h5>
+                            <p class="text-gray-600">{{ $cat['description'] }}</p>
+                        </a>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURED PRODUCTS -->
+        <section class="section">
+            <div class="container mx-auto">
+                <div class="flex justify-between items-center mb-12">
+                    <h2 class="fw-bold text-4xl text-gray-800">Featured Products</h2>
+                    {{-- ✅ FIXED: Uses shop.products route --}}
+                    <a href="{{ route('shop.products') }}" class="btn btn-outline-primary btn-lg">View All Products</a>
+                </div>
+                <div class="row g-5">
+                    @php
+                    $featuredProducts = [
+                        [
+                            'name' => 'Kienyeji Mash', 'category' => 'Poultry', 'price' => 3200, 'old_price' => null,
+                            'unit' => '50kg bag', 'rating' => 4.5, 'reviews' => 120, 'image' => 'kienyeji',
+                            'is_premium' => true, 'is_sale' => false
+                        ],
+                        [
+                            'name' => 'Dairy Meal', 'category' => 'Dairy', 'price' => 3450, 'old_price' => 3700,
+                            'unit' => '50kg bag', 'rating' => 4.8, 'reviews' => 98, 'image' => 'dairy',
+                            'is_premium' => true, 'is_sale' => true
+                        ],
+                        [
+                            'name' => 'Pig Grower', 'category' => 'Swine', 'price' => 3300, 'old_price' => null,
+                            'unit' => '50kg bag', 'rating' => 4.3, 'reviews' => 64, 'image' => 'pig',
+                            'is_premium' => false, 'is_sale' => false
+                        ],
+                        [
+                            'name' => 'Maize Germ', 'category' => 'By-products', 'price' => 90, 'old_price' => null,
+                            'unit' => 'per kg', 'rating' => 4.6, 'reviews' => 210, 'image' => 'maize',
+                            'is_premium' => false, 'is_sale' => false
+                        ],
+                    ];
+                    @endphp
+                    @foreach($featuredProducts as $p)
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card-soft h-100 position-relative overflow-hidden">
+                            @if($p['is_premium'])
+                            <span class="badge-premium position-absolute" style="top: 16px; right: 16px; z-index: 2;">Premium</span>
+                            @endif
+                            <div class="text-center mb-4">
+                                <div class="bg-gradient-to-br from-gray-100 to-gray-200 w-24 h-24 rounded-2xl mx-auto flex items-center justify-center text-3xl mb-3">
+                                    🐔
                                 </div>
-                                <span class="price-unit">{{ $product['unit'] }}</span>
                             </div>
+                            <h5 class="fw-bold mb-3 text-xl">{{ $p['name'] }}</h5>
+                            <p class="text-muted mb-3">{{ $p['category'] }}</p>
+                            <div class="price mb-2">KES {{ number_format($p['price']) }}</div>
+                            @if($p['old_price'])
+                            <small class="text-muted text-decoration-line-through d-block mb-2">
+                                KES {{ number_format($p['old_price']) }}
+                            </small>
+                            @endif
+                            <div class="text-muted mb-4">{{ $p['unit'] }}</div>
+                            <div class="d-flex align-items-center text-warning mb-3">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <i class="fas fa-star {{ $i <= $p['rating'] ? 'text-warning' : 'far fa-star text-muted' }}"></i>
+                                @endfor
+                                <span class="ms-2 text-muted small">({{ $p['reviews'] }} reviews)</span>
+                            </div>
+                            <a href="{{ route('pos.sell') }}" class="btn btn-success w-100 fw-bold">Add to Sale</a>
                         </div>
                     </div>
+                    @endforeach
                 </div>
             </div>
-            @endforeach
-        </div>
-    </div>
-</section>
+        </section>
 
-<!-- CTA Section -->
-<section class="cta-section">
-    <div class="container">
-        <h2>Ready to Boost Your Livestock Production?</h2>
-        <p>Join thousands of farmers who trust Premium Farming Feeds for quality nutrition, faster growth, and maximum production. Get the best results for your poultry, pigs, and cattle.</p>
-        <div class="cta-buttons">
-            <a href="{{ url('/products') }}" class="btn-cta-primary">
-                Browse Products
-                <i class="bi bi-arrow-right"></i>
-            </a>
-            <a href="{{ url('/about') }}" class="btn-cta-secondary">
-                Learn More
-            </a>
-        </div>
+        <!-- CTA -->
+        <section class="section text-white py-20" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)">
+            <div class="container mx-auto text-center">
+                <h2 class="fw-bold text-4xl mb-6">Grow Faster. Produce More.</h2>
+                <p class="lead text-xl mb-8 opacity-90">Join thousands of farmers using Premium Farming Feeds for better results.</p>
+                <div class="d-flex flex-wrap justify-content-center gap-4">
+                    <a href="{{ route('pos.sell') }}" class="btn btn-light btn-lg px-8 py-4 fw-bold shadow-xl">Start Selling Now</a>
+                    <a href="/contact" class="btn btn-outline-light btn-lg px-8 py-4 fw-bold border-2">Contact Us</a>
+                </div>
+            </div>
+        </section>
     </div>
-</section>
+</div>
 @endsection
-
-@push('scripts')
-<script>
-    // Intersection Observer for scroll animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, observerOptions);
-
-    // Observe all animated elements
-    document.addEventListener('DOMContentLoaded', () => {
-        const animatedElements = document.querySelectorAll('.fade-in-up, .feature-card, .category-card, .product-card');
-        animatedElements.forEach(el => observer.observe(el));
-    });
-</script>
-@endpush

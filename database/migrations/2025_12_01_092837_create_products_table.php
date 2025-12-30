@@ -12,6 +12,7 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->string('sku')->nullable()->unique();
             $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
+            $table->string('category')->nullable();
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('image')->nullable();
@@ -26,6 +27,8 @@ class CreateProductsTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::table('products', function (Blueprint $table) {
+                $table->dropColumn(['category', 'description', 'image']);
+            });
     }
 }

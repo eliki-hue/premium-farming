@@ -278,7 +278,7 @@
                 </div>
                 @endif
 
-                <form method="POST" action="{{ route('register.submit') }}" id="registerForm">
+                <form method="POST" action="{{ route('register') }}" id="registerForm">
                     @csrf
                     
                     <div class="form-row">

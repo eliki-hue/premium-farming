@@ -276,7 +276,7 @@
                 </div>
                 @endif
 
-                <form method="POST" action="{{ route('login.submit') }}">
+                <form method="POST" action="{{ route('login') }}">
                     @csrf
                     
                     <div class="form-group">
@@ -320,7 +320,7 @@
                             <input type="checkbox" id="remember" name="remember">
                             <label for="remember">Remember me</label>
                         </div>
-                        <a href="{{ route('password.request') }}" class="forgot-link">Forgot Password?</a>
+{{-- <!-- <a href="{{ route('password.request') }}" class="forgot-link">Forgot Password?</a> --> --}}
                     </div>
 
                     <button type="submit" class="btn-auth">
@@ -329,7 +329,7 @@
                 </form>
 
                 <div class="auth-footer">
-                    <p>Don't have an account? <a href="{{ route('register') }}">Sign up here</a></p>
+                    <p>Don't have an account? <a href="/register">Sign up here</a></p>
                 </div>
             </div>
         </div>

@@ -83,15 +83,19 @@ class POSController extends Controller
         return view('pos.items', ['mode' => 'pos', 'products' => $products]);
     }
 
-    public function stores() {
-        $products = Product::where('quantity', '>', 0)->get();
-        return view('pos.stores', ['mode' => 'pos', 'products' => $products]);
+  public function stores()
+    {
+        $products = Product::with('category')->orderBy('stock_quantity', 'asc')->get();
+        $lowStock = $products->where('stock_quantity', '<=', 20)->count();
+        
+        return view('pos.stores', compact('products', 'lowStock'));
     }
 
     public function updatePrices() {
         $products = Product::where('quantity', '>', 0)->get();
         return view('pos.update-prices', ['mode' => 'pos', 'products' => $products]);
     }
+    
 
     public function goodsReceived() {
         $products = Product::where('quantity', '>', 0)->get();
