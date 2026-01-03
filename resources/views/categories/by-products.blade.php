@@ -1,243 +1,378 @@
-@extends('layouts.shop')
+@extends('layouts.app')
 
-@section('title', 'Feed By-products')
+@section('title', 'By-Products & Supplements | Premium Farming Feeds')
 
 @section('content')
 
+<div class="min-h-screen pt-24">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-12 text-center">
+                    <h1 class="hero-title mb-4 animate__animated animate__fadeInDown">
+                        By-Products & Supplements
+                    </h1>
+                    <p class="hero-subtitle mb-5 animate__animated animate__fadeInUp animate__delay-1s">
+                        High-quality by-products and essential supplements for complete livestock nutrition
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <section class="section bg-white">
+        <div class="container">
+            <div class="section-title animate-on-scroll">
+                <h2>Quality By-Products</h2>
+                <p>Essential supplements for balanced livestock nutrition</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Wheat Bran -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="product-card premium-card animate-on-scroll">
+                        <div class="product-image-container">
+                            <img src="{{ asset('images/bran.jpg') }}" alt="Wheat Bran" class="product-image-full">
+                            <span class="product-badge byproduct">🌾 Bran</span>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="fw-bold mb-2">Wheat Bran</h4>
+                            <p class="text-muted mb-2">
+                                <small><i class="bi bi-arrow-right-circle me-2"></i>High-fiber supplement</small>
+                            </p>
+                            <p class="product-description mb-3">
+                                High-fiber by-product ideal for ruminants. Rich in protein and energy.
+                            </p>
+                            <div class="product-specs mb-4">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Protein:</span>
+                                    <span class="fw-bold text-success">15-17%</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Best For:</span>
+                                    <span class="fw-bold">Ruminants</span>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="price-tag">Ksh 1,300</span>
+                                    <small class="text-muted d-block">per 50kg bag</small>
+                                </div>
+                                <form action="{{ route('cart.add') }}" method="POST" class="mb-0">
+                                    @csrf
+                                    <input type="hidden" name="id" value="401">
+                                    <input type="hidden" name="name" value="Wheat Bran">
+                                    <input type="hidden" name="price" value="1300">
+                                    <input type="hidden" name="image" value="images/bran.jpg">
+                                    <button type="submit" class="btn btn-premium">
+                                        <i class="bi bi-cart-plus me-2"></i> Add
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wheat Pollard -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="product-card premium-card animate-on-scroll">
+                        <div class="product-image-container">
+                            <img src="{{ asset('images/pollard.jpg') }}" alt="Wheat Pollard" class="product-image-full">
+                            <span class="product-badge byproduct">🌾 Pollard</span>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="fw-bold mb-2">Wheat Pollard</h4>
+                            <p class="text-muted mb-2">
+                                <small><i class="bi bi-arrow-right-circle me-2"></i>Energy supplement</small>
+                            </p>
+                            <p class="product-description mb-3">
+                                Energy and protein-rich supplement for all livestock types.
+                            </p>
+                            <div class="product-specs mb-4">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Protein:</span>
+                                    <span class="fw-bold text-primary">16-18%</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Best For:</span>
+                                    <span class="fw-bold">All Livestock</span>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="price-tag">Ksh 1,500</span>
+                                    <small class="text-muted d-block">per 50kg bag</small>
+                                </div>
+                                <form action="{{ route('cart.add') }}" method="POST" class="mb-0">
+                                    @csrf
+                                    <input type="hidden" name="id" value="402">
+                                    <input type="hidden" name="name" value="Wheat Pollard">
+                                    <input type="hidden" name="price" value="1500">
+                                    <input type="hidden" name="image" value="images/pollard.jpg">
+                                    <button type="submit" class="btn btn-premium">
+                                        <i class="bi bi-cart-plus me-2"></i> Add
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Maize Germ -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="product-card premium-card animate-on-scroll">
+                        <div class="product-image-container">
+                            <img src="{{ asset('images/maize.jpeg') }}" alt="Maize Germ" class="product-image-full">
+                            <span class="product-badge byproduct premium">⭐ Premium</span>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="fw-bold mb-2">Maize Germ</h4>
+                            <p class="text-muted mb-2">
+                                <small><i class="bi bi-arrow-right-circle me-2"></i>High-energy supplement</small>
+                            </p>
+                            <p class="product-description mb-3">
+                                High-energy supplement rich in oil and protein. Ideal for poultry and swine.
+                            </p>
+                            <div class="product-specs mb-4">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Protein:</span>
+                                    <span class="fw-bold text-warning">18-22%</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Best For:</span>
+                                    <span class="fw-bold">Poultry/Swine</span>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="price-tag">Ksh 1,500</span>
+                                    <small class="text-muted d-block">per 50kg bag</small>
+                                </div>
+                                <form action="{{ route('cart.add') }}" method="POST" class="mb-0">
+                                    @csrf
+                                    <input type="hidden" name="id" value="403">
+                                    <input type="hidden" name="name" value="Maize Germ">
+                                    <input type="hidden" name="price" value="1500">
+                                    <input type="hidden" name="image" value="images/maize.jpeg">
+                                    <button type="submit" class="btn btn-premium">
+                                        <i class="bi bi-cart-plus me-2"></i> Add
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparison Table -->
+            <div class="mt-5 premium-card animate-on-scroll">
+                <h4 class="fw-bold mb-4">By-Products Comparison</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Protein Content</th>
+                                <th>Energy Level</th>
+                                <th>Best For</th>
+                                <th>Price (50kg)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Wheat Bran</strong></td>
+                                <td>15-17%</td>
+                                <td>Medium</td>
+                                <td>Ruminants, Dairy</td>
+                                <td>Ksh 1,300</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Wheat Pollard</strong></td>
+                                <td>16-18%</td>
+                                <td>High</td>
+                                <td>All Livestock</td>
+                                <td>Ksh 1,500</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Maize Germ</strong></td>
+                                <td>18-22%</td>
+                                <td>Very High</td>
+                                <td>Poultry, Swine</td>
+                                <td>Ksh 1,500</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tips Section -->
+    <section class="section bg-light">
+        <div class="container">
+            <div class="section-title animate-on-scroll">
+                <h2>Supplement Tips</h2>
+                <p>Using by-products effectively in livestock feeding</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="premium-card h-100">
+                        <i class="bi bi-scale fs-1 text-primary mb-3"></i>
+                        <h5 class="fw-bold mb-3">Proper Mixing</h5>
+                        <p class="text-muted">Mix by-products with main feeds in correct proportions for balanced nutrition.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="premium-card h-100">
+                        <i class="bi bi-droplet-half fs-1 text-primary mb-3"></i>
+                        <h5 class="fw-bold mb-3">Water Management</h5>
+                        <p class="text-muted">Ensure adequate water supply when feeding high-fiber by-products.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="premium-card h-100">
+                        <i class="bi bi-graph-up fs-1 text-primary mb-3"></i>
+                        <h5 class="fw-bold mb-3">Gradual Introduction</h5>
+                        <p class="text-muted">Introduce new supplements gradually to allow livestock adjustment.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content animate-on-scroll">
+                <h2 class="cta-title">Need Expert Advice?</h2>
+                <p class="cta-text">
+                    Our nutrition experts can help you choose the right supplements for your livestock.
+                </p>
+                <a href="/contact" class="btn btn-light btn-lg px-5 py-3 fw-bold">
+                    <i class="bi bi-chat-dots me-2"></i>
+                    Consult Our Experts
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
+
 <style>
-    body, h1, h2, h3, h4, h5, h6, p, span, a, li, label {
-        color: #000 !important;
-    }
-
-    .product-title {
-        font-size: 32px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    .section-divider {
-        height: 3px;
-        width: 100px;
-        background: linear-gradient(to right, #065f46, #a7f3d0);
-        margin: 15px auto 35px;
-        border-radius: 20px;
-    }
-
-    /* ===== TABLE ===== */
-    .table tbody tr {
-        vertical-align: middle;
-    }
-
-    .table td, .table th {
-        padding: 15px 12px;
-        line-height: 1.5;
-        border-right: 1px solid #6b7280;
-    }
-
-    .table th {
-        font-size: 16px;
-        letter-spacing: 0.5px;
-    }
-
-    .table td:last-child {
-        border-right: 0;
-    }
-
-    .table tbody tr td {
-        border-bottom: 1px solid #6b7280;
-    }
-
-    .table tbody tr:hover {
-        background: #f0fdf4;
-        transition: .25s ease;
-    }
-
-    /* ===== PRODUCT GRID ===== */
-    .product-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 25px;
-        margin-top: 20px;
-    }
-
-    .product-card {
-        border-radius: 14px;
-        border: 1px solid #d1d5db;
-        background: #fff;
-        transition: all .3s ease;
+    .hero-section {
+        min-height: 60vh;
+        background: linear-gradient(rgba(42, 110, 63, 0.9), rgba(30, 82, 46, 0.9)),
+                    url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        position: relative;
         overflow: hidden;
+        color: white;
+    }
+    
+    /* Product Card Styles */
+    .product-card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        border-radius: 20px;
+        overflow: hidden;
+        background: white;
+        box-shadow: var(--shadow-soft);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-medium);
+    }
+    
+    .product-image-container {
+        position: relative;
+        height: 280px;
+        width: 100%;
+        overflow: hidden;
+        background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    }
+    
+    .product-image-full {
+        width: 100%;
+        height: 100%;
+        object-fit: contain !important;
+        object-position: center center;
+        padding: 25px;
+        transition: all 0.5s ease;
+    }
+    
+    .product-card:hover .product-image-full {
+        transform: scale(1.05);
+        padding: 20px;
+    }
+    
+    .product-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        padding: 8px 20px;
+        border-radius: 25px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        color: white;
+        z-index: 2;
+    }
+    
+    .product-badge.byproduct {
+        background: linear-gradient(135deg, #047857, #065f46);
+    }
+    
+    .product-badge.byproduct.premium {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+    
+    .product-content {
+        padding: 1.5rem;
+        flex-grow: 1;
         display: flex;
         flex-direction: column;
     }
-
-    .product-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 15px 30px rgba(6,95,70,.25);
-        border-color: #065f46;
+    
+    .product-description {
+        flex-grow: 1;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
     }
-
-    .product-img {
-        height: 240px;
-        object-fit: cover;
-        width: 100%;
+    
+    .price-tag {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
     }
-
-    /* ===== BADGES ===== */
-    .feed-badge {
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        background: #065f46;
-        color: #fff;
-        font-size: 12px;
-        font-weight: 700;
-        padding: 6px 12px;
-        border-radius: 20px;
+    
+    .product-specs {
+        background: rgba(42, 110, 63, 0.05);
+        padding: 1.25rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
     }
-
-    .feed-badge.bran { background: #dc2626; }
-    .feed-badge.pollard { background: #2563eb; }
-    .feed-badge.germ { background: #f59e0b; color: #000; }
-
-    /* ===== BUTTON ===== */
-    .btn-buy {
-        background: linear-gradient(135deg, #065f46, #047857);
-        font-weight: 700;
-        color: #fff !important;
-        padding: 12px 0;
-        border-radius: 10px;
-        transition: all .3s ease;
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .product-image-container {
+            height: 240px;
+        }
+        
+        .product-image-full {
+            padding: 20px;
+        }
     }
-
-    .btn-buy:hover {
-        transform: scale(1.05);
-        box-shadow: 0 10px 25px rgba(6,95,70,.35);
-    }
-
-    ul li {
-        list-style: none;
-        margin-bottom: 6px;
-    }
-
-    /* ul li::before {
-        content: "🌾 ";
-    } */
 </style>
-
-<div class="container py-5" style="background:#f8fafc;border-radius:18px;">
-
-    <h2 class="text-center product-title">Feed By-products</h2>
-    <div class="section-divider"></div>
-
-    {{-- FEED EXPLANATION --}}
-    <div class="bg-white border rounded-lg shadow-sm p-4 mb-5">
-        <h4 class="fw-bold text-center mb-3">Overview of Feed By-products</h4>
-        <p class="mb-3">
-            Wheat bran, pollard, and maize germ are feed by-products differing in origin and nutrient profile.
-            Bran is high in fiber, Germ is nutrient-dense in fats, protein & vitamins, and Pollard offers a balanced energy/protein source.
-        </p>
-
-        <div class="table-responsive mt-4">
-            <table class="table table-bordered border-dark align-middle shadow text-center">
-                <thead class="table-dark">
-                    <tr>
-                        <th class="border border-dark">Feed Type</th>
-                        <th class="border border-dark">Origin</th>
-                        <th class="border border-dark">Content</th>
-                        <th class="border border-dark">Use</th>
-                        <th class="border border-dark">Key Differences</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="table-danger">
-                        <td class="fw-bold border border-dark">Wheat Bran</td>
-                        <td class="border border-dark">Outer layer of wheat kernel</td>
-                        <td class="border border-dark">High fiber, phosphorus, B vitamins, antioxidants, some protein/energy</td>
-                        <td class="border border-dark">Ruminants, gut health, bulk fiber source</td>
-                        <td class="border border-dark">Highest fiber; low energy/fats</td>
-                    </tr>
-                    <tr class="table-primary">
-                        <td class="fw-bold border border-dark">Wheat Pollard</td>
-                        <td class="border border-dark">Blend of bran, endosperm, germ</td>
-                        <td class="border border-dark">More digestible, 14-16% protein, balanced energy</td>
-                        <td class="border border-dark">Poultry & pigs; energy/protein boost</td>
-                        <td class="border border-dark">Balanced protein & energy; more digestible than bran</td>
-                    </tr>
-                    <tr class="table-warning">
-                        <td class="fw-bold border border-dark">Maize Germ</td>
-                        <td class="border border-dark">Embryo of maize kernel</td>
-                        <td class="border border-dark">Rich in fats, protein, vitamins, minerals, energy</td>
-                        <td class="border border-dark">High-yield dairy, poultry; energy/fat booster</td>
-                        <td class="border border-dark">Highest energy (fats); concentrated nutrients</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    {{-- FEED PRODUCTS GRID --}}
-    <div class="product-grid">
-
-        {{-- Wheat Bran --}}
-        <div class="product-card">
-            <div class="position-relative">
-                <span class="feed-badge bran">Bran</span>
-                <img src="{{ asset('images/bran.jpeg') }}" class="product-img">
-            </div>
-            <div class="p-3">
-                <h5 class="fw-bold">Wheat Bran</h5>
-                <p>Bulk fiber source for ruminants, promotes gut health.</p>
-                <ul class="small">
-                    <li>High fiber</li>
-                    <li>Moderate protein</li>
-                    <li>Supports digestion</li>
-                </ul>
-                <h6 class="fw-bold mb-3">Ksh 1,200</h6>
-                <button class="btn btn-buy w-100">Add to Cart</button>
-            </div>
-        </div>
-
-        {{-- Wheat Pollard --}}
-        <div class="product-card">
-            <div class="position-relative">
-                <span class="feed-badge pollard">Pollard</span>
-                <img src="{{ asset('images/pollard.jpeg') }}" class="product-img">
-            </div>
-            <div class="p-3">
-                <h5 class="fw-bold">Wheat Pollard</h5>
-                <p>Balanced energy and protein for poultry and pigs.</p>
-                <ul class="small">
-                    <li>More digestible than bran</li>
-                    <li>Higher protein & energy</li>
-                    <li>Pellet/mash form</li>
-                </ul>
-                <h6 class="fw-bold mb-3">Ksh 1,500</h6>
-                <button class="btn btn-buy w-100">Add to Cart</button>
-            </div>
-        </div>
-
-        {{-- Maize Germ --}}
-        <div class="product-card">
-            <div class="position-relative">
-                <span class="feed-badge germ">Germ</span>
-                <img src="{{ asset('images/maize_germ.jpeg') }}" class="product-img">
-            </div>
-            <div class="p-3">
-                <h5 class="fw-bold">Maize Germ</h5>
-                <p>High-energy feed boosting fat content for dairy & poultry.</p>
-                <ul class="small">
-                    <li>Rich in fats & protein</li>
-                    <li>Vitamins & minerals</li>
-                    <li>Energy-dense feed</li>
-                </ul>
-                <h6 class="fw-bold mb-3">Ksh 2,000</h6>
-                <button class="btn btn-buy w-100">Add to Cart</button>
-            </div>
-        </div>
-
-    </div>
-
-</div>
 
 @endsection

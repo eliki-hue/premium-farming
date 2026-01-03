@@ -1,41 +1,31 @@
-@extends('layout')
+private function getDummyReviews()
+{
+    return [
+        [
+            'id' => 1,
+            'name' => 'James Kariuki',
+            'location' => 'Kiambu',
+            'rating' => 5,
+            'title' => 'Excellent Dairy Meal!',
+            'content' => 'The dairy meal increased my milk production by 30%. My cows are healthier and more productive. The delivery was on time and the customer service is excellent! I recommend Premium Farming Feeds to all dairy farmers.',
+            'farm_type' => 'dairy',
+            'date' => 'March 15, 2024',
+            'is_featured' => true
+        ],
+        // ... more dummy reviews
+    ];
+}
 
-@section('title','Reviews & Testimonials')
+public function index()
+{
+    $dummyReviews = $this->getDummyReviews();
+    
+    $stats = [
+        'total' => count($dummyReviews),
+        'average' => round(collect($dummyReviews)->avg('rating'), 1),
+        'five_star' => collect($dummyReviews)->where('rating', 5)->count(),
+        'featured' => collect($dummyReviews)->where('is_featured', true)->count(),
+    ];
 
-@section('content')
-<h1>Customer Reviews</h1>
-
-<div class="mb-4">
-    <form method="post" action="{{ route('reviews.store') }}">
-        @csrf
-        <div class="mb-2">
-            <input type="text" name="name" class="form-control" placeholder="Your name" required>
-        </div>
-        <div class="mb-2">
-            <select name="rating" class="form-control">
-                <option value="5">5 — Excellent</option>
-                <option value="4">4 — Very good</option>
-                <option value="3">3 — Good</option>
-                <option value="2">2 — Fair</option>
-                <option value="1">1 — Poor</option>
-            </select>
-        </div>
-        <div class="mb-2">
-            <textarea name="comment" class="form-control" placeholder="Your review" rows="3" required></textarea>
-        </div>
-        <button class="btn btn-success">Submit Review</button>
-    </form>
-</div>
-
-@foreach($reviews as $r)
-    <div class="card mb-2">
-        <div class="card-body">
-            <strong>{{ $r->name }}</strong> — <small>{{ $r->created_at->format('d M Y') }}</small>
-            <p>Rating: {{ $r->rating }} / 5</p>
-            <p>{{ $r->comment }}</p>
-        </div>
-    </div>
-@endforeach
-
-{{ $reviews->links() }}
-@endsection
+    return view('reviews.index', compact('dummyReviews', 'stats'));
+}

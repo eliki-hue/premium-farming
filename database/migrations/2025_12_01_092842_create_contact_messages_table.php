@@ -6,16 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateContactMessagesTable extends Migration
 {
-    public function up()
+     public function up()
     {
         Schema::create('contact_messages', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->string('email')->nullable();
+            $table->string('name');
+            $table->string('email');
             $table->string('phone')->nullable();
             $table->string('subject')->nullable();
             $table->text('message');
-            $table->boolean('handled')->default(false);
+            $table->string('ip_address')->nullable();
+            $table->text('user_agent')->nullable();
+            $table->timestamp('read_at')->nullable();
+            $table->timestamp('replied_at')->nullable();
             $table->timestamps();
         });
     }
@@ -24,4 +27,4 @@ class CreateContactMessagesTable extends Migration
     {
         Schema::dropIfExists('contact_messages');
     }
-}
+};

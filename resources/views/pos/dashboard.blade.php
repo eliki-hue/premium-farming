@@ -1,204 +1,390 @@
-@extends('layouts.pos-dashboard')
+@extends('layouts.pos')
 
+@section('page-title', 'Dashboard')
 @section('content')
-<div class="container-fluid">
-    <!-- POS DASHBOARD HEADER -->
-    <div class="row mb-5">
-        <div class="col-lg-8">
-            <div class="d-flex align-items-center h-100">
+<div class="pos-card">
+    <div class="container-fluid">
+        <!-- Stats Cards -->
+        <div class="stats-grid mb-4">
+            @php
+                // Get today's date
+                $today = now()->format('Y-m-d');
+                
+                // Get today's sales (you'll need to adjust this based on your actual Order model)
+                $todaySales = 0; // Placeholder - replace with actual query
+                
+                // Get today's transactions
+                $todayTransactions = 0; // Placeholder - replace with actual query
+                
+                // Get low stock products (stock <= 5)
+                $lowStockProducts = \App\Models\PosProduct::where('stock', '<=', 5)->get();
+                
+                // Get today's customers
+                $todayCustomers = 0; // Placeholder - you don't have an orders table yet
+                
+                // Get total products
+                $totalProducts = \App\Models\PosProduct::count();
+                
+                // Get in stock products
+                $inStockProducts = \App\Models\PosProduct::where('stock', '>', 0)->count();
+                
+                // Get out of stock products
+                $outOfStockProducts = \App\Models\PosProduct::where('stock', '<=', 0)->count();
+            @endphp
+            
+            <div class="stat-card bg-primary text-white">
+                <div class="stat-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="stat-value">KSh {{ number_format($todaySales) }}</div>
+                <div class="stat-label">Today's Sales</div>
+            </div>
+            
+            <div class="stat-card bg-success text-white">
+                <div class="stat-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-value">{{ $todayTransactions }}</div>
+                <div class="stat-label">Today's Orders</div>
+            </div>
+            
+            <div class="stat-card bg-warning text-white">
+                <div class="stat-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-value">{{ $lowStockProducts->count() }}</div>
+                <div class="stat-label">Low Stock Items</div>
+            </div>
+            
+            <div class="stat-card bg-info text-white">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-value">{{ $todayCustomers }}</div>
+                <div class="stat-label">Today's Customers</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mb-4">
+            <h5 class="mb-3">Quick Actions</h5>
+            <div class="quick-actions d-flex flex-wrap gap-3">
+                <a href="{{ route('pos.sell') }}" class="action-btn btn btn-primary btn-lg d-flex flex-column align-items-center justify-content-center p-4">
+                    <i class="fas fa-cash-register fa-2x mb-2"></i>
+                    <span>New Sale</span>
+                </a>
+                
+                <button class="action-btn btn btn-success btn-lg d-flex flex-column align-items-center justify-content-center p-4" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                    <i class="fas fa-plus-circle fa-2x mb-2"></i>
+                    <span>Add Product</span>
+                </button>
+                
+                <a href="{{ route('pos.orders') }}" class="action-btn btn btn-info btn-lg d-flex flex-column align-items-center justify-content-center p-4">
+                    <i class="fas fa-receipt fa-2x mb-2"></i>
+                    <span>View Orders</span>
+                </a>
+                
+                <a href="{{ route('pos.reports') }}" class="action-btn btn btn-warning btn-lg d-flex flex-column align-items-center justify-content-center p-4">
+                    <i class="fas fa-chart-bar fa-2x mb-2"></i>
+                    <span>Sales Report</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Low Stock Alert -->
+        @if($lowStockProducts->count() > 0)
+        <div class="alert alert-warning mb-4">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
                 <div>
-                    <h1 class="display-4 fw-bold mb-1 text-green-700">🐄 POS Dashboard</h1>
-                    <p class="lead text-muted mb-0">Premium Farming Feeds - Turitu | Githiga | Ikinu</p>
+                    <h6 class="alert-heading mb-1">⚠️ Low Stock Alert!</h6>
+                    <p class="mb-0">{{ $lowStockProducts->count() }} products are running low on stock.</p>
                 </div>
-            </div>
-        </div>
-        <div class="col-lg-4 text-lg-end">
-            <div class="btn-group" role="group">
-                <a href="{{ route('pos.sell') }}" class="btn btn-success btn-lg px-4">
-                    <i class="fas fa-cash-register me-2"></i>Start POS Sale
-                </a>
-                <a href="{{ route('products.index') }}" class="btn btn-outline-primary btn-lg px-4">
-                    <i class="fas fa-boxes me-2"></i>Manage Products
+                <a href="{{ route('pos.products') }}" class="btn btn-warning btn-sm ms-auto">
+                    View Products
                 </a>
             </div>
         </div>
-    </div>
+        @endif
 
-    <!-- STATS CARDS -->
-    <div class="row g-4 mb-5">
-        <div class="col-lg-3 col-md-6">
-            <div class="card border-0 shadow-sm h-100 text-center bg-gradient-green">
-                <div class="card-body py-4">
-                    <i class="fas fa-shopping-cart fa-3x text-white mb-3"></i>
-                    <h3 class="text-white fw-bold mb-1">{{ rand(45, 78) }}</h3>
-                    <p class="text-white-50 mb-0">Today's Sales</p>
-                    <small class="text-white-50">KSh {{ number_format(rand(25000, 85000)) }}</small>
-                </div>
+        <!-- Recent Products -->
+        <div class="table-card mb-4">
+            <h5>Recent Products</h5>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            $recentProducts = \App\Models\PosProduct::orderBy('created_at', 'desc')
+                                ->limit(5)
+                                ->get();
+                        @endphp
+                        
+                        @forelse($recentProducts as $index => $product)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $product->name }}</td>
+                            <td class="fw-bold">KSh {{ number_format($product->selling_price) }}</td>
+                            <td>
+                                <span class="badge {{ $product->stock > 10 ? 'bg-success' : ($product->stock > 0 ? 'bg-warning' : 'bg-danger') }}">
+                                    {{ $product->stock }} {{ $product->unit }}
+                                </span>
+                            </td>
+                            <td>
+                                @if($product->stock > 10)
+                                    <span class="badge bg-success">In Stock</span>
+                                @elseif($product->stock > 0)
+                                    <span class="badge bg-warning">Low Stock</span>
+                                @else
+                                    <span class="badge bg-danger">Out of Stock</span>
+                                @endif
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">
+                                <i class="fas fa-box fa-2x mb-3"></i>
+                                <p>No products found</p>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6">
-            <div class="card border-0 shadow-sm h-100 text-center bg-gradient-orange">
-                <div class="card-body py-4">
-                    <i class="fas fa-box fa-3x text-white mb-3"></i>
-                    <h3 class="text-white fw-bold mb-1">{{ rand(120, 250) }}</h3>
-                    <p class="text-white-50 mb-0">Total Products</p>
-                    <small class="text-white-50">45 Low Stock</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <div class="card border-0 shadow-sm h-100 text-center bg-gradient-blue">
-                <div class="card-body py-4">
-                    <i class="fas fa-users fa-3x text-white mb-3"></i>
-                    <h3 class="text-white fw-bold mb-1">{{ rand(12, 35) }}</h3>
-                    <p class="text-white-50 mb-0">Today's Customers</p>
-                    <small class="text-white-50">78% Repeat</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6">
-            <div class="card border-0 shadow-sm h-100 text-center bg-gradient-purple">
-                <div class="card-body py-4">
-                    <i class="fas fa-chart-line fa-3x text-white mb-3"></i>
-                    <h3 class="text-white fw-bold mb-1">+{{ rand(12, 28) }}%</h3>
-                    <p class="text-white-50 mb-0">Sales Growth</p>
-                    <small class="text-white-50">vs Last Week</small>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- QUICK ACTIONS -->
-    <div class="row g-4 mb-5">
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-lg h-100">
-                <div class="card-header bg-white border-0 pb-0">
-                    <h5 class="mb-3"><i class="fas fa-bolt text-success me-2"></i>Quick Actions</h5>
+        <!-- Today's Summary -->
+        <div class="row mt-4">
+            <div class="col-md-6 mb-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <i class="fas fa-chart-pie text-primary me-2"></i>
+                            Sales Summary (Today)
+                        </h6>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Cash Sales:</span>
+                            <strong>KSh 0</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>M-Pesa Sales:</span>
+                            <strong>KSh 0</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Total Sales:</span>
+                            <strong class="text-success">KSh 0</strong>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <a href="{{ route('pos.sell') }}" class="btn btn-success w-100 py-3">
-                                <i class="fas fa-cash-register fa-2x d-block mb-2"></i>
-                                <span class="fw-bold">New Sale</span>
-                            </a>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <i class="fas fa-boxes text-warning me-2"></i>
+                            Stock Status
+                        </h6>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Total Products:</span>
+                            <strong>{{ $totalProducts }}</strong>
                         </div>
-                        <div class="col-md-4">
-                            <a href="{{ route('products.index') }}" class="btn btn-primary w-100 py-3">
-                                <i class="fas fa-plus-circle fa-2x d-block mb-2"></i>
-                                <span class="fw-bold">Add Product</span>
-                            </a>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>In Stock:</span>
+                            <strong class="text-success">{{ $inStockProducts }}</strong>
                         </div>
-                        <div class="col-md-4">
-                            <a href="#" class="btn btn-warning w-100 py-3">
-                                <i class="fas fa-sync-alt fa-2x d-block mb-2"></i>
-                                <span class="fw-bold">Restock</span>
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <a href="#" class="btn btn-info w-100 py-3">
-                                <i class="fas fa-receipt fa-2x d-block mb-2"></i>
-                                <span class="fw-bold">Reports</span>
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <a href="#" class="btn btn-outline-secondary w-100 py-3">
-                                <i class="fas fa-users fa-2x d-block mb-2"></i>
-                                <span class="fw-bold">Customers</span>
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <a href="#" class="btn btn-dark w-100 py-3">
-                                <i class="fas fa-warehouse fa-2x d-block mb-2"></i>
-                                <span class="fw-bold">Stock Check</span>
-                            </a>
+                        <div class="d-flex justify-content-between">
+                            <span>Out of Stock:</span>
+                            <strong class="text-danger">{{ $outOfStockProducts }}</strong>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
-            <div class="card border-0 shadow-lg h-100">
-                <div class="card-header bg-white border-0 pb-0">
-                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle text-warning me-2"></i>Low Stock Alert</h5>
-                </div>
-                <div class="card-body">
-                    <div class="list-group list-group-flush">
-                        @for($i = 0; $i < 5; $i++)
-                        <div class="list-group-item px-0 border-0 py-2">
-                            <div class="d-flex align-items-center">
-                                <div class="bg-warning bg-opacity-20 p-2 rounded-circle me-3">
-                                    <i class="fas fa-exclamation-triangle text-warning"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <div class="fw-bold text-dark">Layers Mash 50kg</div>
-                                    <small class="text-muted">Only 3 bags left</small>
-                                </div>
-                                <span class="badge bg-warning text-dark ms-2">URGENT</span>
-                            </div>
-                        </div>
-                        @endfor
-                    </div>
-                    <a href="#" class="btn btn-outline-warning w-100 mt-3">View All Alerts</a>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- RECENT SALES -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card border-0 shadow-lg">
-                <div class="card-header bg-white border-0 pb-0">
-                    <h5 class="mb-3"><i class="fas fa-receipt text-primary me-2"></i>Recent Transactions</h5>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Order #</th>
-                                    <th>Customer</th>
-                                    <th>Items</th>
-                                    <th>Total</th>
-                                    <th>Method</th>
-                                    <th>Time</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for($i = 1; $i <= 5; $i++)
-                                <tr>
-                                    <td><span class="badge bg-primary">ORD{{ 1000 + $i }}</span></td>
-                                    <td>John Doe</td>
-                                    <td>3 items</td>
-                                    <td><strong>KSh {{ number_format(rand(2500, 8500)) }}</strong></td>
-                                    <td>
-                                        <span class="badge bg-success">M-Pesa</span>
-                                    </td>
-                                    <td>{{ now()->subMinutes(rand(1, 120))->format('H:i') }}</td>
-                                    <td><span class="badge bg-success">Completed</span></td>
-                                </tr>
-                                @endfor
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="card-footer bg-white border-0">
-                    <a href="#" class="btn btn-outline-primary">View All Sales</a>
-                </div>
+        <!-- Top Products by Stock -->
+        <div class="table-card">
+            <h5>Top Products (Most Stock)</h5>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Product</th>
+                            <th>Stock</th>
+                            <th>Price</th>
+                            <th>Total Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            $topStockProducts = \App\Models\PosProduct::orderBy('stock', 'desc')
+                                ->limit(5)
+                                ->get();
+                        @endphp
+                        
+                        @foreach($topStockProducts as $index => $product)
+                        <tr>
+                            <td>
+                                <span class="badge bg-primary">#{{ $index + 1 }}</span>
+                            </td>
+                            <td>{{ $product->name }}</td>
+                            <td class="fw-bold">{{ $product->stock }} {{ $product->unit }}</td>
+                            <td>KSh {{ number_format($product->selling_price) }}</td>
+                            <td class="text-success">KSh {{ number_format($product->stock * $product->selling_price) }}</td>
+                        </tr>
+                        @endforeach
+                        
+                        @if($topStockProducts->isEmpty())
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">
+                                <i class="fas fa-chart-line fa-2x mb-3"></i>
+                                <p>No products found</p>
+                            </td>
+                        </tr>
+                        @endif
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
-@endsection
 
 @push('styles')
 <style>
-.bg-gradient-green { background: linear-gradient(135deg, #28a745, #20c997); }
-.bg-gradient-orange { background: linear-gradient(135deg, #fd7e14, #e8630b); }
-.bg-gradient-blue { background: linear-gradient(135deg, #0d6efd, #0b5ed7); }
-.bg-gradient-purple { background: linear-gradient(135deg, #6f42c1, #5a2d91); }
-.text-white-50 { color: rgba(255,255,255,.5) !important; }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .stat-card {
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        opacity: 0.8;
+    }
+    
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+    
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+    }
+    
+    .action-btn {
+        text-decoration: none;
+        color: #333;
+        text-align: center;
+        padding: 20px 10px;
+        border-radius: 10px;
+        background: white;
+        border: 1px solid #dee2e6;
+        transition: all 0.3s ease;
+    }
+    
+    .action-btn:hover {
+        background: #f8f9fa;
+        border-color: #0d6efd;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .action-btn i {
+        margin-bottom: 10px;
+        color: #0d6efd;
+    }
+    
+    .action-btn span {
+        display: block;
+        font-weight: 500;
+    }
+    
+    .table-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    
+    .table-card h5 {
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #f8f9fa;
+    }
 </style>
 @endpush
+
+@push('scripts')
+<script>
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // F1 - Quick sale
+        if (e.key === 'F1') {
+            e.preventDefault();
+            window.location.href = "{{ route('pos.sell') }}";
+        }
+        
+        // F2 - Products
+        if (e.key === 'F2') {
+            e.preventDefault();
+            window.location.href = "{{ route('pos.products') }}";
+        }
+        
+        // F3 - Orders
+        if (e.key === 'F3') {
+            e.preventDefault();
+            window.location.href = "{{ route('pos.orders') }}";
+        }
+        
+        // F4 - Dashboard
+        if (e.key === 'F4') {
+            e.preventDefault();
+            window.location.href = "{{ route('pos.dashboard') }}";
+        }
+        
+        // Ctrl + P - Add Product
+        if (e.ctrlKey && e.key === 'p') {
+            e.preventDefault();
+            $('#addProductModal').modal('show');
+        }
+    });
+    
+    // Auto-refresh dashboard every 60 seconds
+    setTimeout(function() {
+        window.location.reload();
+    }, 60000);
+</script>
+@endpush
+@endsection
