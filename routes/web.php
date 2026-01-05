@@ -120,6 +120,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/hold', [CartController::class, 'hold'])->name('cart.hold');
         Route::post('/complete', [CartController::class, 'complete'])->name('cart.complete');
         Route::post('/mpesa', [CartController::class, 'mpesa'])->name('cart.mpesa');
+            Route::get('/count', [CartController::class, 'count'])->name('count');  // This is the missing route!
+
         Route::get('/info', [CartController::class, 'info'])->name('cart.info');
         Route::post('/quick-add', [CartController::class, 'quickAdd'])->name('cart.quick.add');
         Route::post('/add-multiple', [CartController::class, 'addMultiple'])->name('cart.add.multiple');
@@ -149,6 +151,8 @@ Route::middleware('auth')->group(function () {
     Route::prefix('shop')->name('shop.')->group(function () {
         Route::get('/orders', [ShopController::class, 'orders'])->name('orders');
         Route::get('/products', [ShopController::class, 'products'])->name('products');
+                Route::get('/checkout', [ShopController::class, 'checkout'])->name('checkout');
+
         Route::get('/product/{id}', [ShopController::class, 'show'])->name('show');
         Route::get('/reports', function () {
             return view('shop.reports');
@@ -243,13 +247,20 @@ Route::middleware('auth')->group(function () {
         })->name('settings');
         
         // POS Cart Operations
-        Route::prefix('cart')->name('cart.')->group(function () {
-            Route::post('/add', [CartController::class, 'add'])->name('add');
-            Route::post('/complete', [CartController::class, 'complete'])->name('complete');
-            Route::post('/mpesa', [CartController::class, 'mpesa'])->name('mpesa');
-            Route::post('/hold', [CartController::class, 'hold'])->name('hold');
-            Route::post('/clear', [CartController::class, 'clear'])->name('clear');
-        });
+      // routes/web.php
+Route::prefix('cart')->group(function () {
+    Route::post('/add', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/update', [CartController::class, 'update'])->name('cart.update');
+    Route::post('/remove', [CartController::class, 'remove'])->name('cart.remove');
+    Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear');
+    Route::get('/count', [CartController::class, 'count'])->name('count');
+        Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout'); // NEW
+    Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process'); // NEW
+});
+
+// If you don't have these routes yet, add them:
+Route::get('/shop/products', [ProductController::class, 'index'])->name('shop.products');
+Route::get('/category/{category}', [CategoryController::class, 'show'])->name('category.show');
         
         // POS Receipt
         Route::get('/receipt/print/{order_id}', [CartController::class, 'printReceipt'])->name('receipt.print');

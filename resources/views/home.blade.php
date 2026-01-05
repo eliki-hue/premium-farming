@@ -518,70 +518,7 @@
         </div>
     </section>
 
-    <!-- Stats Section -->
-    <section class="stats-section">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-card animate-on-scroll">
-                        <div class="stat-number">5,000+</div>
-                        <div class="stat-label">Happy Farmers</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-card animate-on-scroll">
-                        <div class="stat-number">5</div>
-                        <div class="stat-label">Years Experience</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-card animate-on-scroll">
-                        <div class="stat-number">50+</div>
-                        <div class="stat-label">Products</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-card animate-on-scroll">
-                        <div class="stat-number">47</div>
-                        <div class="stat-label">Counties Served</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="section">
-        <div class="container">
-            <div class="section-title animate-on-scroll">
-                <h2>Why Choose Premium Feeds?</h2>
-                <p>Our commitment to excellence sets us apart in livestock nutrition</p>
-            </div>
-            
-            <div class="row g-4">
-                @foreach([
-                    ['icon' => 'award', 'title' => 'Premium Quality', 'desc' => 'Scientifically formulated for optimal livestock performance and health.'],
-                    ['icon' => 'clipboard-check', 'title' => 'Quality Control', 'desc' => 'Rigorous testing at every production stage ensures consistency.'],
-                    ['icon' => 'truck', 'title' => 'Nationwide Delivery', 'desc' => 'Reliable supply chain serving farmers across Kenya.'],
-                    ['icon' => 'people', 'title' => 'Expert Support', 'desc' => 'Dedicated agricultural experts for personalized advice.'],
-                    ['icon' => 'leaf', 'title' => 'Natural Ingredients', 'desc' => 'Made from high-quality, locally-sourced natural ingredients.'],
-                    ['icon' => 'graph-up', 'title' => 'Proven Results', 'desc' => 'Documented improvements in yield and livestock health.'],
-                ] as $feature)
-                <div class="col-lg-4 col-md-6">
-                    <div class="premium-card animate-on-scroll">
-                        <div class="feature-icon-wrapper">
-                            <i class="bi bi-{{ $feature['icon'] }} feature-icon"></i>
-                        </div>
-                        <h4 class="fw-bold mb-3">{{ $feature['title'] }}</h4>
-                        <p class="text-muted mb-0">{{ $feature['desc'] }}</p>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    <!-- Categories Section -->
+     <!-- Categories Section -->
     <section class="section bg-light">
         <div class="container">
             <div class="section-title animate-on-scroll">
@@ -617,39 +554,69 @@
         </div>
     </section>
 
-    <!-- Testimonials Section -->
+
+    <!-- Features Section -->
     <section class="section">
         <div class="container">
             <div class="section-title animate-on-scroll">
-                <h2>What Farmers Say</h2>
-                <p>Real stories from successful farmers using our feeds</p>
+                <h2>Why Choose Premium Feeds?</h2>
+                <p>Our commitment to excellence sets us apart in livestock nutrition</p>
             </div>
             
             <div class="row g-4">
                 @foreach([
-                    ['name' => 'John Kamau', 'role' => 'Dairy Farmer, Nakuru', 'text' => 'Switching to Premium Feeds increased my milk production by 40% in just 3 months. The quality is exceptional.'],
-                    ['name' => 'Sarah Wanjiku', 'role' => 'Poultry Farmer, Kiambu', 'text' => 'My chickens are healthier and grow faster. The feed conversion ratio has improved significantly.'],
-                    ['name' => 'David Ochieng', 'role' => 'Agro-vet Owner, Kisumu', 'text' => 'My customers trust Premium Feeds for consistent quality and results. The technical support is excellent.'],
-                ] as $testimonial)
-                <div class="col-lg-4">
-                    <div class="testimonial-card animate-on-scroll">
-                        <p class="testimonial-text">"{{ $testimonial['text'] }}"</p>
-                        <div class="client-info">
-                            <div class="client-avatar">
-                                {{ substr($testimonial['name'], 0, 1) }}
-                            </div>
-                            <div>
-                                <div class="client-name">{{ $testimonial['name'] }}</div>
-                                <div class="client-role">{{ $testimonial['role'] }}</div>
-                            </div>
+                    ['icon' => 'award', 'title' => 'Premium Quality', 'desc' => 'Scientifically formulated for optimal livestock performance and health.'],
+                    ['icon' => 'clipboard-check', 'title' => 'Quality Control', 'desc' => 'Rigorous testing at every production stage ensures consistency.'],
+                    ['icon' => 'truck', 'title' => 'Nationwide Delivery', 'desc' => 'Reliable supply chain serving farmers across Kenya.'],
+                    ['icon' => 'people', 'title' => 'Expert Support', 'desc' => 'Dedicated agricultural experts for personalized advice.'],
+                    ['icon' => 'leaf', 'title' => 'Natural Ingredients', 'desc' => 'Made from high-quality, locally-sourced natural ingredients.'],
+                    ['icon' => 'graph-up', 'title' => 'Proven Results', 'desc' => 'Documented improvements in yield and livestock health.'],
+                ] as $feature)
+                <div class="col-lg-4 col-md-6">
+                    <div class="premium-card animate-on-scroll">
+                        <div class="feature-icon-wrapper">
+                            <i class="bi bi-{{ $feature['icon'] }} feature-icon"></i>
                         </div>
+                        <h4 class="fw-bold mb-3">{{ $feature['title'] }}</h4>
+                        <p class="text-muted mb-0">{{ $feature['desc'] }}</p>
                     </div>
                 </div>
                 @endforeach
             </div>
         </div>
     </section>
-
+ <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card animate-on-scroll">
+                        <div class="stat-number">5,000+</div>
+                        <div class="stat-label">Happy Farmers</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card animate-on-scroll">
+                        <div class="stat-number">5</div>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card animate-on-scroll">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Products</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="stat-card animate-on-scroll">
+                        <div class="stat-number">47</div>
+                        <div class="stat-label">Counties Served</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+   
     <!-- CTA Section -->
     <section class="cta-section">
         <div class="container">

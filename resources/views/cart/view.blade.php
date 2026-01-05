@@ -8,7 +8,7 @@
     
     @if(empty($cart))
         <div class="alert alert-info">
-            Your cart is empty. <a href="{{ route('products') }}">Continue shopping</a>
+            Your cart is empty. <a href="{{ route('shop.products') }}">Continue shopping</a>
         </div>
     @else
         <div class="row">

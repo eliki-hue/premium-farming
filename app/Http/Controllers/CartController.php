@@ -4,275 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
 {
     /**
-     * Add item to cart (works for both POS and e-commerce)
+     * Display all available products (hardcoded + session-based)
      */
-    public function add(Request $request)
-    {
-        $request->validate([
-            'id' => 'required',
-            'name' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'quantity' => 'sometimes|numeric|min:1',
-        ]);
-
-        $cart = Session::get('cart', []);
-        $productId = $request->id;
-        
-        // Get image from request or use default for POS
-        $image = $request->image ?? 'images/default-product.jpg';
-        
-        // Get quantity from request or default to 1
-        $quantity = $request->quantity ?? 1;
-        
-        if (isset($cart[$productId])) {
-            // Update existing item
-            $cart[$productId]['quantity'] += $quantity;
-            $message = 'Quantity updated in cart';
-        } else {
-            // Add new item
-            $cart[$productId] = [
-                'id' => $productId,
-                'name' => $request->name,
-                'price' => $request->price,
-                'image' => $image,
-                'quantity' => $quantity
-            ];
-            $message = 'Product added to cart';
-        }
-        
-        Session::put('cart', $cart);
-        
-        // Return different responses based on request type
-        if ($request->ajax() || $request->wantsJson()) {
-            return response()->json([
-                'success' => true,
-                'message' => $message,
-                'cart_count' => count($cart),
-                'cart_total' => $this->calculateCartTotal($cart),
-                'item' => $cart[$productId]
-            ]);
-        }
-        
-        return redirect()->back()->with('success', $message);
-    }
-
-    /**
-     * Update cart item quantity
-     */
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'quantity' => 'required|numeric|min:1'
-        ]);
-
-        $cart = Session::get('cart', []);
-        
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity'] = $request->quantity;
-            
-            // If quantity is 0, remove the item
-            if ($request->quantity <= 0) {
-                unset($cart[$id]);
-                $message = 'Item removed from cart';
-            } else {
-                $message = 'Cart updated successfully';
-            }
-            
-            Session::put('cart', $cart);
-            
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => $message,
-                    'cart_count' => count($cart),
-                    'cart_total' => $this->calculateCartTotal($cart)
-                ]);
-            }
-            
-            return redirect()->back()->with('success', $message);
-        }
-        
-        return redirect()->back()->with('error', 'Item not found in cart');
-    }
-
-    /**
-     * Remove item from cart
-     */
-    public function remove(Request $request)
-{
-    $request->validate([
-        'id' => 'required'
-    ]);
-
-    $cart = Session::get('cart', []);
-    $id = $request->id;
-    
-    if (isset($cart[$id])) {
-        unset($cart[$id]);
-        Session::put('cart', $cart);
-        
-        return redirect()->route('cart.view')->with('success', 'Item removed from cart');
-    }
-    
-    return redirect()->route('cart.view')->with('error', 'Item not found in cart');
-}
-
-    /**
-     * View cart (works for both e-commerce and POS)
-     */
-    public function view()
-    {
-        $cart = Session::get('cart', []);
-        $total = $this->calculateCartTotal($cart);
-        
-        // Check if this is a POS request (by route name or other indicator)
-        $isPOS = request()->is('pos/*') || request()->routeIs('pos.*');
-        
-        if ($isPOS) {
-            return view('pos.cart', compact('cart', 'total'));
-        }
-        
-        return view('cart.view', compact('cart', 'total'));
-    }
-
-    /**
-     * Checkout process
-     */
-    public function checkout(Request $request)
-{
-    $cart = Session::get('cart', []);
-    
-    if (empty($cart)) {
-        return redirect()->route('cart.view')->with('error', 'Your cart is empty');
-    }
-    
-    $subtotal = 0;
-    $shipping = 500; // Default shipping fee
-    $tax = 0; // Tax rate
-    
-    foreach ($cart as $item) {
-        $subtotal += $item['price'] * $item['quantity'];
-    }
-    
-    // Calculate tax (16% VAT for Kenya)
-    $tax = $subtotal * 0.16;
-    $total = $subtotal + $shipping + $tax;
-    
-    // Save calculated totals in session for later use
-    Session::put('checkout_totals', [
-        'subtotal' => $subtotal,
-        'shipping' => $shipping,
-        'tax' => $tax,
-        'total' => $total
-    ]);
-    
-    return view('checkout.index', compact('cart', 'subtotal', 'shipping', 'tax', 'total'));
-}
-    /**
-     * Clear cart
-     */
-    public function clear()
-    {
-        Session::forget('cart');
-        
-        if (request()->ajax() || request()->wantsJson()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Cart cleared successfully',
-                'cart_count' => 0,
-                'cart_total' => 0
-            ]);
-        }
-        
-        return redirect()->back()->with('success', 'Cart cleared successfully');
-    }
-
-    /**
-     * Get cart info (for AJAX requests)
-     */
-    public function info()
-    {
-        $cart = Session::get('cart', []);
-        
-        return response()->json([
-            'count' => count($cart),
-            'total' => $this->calculateCartTotal($cart),
-            'items' => array_values($cart) // Return as indexed array
-        ]);
-    }
-
-    /**
-     * Calculate cart total
-     */
-    private function calculateCartTotal($cart)
-    {
-        $total = 0;
-        foreach ($cart as $item) {
-            $total += $item['price'] * $item['quantity'];
-        }
-        return $total;
-    }
-
-    /**
-     * Add multiple items at once (useful for POS)
-     */
-    public function addMultiple(Request $request)
-    {
-        $request->validate([
-            'items' => 'required|array',
-            'items.*.id' => 'required',
-            'items.*.name' => 'required|string',
-            'items.*.price' => 'required|numeric|min:0',
-            'items.*.quantity' => 'sometimes|numeric|min:1'
-        ]);
-
-        $cart = Session::get('cart', []);
-        $addedCount = 0;
-
-        foreach ($request->items as $item) {
-            $productId = $item['id'];
-            $quantity = $item['quantity'] ?? 1;
-            $image = $item['image'] ?? 'images/default-product.jpg';
-
-            if (isset($cart[$productId])) {
-                $cart[$productId]['quantity'] += $quantity;
-            } else {
-                $cart[$productId] = [
-                    'id' => $productId,
-                    'name' => $item['name'],
-                    'price' => $item['price'],
-                    'image' => $image,
-                    'quantity' => $quantity
-                ];
-            }
-            $addedCount++;
-        }
-
-        Session::put('cart', $cart);
-
-        return response()->json([
-            'success' => true,
-            'message' => "{$addedCount} items added to cart",
-            'cart_count' => count($cart),
-            'cart_total' => $this->calculateCartTotal($cart)
-        ]);
-    }
-
-       // Add this method to get all products (hardcoded + session)
     public function getProducts()
     {
         // Hardcoded products
         $hardcodedProducts = [
-            ['id' => 1, 'name' => 'Chick Mash 50kg', 'selling_price' => 1700, 'stock' => 45, 'unit' => 'bag'],
-            ['id' => 2, 'name' => 'Layers Mash 50kg', 'selling_price' => 1850, 'stock' => 3, 'unit' => 'bag'],
-            ['id' => 3, 'name' => 'Pig Fattener 50kg', 'selling_price' => 2600, 'stock' => 120, 'unit' => 'bag'],
-            ['id' => 4, 'name' => 'Dog Meal 25kg', 'selling_price' => 2200, 'stock' => 8, 'unit' => 'bag'],
-            ['id' => 5, 'name' => 'Broiler Starter', 'selling_price' => 1950, 'stock' => 0, 'unit' => 'bag'],
-            ['id' => 6, 'name' => 'Pig Grower 50kg', 'selling_price' => 2400, 'stock' => 67, 'unit' => 'bag'],
+            ['id' => 1, 'name' => 'Chick Mash 50kg', 'price' => 1700, 'stock' => 45, 'unit' => 'bag', 'image' => 'images/products/chick-mash.jpg'],
+            ['id' => 2, 'name' => 'Layers Mash 50kg', 'price' => 1850, 'stock' => 3, 'unit' => 'bag', 'image' => 'images/products/layers-mash.jpg'],
+            ['id' => 3, 'name' => 'Pig Fattener 50kg', 'price' => 2600, 'stock' => 120, 'unit' => 'bag', 'image' => 'images/products/pig-fattener.jpg'],
+            ['id' => 4, 'name' => 'Dog Meal 25kg', 'price' => 2200, 'stock' => 8, 'unit' => 'bag', 'image' => 'images/products/dog-meal.jpg'],
+            ['id' => 5, 'name' => 'Broiler Starter', 'price' => 1950, 'stock' => 0, 'unit' => 'bag', 'image' => 'images/products/broiler-starter.jpg'],
+            ['id' => 6, 'name' => 'Pig Grower 50kg', 'price' => 2400, 'stock' => 67, 'unit' => 'bag', 'image' => 'images/products/pig-grower.jpg'],
         ];
         
         // Session-based custom products
@@ -281,78 +30,955 @@ class CartController extends Controller
         // Merge all products
         $allProducts = array_merge($hardcodedProducts, $customProducts);
         
+        // Return JSON for AJAX requests or array for views
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'products' => $allProducts,
+                'count' => count($allProducts)
+            ]);
+        }
+        
         return $allProducts;
     }
-    
-    // Add this method to add product from modal
+
+    /**
+     * Add a new custom product via modal/form
+     */
     public function storeProduct(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'selling_price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'unit' => 'required|string',
-            'category' => 'nullable|string',
-            'buying_price' => 'nullable|numeric|min:0',
-            'low_stock_warning' => 'nullable|integer|min:1'
-        ]);
-        
-        $customProducts = Session::get('custom_products', []);
-        
-        $newProduct = [
-            'id' => 'custom_' . (count($customProducts) + 1),
-            'name' => $validated['name'],
-            'selling_price' => $validated['selling_price'],
-            'stock' => $validated['stock'],
-            'unit' => $validated['unit'],
-            'category' => $validated['category'] ?? 'general',
-            'buying_price' => $validated['buying_price'] ?? 0,
-            'low_stock_warning' => $validated['low_stock_warning'] ?? 5,
-            'created_at' => now()->format('Y-m-d H:i:s')
-        ];
-        
-        $customProducts[] = $newProduct;
-        Session::put('custom_products', $customProducts);
-        
-        return redirect()->back()->with('success', 'Product "' . $validated['name'] . '" added successfully!');
+        try {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'price' => 'required|numeric|min:0',
+                'stock' => 'required|integer|min:0',
+                'unit' => 'required|string',
+                'category' => 'nullable|string',
+                'image' => 'nullable|string',
+                'description' => 'nullable|string'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $customProducts = Session::get('custom_products', []);
+            
+            $newProduct = [
+                'id' => 'custom_' . (count($customProducts) + 1),
+                'name' => $request->name,
+                'price' => $request->price,
+                'selling_price' => $request->price,
+                'stock' => $request->stock,
+                'unit' => $request->unit,
+                'image' => $request->image ?? 'images/default-product.jpg',
+                'category' => $request->category ?? 'General',
+                'description' => $request->description ?? '',
+                'created_at' => now()->toDateTimeString()
+            ];
+            
+            $customProducts[] = $newProduct;
+            Session::put('custom_products', $customProducts);
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Product "' . $request->name . '" added successfully!',
+                    'product' => $newProduct
+                ]);
+            }
+            
+            return redirect()->back()->with('success', 'Product "' . $request->name . '" added successfully!');
+            
+        } catch (\Exception $e) {
+            Log::error('Store product error: ' . $e->getMessage());
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error adding product: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return redirect()->back()->with('error', 'Error adding product: ' . $e->getMessage());
+        }
     }
 
+    public function add(Request $request)
+    {
+        try {
+            $request->validate([
+                'id' => 'required',
+                'name' => 'required|string',
+                'price' => 'required|numeric|min:0',
+                'quantity' => 'sometimes|numeric|min:1',
+                'unit' => 'sometimes|string',
+                'image' => 'nullable|string'
+            ]);
+            
+            $cart = Session::get('cart', []);
+            $productId = $request->id;
+            
+            // Get quantity with default
+            $quantity = $request->quantity ?? 1;
+            
+            // Get image with default
+            $image = $request->image ?? 'images/default-product.jpg';
+            
+            // Get unit with default
+            $unit = $request->unit ?? 'unit';
+            
+            if (isset($cart[$productId])) {
+                // Update existing item quantity
+                $cart[$productId]['quantity'] += $quantity;
+                $message = 'Quantity updated in cart';
+            } else {
+                // Add new item
+                $cart[$productId] = [
+                    'id' => $productId,
+                    'name' => $request->name,
+                    'price' => $request->price,
+                    'quantity' => $quantity,
+                    'unit' => $unit,
+                    'image' => $image,
+                    'added_at' => now()->toDateTimeString()
+                ];
+                $message = 'Product added to cart';
+            }
+            
+            Session::put('cart', $cart);
+            
+            $cartData = $this->getCartData();
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $message,
+                    'cart_count' => $cartData['count'],
+                    'cart_total' => $cartData['total'],
+                    'item' => $cart[$productId] ?? null,
+                    'cart_summary' => $cartData
+                ]);
+            }
+            
+            return redirect()->back()->with('success', $message);
+            
+        } catch (\Exception $e) {
+            Log::error('Cart add error: ' . $e->getMessage());
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error adding to cart: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return redirect()->back()->with('error', 'Error adding to cart: ' . $e->getMessage());
+        }
+    }
+
+
+   public function increment(Request $request)
+    {
+        try {
+            $request->validate([
+                'id' => 'required',
+                'index' => 'sometimes|numeric'
+            ]);
+
+            $cart = Session::get('cart', []);
+            $productId = $request->id;
+            
+            // Debug: Log what we're receiving
+            Log::info('Increment request:', [
+                'product_id' => $productId,
+                'cart_keys' => array_keys($cart)
+            ]);
+            
+            if (isset($cart[$productId])) {
+                // Increment by product ID (associative array)
+                $cart[$productId]['quantity'] += 1;
+                $item = $cart[$productId];
+                $message = 'Quantity increased';
+            } elseif ($request->has('index')) {
+                // Try by index (for compatibility)
+                $index = $request->index;
+                $cartItems = array_values($cart);
+                
+                if (isset($cartItems[$index])) {
+                    $item = $cartItems[$index];
+                    $productId = $item['id'];
+                    $cart[$productId]['quantity'] += 1;
+                    $item = $cart[$productId];
+                    $message = 'Quantity increased';
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Item not found in cart'
+                    ], 404);
+                }
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Item not found in cart'
+                ], 404);
+            }
+            
+            Session::put('cart', $cart);
+            
+            $lineTotal = $item['price'] * $item['quantity'];
+            $cartData = $this->getCartData();
+            
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'quantity' => $item['quantity'],
+                'item_total' => $lineTotal,
+                'cart_count' => $cartData['count'],
+                'cart_total' => $cartData['total'],
+                'item' => $item
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Cart increment error: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error increasing quantity: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Decrement cart item quantity
+     */
+    public function decrement(Request $request)
+    {
+        try {
+            $request->validate([
+                'id' => 'required',
+                'index' => 'sometimes|numeric'
+            ]);
+
+            $cart = Session::get('cart', []);
+            $productId = $request->id;
+            $removed = false;
+            
+            // Debug: Log what we're receiving
+            Log::info('Decrement request:', [
+                'product_id' => $productId,
+                'cart_keys' => array_keys($cart)
+            ]);
+            
+            if (isset($cart[$productId])) {
+                // Decrement by product ID
+                if ($cart[$productId]['quantity'] <= 1) {
+                    unset($cart[$productId]);
+                    $removed = true;
+                    $message = 'Item removed from cart';
+                } else {
+                    $cart[$productId]['quantity'] -= 1;
+                    $item = $cart[$productId];
+                    $message = 'Quantity decreased';
+                }
+            } elseif ($request->has('index')) {
+                // Try by index
+                $index = $request->index;
+                $cartItems = array_values($cart);
+                
+                if (isset($cartItems[$index])) {
+                    $existingItem = $cartItems[$index];
+                    $productId = $existingItem['id'];
+                    
+                    if ($existingItem['quantity'] <= 1) {
+                        unset($cart[$productId]);
+                        $removed = true;
+                        $message = 'Item removed from cart';
+                    } else {
+                        $cart[$productId]['quantity'] -= 1;
+                        $item = $cart[$productId];
+                        $message = 'Quantity decreased';
+                    }
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Item not found in cart'
+                    ], 404);
+                }
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Item not found in cart'
+                ], 404);
+            }
+            
+            Session::put('cart', $cart);
+            
+            $cartData = $this->getCartData();
+            $response = [
+                'success' => true,
+                'message' => $message,
+                'cart_count' => $cartData['count'],
+                'cart_total' => $cartData['total']
+            ];
+            
+            if (!$removed) {
+                $lineTotal = $item['price'] * $item['quantity'];
+                $response['quantity'] = $item['quantity'];
+                $response['item_total'] = $lineTotal;
+                $response['item'] = $item;
+            }
+            
+            $response['removed'] = $removed;
+            
+            return response()->json($response);
+            
+        } catch (\Exception $e) {
+            Log::error('Cart decrement error: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error decreasing quantity: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    /**
+     * Add item to cart (unified for both web and POS)
+     */
+    
+    /**
+     * Update cart item quantity (by ID or index)
+     */
+    public function update(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required_without:index',
+                'index' => 'required_without:id|numeric',
+                'quantity' => 'required|numeric|min:0'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $cart = Session::get('cart', []);
+            $updated = false;
+            
+            if ($request->has('id')) {
+                // Update by product ID
+                $productId = $request->id;
+                
+                if (isset($cart[$productId])) {
+                    if ($request->quantity <= 0) {
+                        unset($cart[$productId]);
+                        $message = 'Item removed from cart';
+                    } else {
+                        $cart[$productId]['quantity'] = $request->quantity;
+                        $message = 'Cart updated successfully';
+                    }
+                    $updated = true;
+                }
+            } elseif ($request->has('index')) {
+                // Update by array index (for backward compatibility)
+                $index = $request->index;
+                $cartItems = array_values($cart); // Convert to indexed array
+                
+                if (isset($cartItems[$index])) {
+                    $item = $cartItems[$index];
+                    $productId = $item['id'];
+                    
+                    if ($request->quantity <= 0) {
+                        unset($cart[$productId]);
+                        $message = 'Item removed from cart';
+                    } else {
+                        $cart[$productId]['quantity'] = $request->quantity;
+                        $message = 'Cart updated successfully';
+                    }
+                    $updated = true;
+                }
+            }
+            
+            if ($updated) {
+                Session::put('cart', $cart);
+                $cartData = $this->getCartData();
+                
+                $response = [
+                    'success' => true,
+                    'message' => $message,
+                    'cart_count' => $cartData['count'],
+                    'cart_total' => $cartData['total'],
+                    'cart_summary' => $cartData
+                ];
+                
+                // Calculate line total if item still exists
+                if ($request->quantity > 0 && isset($productId) && isset($cart[$productId])) {
+                    $item = $cart[$productId];
+                    $response['item_total'] = $item['price'] * $item['quantity'];
+                }
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json($response);
+                }
+                
+                return redirect()->back()->with('success', $message);
+            }
+            
+            $errorMessage = 'Item not found in cart';
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $errorMessage
+                ], 404);
+            }
+            
+            return redirect()->back()->with('error', $errorMessage);
+            
+        } catch (\Exception $e) {
+            Log::error('Cart update error: ' . $e->getMessage());
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error updating cart: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return redirect()->back()->with('error', 'Error updating cart: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Remove item from cart
+     */
+    public function remove(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required_without:index',
+                'index' => 'required_without:id|numeric'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $cart = Session::get('cart', []);
+            $removed = false;
+            
+            if ($request->has('id')) {
+                // Remove by product ID
+                $productId = $request->id;
+                
+                if (isset($cart[$productId])) {
+                    unset($cart[$productId]);
+                    $removed = true;
+                }
+            } elseif ($request->has('index')) {
+                // Remove by array index (for backward compatibility)
+                $index = $request->index;
+                $cartItems = array_values($cart); // Convert to indexed array
+                
+                if (isset($cartItems[$index])) {
+                    $item = $cartItems[$index];
+                    $productId = $item['id'];
+                    unset($cart[$productId]);
+                    $removed = true;
+                }
+            }
+            
+            if ($removed) {
+                Session::put('cart', $cart);
+                $cartData = $this->getCartData();
+                
+                $response = [
+                    'success' => true,
+                    'message' => 'Item removed from cart',
+                    'cart_count' => $cartData['count'],
+                    'cart_total' => $cartData['total']
+                ];
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json($response);
+                }
+                
+                return redirect()->route('cart.view')->with('success', 'Item removed from cart');
+            }
+            
+            $errorMessage = 'Item not found in cart';
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $errorMessage
+                ], 404);
+            }
+            
+            return redirect()->route('cart.view')->with('error', $errorMessage);
+            
+        } catch (\Exception $e) {
+            Log::error('Cart remove error: ' . $e->getMessage());
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error removing item: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return redirect()->back()->with('error', 'Error removing item: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get cart count and total (AJAX)
+     */
+    public function count(Request $request)
+    {
+        try {
+            $cartData = $this->getCartData();
+            
+            return response()->json([
+                'success' => true,
+                'count' => $cartData['count'],
+                'total' => $cartData['total'],
+                'items_count' => $cartData['items_count'],
+                'subtotal' => $cartData['subtotal']
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Cart count error: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'count' => 0,
+                'total' => 0,
+                'items_count' => 0,
+                'subtotal' => 0,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get detailed cart info
+     */
+    public function info()
+    {
+        try {
+            $cartData = $this->getCartData();
+            
+            return response()->json([
+                'success' => true,
+                'cart' => $cartData['items'],
+                'count' => $cartData['count'],
+                'total' => $cartData['total'],
+                'items_count' => $cartData['items_count'],
+                'subtotal' => $cartData['subtotal']
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Cart info error: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'cart' => [],
+                'count' => 0,
+                'total' => 0,
+                'items_count' => 0,
+                'subtotal' => 0,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * View cart page
+     */
+    public function view()
+    {
+        $cartData = $this->getCartData();
+        
+        // Check if this is a POS request
+        $isPOS = request()->is('pos/*') || request()->routeIs('pos.*') || 
+                strpos(request()->path(), 'pos') !== false;
+        
+        if ($isPOS) {
+            $products = $this->getProducts();
+            return view('pos.cart', [
+                'cart' => $cartData['items'],
+                'cartTotal' => $cartData['total'],
+                'cartCount' => $cartData['count'],
+                'products' => $products
+            ]);
+        }
+        
+        return view('cart.view', [
+            'cart' => $cartData['items'],
+            'cartTotal' => $cartData['total'],
+            'cartCount' => $cartData['count'],
+            'subtotal' => $cartData['subtotal']
+        ]);
+    }
+
+    /**
+     * Checkout process
+     */
+    public function checkout(Request $request)
+    {
+        try {
+            $cart = Session::get('cart', []);
+            
+            if (empty($cart)) {
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Your cart is empty'
+                    ], 400);
+                }
+                return redirect()->route('cart.view')->with('error', 'Your cart is empty');
+            }
+            
+            $subtotal = 0;
+            $itemsCount = 0;
+            
+            foreach ($cart as $item) {
+                $itemTotal = $item['price'] * $item['quantity'];
+                $subtotal += $itemTotal;
+                $itemsCount += $item['quantity'];
+            }
+            
+            // Calculate shipping (free over certain amount or fixed)
+            $shipping = ($subtotal > 5000) ? 0 : 500; // Free shipping over 5000
+            
+            // Calculate tax (16% VAT for Kenya)
+            $tax = $subtotal * 0.16;
+            
+            $total = $subtotal + $shipping + $tax;
+            
+            // Save checkout data in session
+            Session::put('checkout_data', [
+                'cart' => $cart,
+                'subtotal' => $subtotal,
+                'shipping' => $shipping,
+                'tax' => $tax,
+                'total' => $total,
+                'items_count' => $itemsCount,
+                'calculated_at' => now()->toDateTimeString()
+            ]);
+            
+            // Return appropriate response
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'checkout_data' => Session::get('checkout_data'),
+                    'redirect_url' => route('checkout.index')
+                ]);
+            }
+            
+            return view('checkout.index', [
+                'cart' => $cart,
+                'subtotal' => $subtotal,
+                'shipping' => $shipping,
+                'tax' => $tax,
+                'total' => $total,
+                'items_count' => $itemsCount
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Checkout error: ' . $e->getMessage());
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Checkout error: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return redirect()->route('cart.view')->with('error', 'Checkout error: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Clear entire cart
+     */
+    public function clear(Request $request)
+    {
+        try {
+            Session::forget('cart');
+            Session::forget('checkout_data');
+            
+            $response = [
+                'success' => true,
+                'message' => 'Cart cleared successfully',
+                'cart_count' => 0,
+                'cart_total' => 0
+            ];
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json($response);
+            }
+            
+            return redirect()->back()->with('success', 'Cart cleared successfully');
+            
+        } catch (\Exception $e) {
+            Log::error('Cart clear error: ' . $e->getMessage());
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error clearing cart: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return redirect()->back()->with('error', 'Error clearing cart: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Add multiple items at once (for POS or bulk operations)
+     */
+    public function addMultiple(Request $request)
+    {
+        try {
+            $request->validate([
+                'items' => 'required|array',
+                'items.*.id' => 'required',
+                'items.*.name' => 'required|string',
+                'items.*.price' => 'required|numeric|min:0',
+                'items.*.quantity' => 'sometimes|numeric|min:1',
+                'items.*.unit' => 'sometimes|string'
+            ]);
+
+            $cart = Session::get('cart', []);
+            $addedCount = 0;
+            $errors = [];
+
+            foreach ($request->items as $index => $item) {
+                try {
+                    $productId = $item['id'];
+                    $quantity = $item['quantity'] ?? 1;
+                    $unit = $item['unit'] ?? 'unit';
+                    $image = $item['image'] ?? 'images/default-product.jpg';
+
+                    if (isset($cart[$productId])) {
+                        $cart[$productId]['quantity'] += $quantity;
+                    } else {
+                        $cart[$productId] = [
+                            'id' => $productId,
+                            'name' => $item['name'],
+                            'price' => $item['price'],
+                            'quantity' => $quantity,
+                            'unit' => $unit,
+                            'image' => $image,
+                            'added_at' => now()->toDateTimeString()
+                        ];
+                    }
+                    $addedCount++;
+                } catch (\Exception $e) {
+                    $errors[] = "Item {$index}: " . $e->getMessage();
+                }
+            }
+
+            Session::put('cart', $cart);
+            $cartData = $this->getCartData();
+
+            $response = [
+                'success' => true,
+                'message' => "{$addedCount} items added to cart",
+                'cart_count' => $cartData['count'],
+                'cart_total' => $cartData['total'],
+                'added_count' => $addedCount
+            ];
+
+            if (!empty($errors)) {
+                $response['warnings'] = $errors;
+            }
+
+            return response()->json($response);
+
+        } catch (\Exception $e) {
+            Log::error('Add multiple items error: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error adding multiple items: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 
     /**
      * Quick add for POS (simplified version)
      */
     public function quickAdd(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'price' => 'required|numeric|min:0'
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string',
+                'price' => 'required|numeric|min:0',
+                'quantity' => 'sometimes|numeric|min:1',
+                'unit' => 'sometimes|string'
+            ]);
 
-        // Generate a temporary ID for POS items
-        $productId = 'pos_' . uniqid();
-        
+            // Generate a temporary ID for POS items
+            $productId = 'pos_' . uniqid();
+            
+            $cart = Session::get('cart', []);
+            
+            $cart[$productId] = [
+                'id' => $productId,
+                'name' => $request->name,
+                'price' => $request->price,
+                'quantity' => $request->quantity ?? 1,
+                'unit' => $request->unit ?? 'unit',
+                'image' => 'images/pos-default.jpg',
+                'added_at' => now()->toDateTimeString(),
+                'is_pos_item' => true
+            ];
+
+            Session::put('cart', $cart);
+            $cartData = $this->getCartData();
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Item added to cart',
+                    'cart_count' => $cartData['count'],
+                    'cart_total' => $cartData['total'],
+                    'item' => $cart[$productId],
+                    'cart_summary' => $cartData
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Item added to cart');
+
+        } catch (\Exception $e) {
+            Log::error('Quick add error: ' . $e->getMessage());
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error adding item: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return redirect()->back()->with('error', 'Error adding item: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get cart data (helper method)
+     */
+    private function getCartData()
+    {
         $cart = Session::get('cart', []);
         
-        $cart[$productId] = [
-            'id' => $productId,
-            'name' => $request->name,
-            'price' => $request->price,
-            'image' => 'images/pos-default.jpg',
-            'quantity' => $request->quantity ?? 1
+        $total = 0;
+        $subtotal = 0;
+        $itemsCount = 0;
+        $cartItems = [];
+        
+        foreach ($cart as $item) {
+            $itemTotal = ($item['price'] ?? 0) * ($item['quantity'] ?? 1);
+            $total += $itemTotal;
+            $subtotal += $itemTotal;
+            $itemsCount += ($item['quantity'] ?? 1);
+            $cartItems[] = $item;
+        }
+        
+        return [
+            'items' => $cartItems,
+            'count' => count($cart),
+            'total' => $total,
+            'subtotal' => $subtotal,
+            'items_count' => $itemsCount,
+            'raw_cart' => $cart
         ];
+    }
 
-        Session::put('cart', $cart);
+    /**
+     * Apply discount to cart
+     */
+    public function applyDiscount(Request $request)
+    {
+        try {
+            $request->validate([
+                'discount_type' => 'required|in:percentage,fixed',
+                'discount_value' => 'required|numeric|min:0'
+            ]);
 
-        if ($request->ajax() || $request->wantsJson()) {
+            $cartData = $this->getCartData();
+            $subtotal = $cartData['subtotal'];
+            
+            $discount = 0;
+            
+            if ($request->discount_type === 'percentage') {
+                $discount = ($subtotal * $request->discount_value) / 100;
+                if ($discount > $subtotal) {
+                    $discount = $subtotal;
+                }
+            } else {
+                $discount = $request->discount_value;
+                if ($discount > $subtotal) {
+                    $discount = $subtotal;
+                }
+            }
+            
+            // Store discount in session
+            Session::put('cart_discount', [
+                'type' => $request->discount_type,
+                'value' => $request->discount_value,
+                'amount' => $discount,
+                'applied_at' => now()->toDateTimeString()
+            ]);
+
             return response()->json([
                 'success' => true,
-                'message' => 'Item added to cart',
-                'cart_count' => count($cart),
-                'cart_total' => $this->calculateCartTotal($cart),
-                'item' => $cart[$productId]
+                'message' => 'Discount applied successfully',
+                'discount_amount' => $discount,
+                'new_subtotal' => $subtotal - $discount
             ]);
-        }
 
-        return redirect()->back()->with('success', 'Item added to cart');
+        } catch (\Exception $e) {
+            Log::error('Apply discount error: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error applying discount: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Remove discount from cart
+     */
+    public function removeDiscount(Request $request)
+    {
+        try {
+            Session::forget('cart_discount');
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Discount removed successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Remove discount error: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error removing discount: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }
