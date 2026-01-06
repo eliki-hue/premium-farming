@@ -1,14 +1,39 @@
-{{-- home.blade --}}
+{{-- home.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'Premium Farming Feeds | Quality Livestock Nutrition Solutions')
 
 @push('styles')
 <style>
-    /* Hero Section - Classic Elegant Style */
+    /* CSS Variables for Green Theme */
+    :root {
+        /* Green Color Palette */
+        --primary-green: #2a6e3f;        /* Deep Forest Green */
+        --secondary-green: #38a169;      /* Vibrant Green */
+        --light-green: #68d391;          /* Light Mint Green */
+        --dark-green: #22543d;           /* Dark Forest Green */
+        --accent-green: #10b981;         /* Accent Emerald Green */
+        --navy-green: #1e422e;           /* Dark Navy Green */
+        --gold-green: #d4af37;           /* Accent Gold */
+        --text-light: #4a5568;           /* Gray for text */
+        --off-white: #f7fafc;            /* Light background */
+        --card-bg: #ffffff;              /* White for cards */
+        
+        /* Gradients */
+        --gradient-green: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+        --gradient-dark-green: linear-gradient(135deg, var(--navy-green), var(--primary-green));
+        --gradient-light-green: linear-gradient(135deg, var(--light-green), var(--accent-green));
+        
+        /* Shadows */
+        --shadow-soft: 0 4px 20px rgba(42, 110, 63, 0.1);
+        --shadow-medium: 0 8px 30px rgba(42, 110, 63, 0.15);
+        --shadow-dark: 0 10px 40px rgba(30, 66, 46, 0.2);
+    }
+
+    /* Hero Section - Green Theme */
     .hero-section {
         min-height: 90vh;
-        background: linear-gradient(rgba(15, 23, 42, 0.9), rgba(30, 58, 138, 0.9)),
+        background: linear-gradient(rgba(42, 110, 63, 0.95), rgba(30, 66, 46, 0.95)),
                     url('https://images.unsplash.com/photo-1542838135-4b6e3f616300?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
         background-size: cover;
         background-position: center;
@@ -39,13 +64,18 @@
         text-align: center;
         margin-bottom: 2.5rem;
     }
+
+    .hero-logo-wrapper {
+        position: relative;
+        display: inline-block;
+    }
     
- .hero-logo {
+    .hero-logo {
         width: 140px;
         height: 140px;
         border-radius: 50%;
         object-fit: cover;
-        border: 4px solid var(--accent-gold);
+        border: 4px solid var(--gold-green);
         padding: 4px;
         background: linear-gradient(135deg, #ffffff, #f8f9fa);
         box-shadow: 
@@ -57,9 +87,26 @@
         animation: logoPulse 2s ease-in-out infinite;
     }
 
-       @keyframes logoPulse {
+    .hero-logo-glow {
+        position: absolute;
+        top: -15px;
+        left: -15px;
+        right: -15px;
+        bottom: -15px;
+        border-radius: 50%;
+        background: radial-gradient(circle at center, rgba(212, 175, 55, 0.4), transparent 70%);
+        z-index: 1;
+        animation: glowPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes logoPulse {
         0%, 100% { transform: scale(1); }
         50% { transform: scale(1.02); }
+    }
+
+    @keyframes glowPulse {
+        0%, 100% { opacity: 0.4; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(1.05); }
     }
     
     .hero-company-name {
@@ -77,29 +124,6 @@
         font-family: 'Inter', sans-serif;
         font-weight: 300;
         font-size: 1.2rem;
-        color: rgba(255, 255, 255, 0.9);
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        position: relative;
-        padding-bottom: 1rem;
-        margin-bottom: 2rem;
-    }
-      .hero-logo-glow {
-        position: absolute;
-        top: -15px;
-        left: -15px;
-        right: -15px;
-        bottom: -15px;
-        border-radius: 50%;
-        background: radial-gradient(circle at center, rgba(212, 175, 55, 0.4), transparent 70%);
-        z-index: 1;
-        animation: glowPulse 3s ease-in-out infinite;
-    }
-
-        .hero-tagline {
-        font-family: 'Inter', sans-serif;
-        font-weight: 300;
-        font-size: 1.2rem;
         color: rgba(255, 255, 255, 0.95);
         letter-spacing: 2px;
         text-transform: uppercase;
@@ -109,7 +133,7 @@
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
-     .hero-tagline::after {
+    .hero-tagline::after {
         content: '';
         position: absolute;
         bottom: 0;
@@ -117,7 +141,7 @@
         transform: translateX(-50%);
         width: 80px;
         height: 2px;
-        background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+        background: linear-gradient(90deg, transparent, var(--gold-green), transparent);
     }
     
     .hero-subtitle {
@@ -136,22 +160,51 @@
         flex-wrap: wrap;
         justify-content: center;
     }
-    
-    /* Stats Section */
+
+    /* Button Styles */
+    .btn-premium {
+        background: var(--gradient-green);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    .btn-premium:hover {
+        background: linear-gradient(135deg, var(--dark-green), var(--primary-green));
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(42, 110, 63, 0.3);
+    }
+
+    .btn-outline-green {
+        border: 2px solid var(--primary-green);
+        color: var(--primary-green);
+        background: transparent;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    .btn-outline-green:hover {
+        background: var(--primary-green);
+        color: white;
+    }
+
+    /* Stats Section - All Green */
     .stats-section {
         background: var(--off-white);
         padding: 5rem 0;
-        border-bottom: 1px solid rgba(30, 58, 138, 0.1);
+        border-bottom: 1px solid rgba(42, 110, 63, 0.1);
     }
     
     .stat-card {
         text-align: center;
         padding: 2.5rem 1.5rem;
-        background: rgb(225, 222, 222);
+        background: var(--card-bg);
         border-radius: 8px;
         box-shadow: var(--shadow-soft);
         transition: all 0.3s ease;
-        border: 1px solid rgba(30, 58, 138, 0.08);
+        border: 1px solid rgba(42, 110, 63, 0.08);
         position: relative;
         overflow: hidden;
     }
@@ -163,19 +216,19 @@
         left: 0;
         width: 100%;
         height: 4px;
-        background: linear-gradient(90deg, var(--primary-blue), var(--accent-gold));
+        background: var(--gradient-green);
     }
     
     .stat-card:hover {
         transform: translateY(-5px);
         box-shadow: var(--shadow-medium);
-        border-color: var(--light-blue);
+        border-color: var(--light-green);
     }
     
     .stat-number {
         font-size: 3.5rem;
         font-weight: 700;
-        color: var(--navy-blue);
+        color: var(--navy-green);
         margin-bottom: 0.5rem;
         font-family: 'Cormorant Garamond', serif;
     }
@@ -193,12 +246,12 @@
         width: 70px;
         height: 70px;
         border-radius: 50%;
-        background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+        background: var(--gradient-green);
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 0 auto 1.5rem;
-        box-shadow: 0 8px 20px rgba(30, 58, 138, 0.2);
+        box-shadow: 0 8px 20px rgba(42, 110, 63, 0.2);
         transition: all 0.3s ease;
     }
     
@@ -210,17 +263,31 @@
     .premium-card:hover .feature-icon-wrapper {
         transform: rotate(10deg) scale(1.1);
     }
+
+    .premium-card {
+        transition: all 0.3s ease;
+        padding: 2rem;
+        border-radius: 8px;
+        background: var(--card-bg);
+        border: 1px solid rgba(42, 110, 63, 0.08);
+        height: 100%;
+    }
+
+    .premium-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-medium);
+    }
     
     /* Category Cards */
     .category-card {
-        background: rgb(140, 132, 132);
+        background: var(--card-bg);
         border-radius: 8px;
         padding: 2.5rem 2rem;
         text-align: center;
         box-shadow: var(--shadow-soft);
         transition: all 0.3s ease;
         height: 100%;
-        border: 1px solid rgba(30, 58, 138, 0.08);
+        border: 1px solid rgba(42, 110, 63, 0.08);
         position: relative;
         overflow: hidden;
     }
@@ -232,7 +299,7 @@
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(90deg, var(--primary-blue), var(--accent-gold));
+        background: var(--gradient-green);
         transform: translateX(-100%);
         transition: transform 0.4s ease;
     }
@@ -243,7 +310,7 @@
     
     .category-card:hover {
         transform: translateY(-10px);
-        border-color: var(--light-blue);
+        border-color: var(--light-green);
         box-shadow: var(--shadow-medium);
     }
     
@@ -252,6 +319,13 @@
         margin-bottom: 1.5rem;
         display: inline-block;
         transition: transform 0.3s ease;
+        color: var(--primary-green);
+        animation: leafFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes leafFloat {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-10px) rotate(5deg); }
     }
     
     .category-card:hover .category-icon {
@@ -260,13 +334,19 @@
     
     /* Testimonials */
     .testimonial-card {
-        background: rgb(222, 219, 219);
+        background: var(--card-bg);
         border-radius: 8px;
         padding: 2.5rem;
         box-shadow: var(--shadow-soft);
         position: relative;
-        border: 1px solid rgba(30, 58, 138, 0.08);
+        border: 1px solid rgba(42, 110, 63, 0.08);
         height: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-medium);
     }
     
     .testimonial-card::before {
@@ -275,7 +355,7 @@
         top: 20px;
         left: 25px;
         font-size: 5rem;
-        color: var(--light-blue);
+        color: var(--light-green);
         opacity: 0.1;
         font-family: 'Cormorant Garamond', serif;
         line-height: 1;
@@ -295,7 +375,7 @@
         display: flex;
         align-items: center;
         gap: 1rem;
-        border-top: 1px solid rgba(30, 58, 138, 0.08);
+        border-top: 1px solid rgba(42, 110, 63, 0.08);
         padding-top: 1.5rem;
     }
     
@@ -303,11 +383,11 @@
         width: 55px;
         height: 55px;
         border-radius: 50%;
-        background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+        background: var(--gradient-green);
         display: flex;
         align-items: center;
         justify-content: center;
-        color: rgb(251, 243, 243);
+        color: white;
         font-weight: bold;
         font-size: 1.2rem;
         flex-shrink: 0;
@@ -316,7 +396,7 @@
     .client-name {
         font-family: 'Cormorant Garamond', serif;
         font-weight: 600;
-        color: var(--navy-blue);
+        color: var(--navy-green);
         margin-bottom: 0.2rem;
     }
     
@@ -327,8 +407,8 @@
     
     /* CTA Section */
     .cta-section {
-        background: linear-gradient(135deg, var(--navy-blue), var(--primary-blue));
-        color: rgb(105, 102, 102);
+        background: var(--gradient-dark-green);
+        color: white;
         padding: 6rem 0;
         position: relative;
         overflow: hidden;
@@ -367,9 +447,87 @@
         line-height: 1.7;
         font-weight: 300;
     }
-    
+
+    /* Section Styles */
+    .section-title h2 {
+        color: var(--navy-green);
+        position: relative;
+        padding-bottom: 1rem;
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 700;
+    }
+
+    .section-title h2::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: var(--gradient-green);
+        border-radius: 2px;
+    }
+
+    .section-title.text-center h2::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .bg-light {
+        background-color: #f8faf7 !important;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .bg-light::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M41 28c-2 0-4 2-4 4s2 4 4 4 4-2 4-4-2-4-4-4zM11 58c-2 0-4 2-4 4s2 4 4 4 4-2 4-4-2-4-4-4zm68-20c-2 0-4 2-4 4s2 4 4 4 4-2 4-4-2-4-4-4zm-48 40c-2 0-4 2-4 4s2 4 4 4 4-2 4-4-2-4-4-4z' fill='%232a6e3f' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+        opacity: 0.1;
+        z-index: 1;
+    }
+
+    .bg-light > * {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Text colors */
+    .text-green {
+        color: var(--primary-green) !important;
+    }
+
+    .text-dark-green {
+        color: var(--navy-green) !important;
+    }
+
+    /* Progress bars */
+    .progress-bar-green {
+        background-color: var(--primary-green) !important;
+    }
+
+    .progress-bar-light-green {
+        background-color: var(--light-green) !important;
+    }
+
+    /* Badge styles */
+    .badge-green {
+        background-color: rgba(56, 161, 105, 0.1) !important;
+        color: var(--primary-green) !important;
+        border: 1px solid rgba(56, 161, 105, 0.2);
+    }
+
+    /* Border colors */
+    .border-green {
+        border-color: rgba(42, 110, 63, 0.1) !important;
+    }
+
     /* Responsive */
-     @media (max-width: 992px) {
+    @media (max-width: 992px) {
         .hero-logo {
             width: 120px;
             height: 120px;
@@ -379,7 +537,7 @@
             font-size: 2.8rem;
         }
     }
-     
+    
     @media (max-width: 768px) {
         .hero-logo {
             width: 100px;
@@ -394,48 +552,10 @@
         .hero-tagline {
             font-size: 1rem;
         }
-    }
-        @media (max-width: 576px) {
-        .hero-logo {
-            width: 90px;
-            height: 90px;
-        }
-        
-        .hero-company-name {
-            font-size: 1.8rem;
-        }
-        
-        .hero-tagline {
-            font-size: 0.9rem;
-        }
-    }
-        
-        .cta-title {
-            font-size: 2.5rem;
-        }
-        
-        .stat-number {
-            font-size: 3rem;
-        }
-    }
-    
-    @media (max-width: 768px) {
-        .hero-company-name {
-            font-size: 2.2rem;
-        }
-        
-        .hero-tagline {
-            font-size: 1rem;
-        }
         
         .hero-subtitle {
             font-size: 1.1rem;
             margin: 1.5rem auto 2.5rem;
-        }
-        
-        .hero-logo {
-            width: 90px;
-            height: 90px;
         }
         
         .cta-title {
@@ -452,9 +572,18 @@
             max-width: 300px;
             margin-bottom: 1rem;
         }
+        
+        .stat-number {
+            font-size: 3rem;
+        }
     }
     
     @media (max-width: 576px) {
+        .hero-logo {
+            width: 90px;
+            height: 90px;
+        }
+        
         .hero-company-name {
             font-size: 1.8rem;
         }
@@ -462,11 +591,6 @@
         .hero-tagline {
             font-size: 0.9rem;
             letter-spacing: 1px;
-        }
-        
-        .hero-logo {
-            width: 80px;
-            height: 80px;
         }
         
         .stat-number {
@@ -489,15 +613,14 @@
     <section class="hero-section">
         <div class="container">
             <div class="hero-content">
-               <!-- Update the hero logo section in home.blade.php -->
-<div class="hero-logo-container animate__animated animate__fadeInDown">
-    <div class="hero-logo-wrapper">
-        <img src="{{ asset('images/logo.jpeg') }}" alt="Premium Farming Feeds" class="hero-logo">
-        <div class="hero-logo-glow"></div>
-    </div>
-    <h1 class="hero-company-name animate__animated animate__fadeInUp">Premium Farming Feeds</h1>
-    <div class="hero-tagline animate__animated animate__fadeInUp animate__delay-1s">Quality Livestock Nutrition</div>
-</div>
+                <div class="hero-logo-container animate__animated animate__fadeInDown">
+                    <div class="hero-logo-wrapper">
+                        <img src="{{ asset('images/logo.jpeg') }}" alt="Premium Farming Feeds" class="hero-logo">
+                        <div class="hero-logo-glow"></div>
+                    </div>
+                    <h1 class="hero-company-name animate__animated animate__fadeInUp">Premium Farming Feeds</h1>
+                    <div class="hero-tagline animate__animated animate__fadeInUp animate__delay-1s">Quality Livestock Nutrition</div>
+                </div>
                 
                 <p class="hero-subtitle animate__animated animate__fadeInUp animate__delay-2s text-center">
                     Scientifically formulated feeds that transform livestock productivity. 
@@ -509,19 +632,15 @@
                         <i class="bi bi-cart-plus me-2"></i>
                         Browse Products
                     </a>
-                    {{-- <a href="{{ route('shop.products') }}" class="btn btn-premium-outline btn-lg text-white border-white">
-                        <i class="bi bi-shop me-2"></i>
-                        Browse Products
-                    </a> --}}
                 </div>
             </div>
         </div>
     </section>
 
-     <!-- Categories Section -->
+    <!-- Categories Section -->
     <section class="section bg-light">
         <div class="container">
-            <div class="section-title animate-on-scroll">
+            <div class="section-title animate-on-scroll text-center">
                 <h2>Our Product Categories</h2>
                 <p>Comprehensive nutrition solutions for all livestock types</p>
             </div>
@@ -541,10 +660,10 @@
                             <div class="category-icon mb-3">
                                 {{ $cat['icon'] }}
                             </div>
-                            <h4 class="fw-bold mb-2">{{ $cat['name'] }}</h4>
+                            <h4 class="fw-bold mb-2 text-dark-green">{{ $cat['name'] }}</h4>
                             <p class="text-muted mb-0">{{ $cat['desc'] }}</p>
                             <div class="mt-3">
-                                <span class="text-primary-blue fw-bold">Explore →</span>
+                                <span class="text-green fw-bold">Explore →</span>
                             </div>
                         </div>
                     </a>
@@ -554,11 +673,10 @@
         </div>
     </section>
 
-
     <!-- Features Section -->
     <section class="section">
         <div class="container">
-            <div class="section-title animate-on-scroll">
+            <div class="section-title animate-on-scroll text-center">
                 <h2>Why Choose Premium Feeds?</h2>
                 <p>Our commitment to excellence sets us apart in livestock nutrition</p>
             </div>
@@ -577,7 +695,7 @@
                         <div class="feature-icon-wrapper">
                             <i class="bi bi-{{ $feature['icon'] }} feature-icon"></i>
                         </div>
-                        <h4 class="fw-bold mb-3">{{ $feature['title'] }}</h4>
+                        <h4 class="fw-bold mb-3 text-dark-green">{{ $feature['title'] }}</h4>
                         <p class="text-muted mb-0">{{ $feature['desc'] }}</p>
                     </div>
                 </div>
@@ -585,32 +703,57 @@
             </div>
         </div>
     </section>
- <!-- Stats Section -->
+
+    <!-- Stats Section - All Green Version -->
     <section class="stats-section">
         <div class="container">
+            <div class="section-title text-center mb-5">
+                <h2 class="text-dark-green">Trusted by Farmers Nationwide</h2>
+                <p class="text-muted">Excellence in quality and service since 2018</p>
+            </div>
+            
             <div class="row g-4">
-                <div class="col-lg-3 col-md-6">
+                @foreach([
+                    ['number' => '4.8/5', 'label' => 'Average Rating', 'icon' => 'star-fill', 'color' => 'gold-green'],
+                    ['number' => '500+', 'label' => 'Satisfied Farmers', 'icon' => 'people-fill', 'color' => 'primary-green'],
+                    ['number' => '5+', 'label' => 'Years Experience', 'icon' => 'award-fill', 'color' => 'secondary-green'],
+                    ['number' => '98%', 'label' => 'Recommend Us', 'icon' => 'hand-thumbs-up-fill', 'color' => 'accent-green'],
+                    ['number' => '50+', 'label' => 'Quality Products', 'icon' => 'basket2-fill', 'color' => 'light-green'],
+                    ['number' => '24/7', 'label' => 'Support', 'icon' => 'headset', 'color' => 'dark-green'],
+                ] as $stat)
+                <div class="col-md-4 col-lg-2">
                     <div class="stat-card animate-on-scroll">
-                        <div class="stat-number">5,000+</div>
-                        <div class="stat-label">Happy Farmers</div>
+                        <div class="mb-3">
+                            <i class="bi bi-{{ $stat['icon'] }} fs-2" style="color: var(--{{ $stat['color'] }});"></i>
+                        </div>
+                        <div class="stat-number">{{ $stat['number'] }}</div>
+                        <div class="stat-label">{{ $stat['label'] }}</div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-card animate-on-scroll">
-                        <div class="stat-number">5</div>
-                        <div class="stat-label">Years Experience</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-card animate-on-scroll">
-                        <div class="stat-number">50+</div>
-                        <div class="stat-label">Products</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-card animate-on-scroll">
-                        <div class="stat-number">47</div>
-                        <div class="stat-label">Counties Served</div>
+                @endforeach
+            </div>
+            
+            <!-- Trust Indicators -->
+            <div class="row mt-5 pt-5">
+                <div class="col-12">
+                    <div class="text-center">
+                        <h4 class="mb-4 text-dark-green">Why Farmers Trust Us</h4>
+                        <div class="row g-3 justify-content-center">
+                            @foreach([
+                                ['icon' => 'shield-check', 'title' => 'Premium Quality', 'desc' => 'Guaranteed', 'color' => 'success'],
+                                ['icon' => 'truck', 'title' => 'Reliable Delivery', 'desc' => 'On-time service', 'color' => 'primary'],
+                                ['icon' => 'cash-coin', 'title' => 'Competitive Prices', 'desc' => 'Best value', 'color' => 'warning'],
+                                ['icon' => 'award', 'title' => 'Expert Advice', 'desc' => 'Professional support', 'color' => 'danger'],
+                            ] as $trust)
+                            <div class="col-lg-3 col-md-6">
+                                <div class="border rounded p-4 bg-light border-green">
+                                    <i class="bi bi-{{ $trust['icon'] }} text-green d-block fs-4 mb-3"></i>
+                                    <h6 class="fw-bold mb-2 text-dark-green">{{ $trust['title'] }}</h6>
+                                    <p class="text-muted small mb-0">{{ $trust['desc'] }}</p>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>
@@ -627,7 +770,7 @@
                     Experience the difference in quality, yield, and profitability.
                 </p>
                 <div class="d-flex flex-wrap justify-content-center gap-3">
-                    <a href="{{ route('shop.products') }}" class="btn btn-light btn-lg px-5 py-3 fw-bold">
+                    <a href="{{ route('shop.products') }}" class="btn btn-light btn-lg px-5 py-3 fw-bold text-green">
                         <i class="bi bi-cart-check me-2"></i>
                         Start Buying Now
                     </a>
@@ -639,20 +782,55 @@
             </div>
         </div>
     </section>
+@endsection
 
-    @push('scripts')
-    <script>
-        // Additional animations for the home page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Counter animation for stats
-            const statNumbers = document.querySelectorAll('.stat-number');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const target = entry.target;
-                        const finalValue = parseInt(target.textContent);
+@push('scripts')
+<script>
+    // Additional animations for the home page
+    document.addEventListener('DOMContentLoaded', function() {
+        // Counter animation for stats
+        const statNumbers = document.querySelectorAll('.stat-number');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = entry.target;
+                    const text = target.textContent;
+                    // Check if it's a percentage or regular number
+                    if (text.includes('/')) {
+                        // For ratings like 4.8/5
+                        const parts = text.split('/');
+                        const value = parseFloat(parts[0]);
+                        const total = parts[1];
+                        let current = 0;
+                        const increment = value / 30;
+                        const timer = setInterval(() => {
+                            current += increment;
+                            if (current >= value) {
+                                target.textContent = value.toFixed(1) + '/' + total;
+                                clearInterval(timer);
+                            } else {
+                                target.textContent = current.toFixed(1) + '/' + total;
+                            }
+                        }, 30);
+                    } else if (text.includes('%')) {
+                        // For percentages
+                        const value = parseInt(text);
+                        let current = 0;
+                        const increment = value / 30;
+                        const timer = setInterval(() => {
+                            current += increment;
+                            if (current >= value) {
+                                target.textContent = value + '%';
+                                clearInterval(timer);
+                            } else {
+                                target.textContent = Math.floor(current) + '%';
+                            }
+                        }, 30);
+                    } else {
+                        // For regular numbers
+                        const finalValue = parseInt(text);
                         let currentValue = 0;
-                        const increment = finalValue / 50;
+                        const increment = finalValue / 30;
                         const timer = setInterval(() => {
                             currentValue += increment;
                             if (currentValue >= finalValue) {
@@ -662,13 +840,13 @@
                                 target.textContent = Math.floor(currentValue) + '+';
                             }
                         }, 30);
-                        observer.unobserve(target);
                     }
-                });
-            }, { threshold: 0.5 });
-            
-            statNumbers.forEach(stat => observer.observe(stat));
-        });
-    </script>
-    @endpush
-@endsection
+                    observer.unobserve(target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        statNumbers.forEach(stat => observer.observe(stat));
+    });
+</script>
+@endpush

@@ -41,21 +41,31 @@
     @stack('styles')
     
     <style>
+        /* CSS Variables for Green Theme */
         :root {
-            --primary-blue: #1e3a8a;       /* Deep classic blue */
-            --secondary-blue: #2563eb;     /* Bright blue */
-            --light-blue: #60a5fa;         /* Light blue */
-            --navy-blue: #0f172a;          /* Dark navy */
-            --accent-gold: #d4af37;        /* Classic gold accent */
-            --warm-gold: #b8860b;          /* Warm gold */
-            --pure-white: #ffffff;
-            --off-white: #f8fafc;
-            --cream-white: #faf9f6;        /* Cream white */
+            /* Green Color Palette */
+            --primary-green: #2a6e3f;        /* Deep Forest Green */
+            --secondary-green: #38a169;      /* Vibrant Green */
+            --light-green: #68d391;          /* Light Mint Green */
+            --dark-green: #22543d;           /* Dark Forest Green */
+            --accent-green: #10b981;         /* Accent Emerald Green */
+            --navy-green: #1e422e;           /* Dark Navy Green */
+            --gold-green: #d4af37;           /* Accent Gold */
             --text-dark: #1e293b;
             --text-light: #64748b;
-            --shadow-soft: 0 8px 30px rgba(30, 58, 138, 0.08);
-            --shadow-medium: 0 15px 40px rgba(30, 58, 138, 0.12);
-            --logo-border-color: #b8860b;  /* Darker gold for better contrast */
+            --pure-white: #ffffff;
+            --off-white: #f8fafc;
+            --cream-white: #faf9f6;
+            
+            /* Gradients */
+            --gradient-green: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+            --gradient-dark-green: linear-gradient(135deg, var(--navy-green), var(--primary-green));
+            --gradient-light-green: linear-gradient(135deg, var(--light-green), var(--accent-green));
+            
+            /* Shadows */
+            --shadow-soft: 0 8px 30px rgba(42, 110, 63, 0.08);
+            --shadow-medium: 0 15px 40px rgba(42, 110, 63, 0.12);
+            --logo-border-color: #d4af37;  /* Gold for better contrast */
         }
         
         * {
@@ -78,13 +88,13 @@
             line-height: 1.2;
         }
         
-        /* Navigation - Classic Blue Style */
+        /* Navigation - Classic Green Style */
         .navbar {
             background: rgba(255, 255, 255, 0.98) !important;
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(30, 58, 138, 0.1);
+            border-bottom: 1px solid rgba(42, 110, 63, 0.1);
             padding: 0.8rem 0;
-            box-shadow: 0 2px 20px rgba(30, 58, 138, 0.05);
+            box-shadow: 0 2px 20px rgba(42, 110, 63, 0.05);
             transition: all 0.3s ease;
         }
         
@@ -133,7 +143,7 @@
             transform: scale(1.05);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4),
                         0 0 0 2px rgba(255, 255, 255, 0.9) inset;
-            border-color: var(--accent-gold);
+            border-color: var(--gold-green);
         }
         
         .logo-text-container {
@@ -146,7 +156,7 @@
             font-family: 'Cormorant Garamond', serif;
             font-weight: 700;
             font-size: 1.6rem;
-            color: var(--navy-blue);
+            color: var(--navy-green);
             letter-spacing: 0.3px;
             line-height: 1;
             margin-bottom: 3px;
@@ -171,7 +181,7 @@
             left: 0;
             width: 25px;
             height: 1px;
-            background: var(--accent-gold);
+            background: var(--gold-green);
         }
         
         .nav-link {
@@ -187,8 +197,8 @@
         }
         
         .nav-link:hover, .nav-link.active {
-            color: var(--primary-blue) !important;
-            background: rgba(30, 58, 138, 0.05);
+            color: var(--primary-green) !important;
+            background: rgba(42, 110, 63, 0.05);
         }
         
         .nav-link::after {
@@ -199,7 +209,7 @@
             transform: translateX(-50%);
             width: 0;
             height: 2px;
-            background: linear-gradient(90deg, var(--primary-blue), var(--accent-gold));
+            background: var(--gradient-green);
             transition: width 0.3s ease;
         }
         
@@ -216,9 +226,9 @@
             box-shadow: none;
         }
         
-        /* Classic Blue Buttons */
+        /* Classic Green Buttons */
         .btn-premium {
-            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            background: var(--gradient-green);
             color: white;
             border: none;
             padding: 0.8rem 2rem;
@@ -226,7 +236,7 @@
             font-weight: 600;
             font-size: 1rem;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(30, 58, 138, 0.2);
+            box-shadow: 0 4px 15px rgba(42, 110, 63, 0.2);
             position: relative;
             overflow: hidden;
             font-family: 'Inter', sans-serif;
@@ -250,14 +260,14 @@
         
         .btn-premium:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(30, 58, 138, 0.3);
+            box-shadow: 0 8px 25px rgba(42, 110, 63, 0.3);
             color: white;
         }
         
         .btn-premium-outline {
             background: transparent;
-            color: var(--primary-blue);
-            border: 2px solid var(--primary-blue);
+            color: var(--primary-green);
+            border: 2px solid var(--primary-green);
             padding: 0.8rem 2rem;
             border-radius: 4px;
             font-weight: 600;
@@ -267,10 +277,10 @@
         }
         
         .btn-premium-outline:hover {
-            background: var(--primary-blue);
+            background: var(--primary-green);
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(30, 58, 138, 0.2);
+            box-shadow: 0 8px 25px rgba(42, 110, 63, 0.2);
         }
         
         /* Main Content */
@@ -286,7 +296,7 @@
             border-radius: 10px;
             padding: 2.5rem;
             box-shadow: var(--shadow-soft);
-            border: 1px solid rgba(30, 58, 138, 0.08);
+            border: 1px solid rgba(42, 110, 63, 0.08);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             height: 100%;
             position: relative;
@@ -300,7 +310,7 @@
             left: 0;
             width: 100%;
             height: 4px;
-            background: linear-gradient(90deg, var(--primary-blue), var(--accent-gold));
+            background: var(--gradient-green);
         }
         
         .premium-card:hover {
@@ -322,7 +332,7 @@
         
         .section-title h2 {
             font-size: 2.8rem;
-            color: var(--navy-blue);
+            color: var(--navy-green);
             margin-bottom: 1.5rem;
             position: relative;
             display: inline-block;
@@ -338,7 +348,7 @@
             transform: translateX(-50%);
             width: 100px;
             height: 2px;
-            background: linear-gradient(90deg, var(--primary-blue), var(--accent-gold));
+            background: var(--gradient-green);
             border-radius: 2px;
         }
         
@@ -354,7 +364,7 @@
         
         /* Footer */
         .footer {
-            background: linear-gradient(135deg, var(--navy-blue), var(--primary-blue));
+            background: var(--gradient-dark-green);
             color: white;
             padding: 5rem 0 2rem;
             position: relative;
@@ -368,7 +378,7 @@
             left: 0;
             width: 100%;
             height: 4px;
-            background: linear-gradient(90deg, var(--accent-gold), var(--warm-gold));
+            background: linear-gradient(90deg, var(--gold-green), #b8860b);
         }
         
         .footer h5 {
@@ -387,7 +397,7 @@
         }
         
         .footer a:hover {
-            color: var(--accent-gold);
+            color: var(--gold-green);
             padding-left: 5px;
         }
         
@@ -405,9 +415,9 @@
         }
         
         .social-icons a:hover {
-            background: var(--accent-gold);
+            background: var(--gold-green);
             transform: translateY(-3px);
-            color: var(--navy-blue);
+            color: var(--navy-green);
         }
         
         .copyright {
@@ -427,7 +437,7 @@
             right: 30px;
             width: 50px;
             height: 50px;
-            background: var(--primary-blue);
+            background: var(--primary-green);
             color: white;
             border-radius: 4px;
             display: flex;
@@ -438,7 +448,7 @@
             transform: translateY(20px);
             transition: all 0.3s ease;
             z-index: 1000;
-            box-shadow: 0 4px 15px rgba(30, 58, 138, 0.2);
+            box-shadow: 0 4px 15px rgba(42, 110, 63, 0.2);
             font-size: 1.2rem;
         }
         
@@ -448,7 +458,7 @@
         }
         
         .scroll-top:hover {
-            background: var(--secondary-blue);
+            background: var(--secondary-green);
             transform: translateY(-5px);
         }
         
@@ -464,8 +474,8 @@
         
         .navbar-cart-btn {
             background: transparent;
-            border: 2px solid var(--primary-blue);
-            color: var(--primary-blue);
+            border: 2px solid var(--primary-green);
+            color: var(--primary-green);
             width: 45px;
             height: 45px;
             border-radius: 50%;
@@ -479,11 +489,11 @@
         }
         
         .navbar-cart-btn:hover {
-            background: var(--primary-blue);
+            background: var(--primary-green);
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(30, 58, 138, 0.25);
-            border-color: var(--secondary-blue);
+            box-shadow: 0 6px 20px rgba(42, 110, 63, 0.25);
+            border-color: var(--secondary-green);
         }
         
         .navbar-cart-btn:active {
@@ -495,8 +505,8 @@
             position: absolute;
             top: -8px;
             right: -8px;
-            background: linear-gradient(135deg, var(--accent-gold), var(--warm-gold));
-            color: var(--navy-blue);
+            background: var(--gradient-green);
+            color: white;
             font-weight: 700;
             font-size: 0.7rem;
             width: 22px;
@@ -505,13 +515,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 2px 8px rgba(42, 110, 63, 0.3);
             border: 2px solid white;
-            animation: pulse-gold 2s infinite;
+            animation: pulse-green 2s infinite;
             font-family: 'Inter', sans-serif;
         }
         
-        @keyframes pulse-gold {
+        @keyframes pulse-green {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
         }
@@ -521,7 +531,7 @@
             font-family: 'Inter', sans-serif;
             font-weight: 600;
             font-size: 0.9rem;
-            color: var(--primary-blue);
+            color: var(--primary-green);
             margin-left: 10px;
             white-space: nowrap;
             display: flex;
@@ -542,7 +552,7 @@
         
         .cart-empty-state i {
             font-size: 4rem;
-            color: #e0e7ff;
+            color: #d1fae5;
             margin-bottom: 1.5rem;
             opacity: 0.6;
         }
@@ -561,8 +571,8 @@
         
         /* Cart modal styles */
         .cart-modal-header {
-            background: linear-gradient(135deg, var(--navy-blue), var(--primary-blue));
-            border-bottom: 3px solid var(--accent-gold);
+            background: var(--gradient-dark-green);
+            border-bottom: 3px solid var(--gold-green);
             position: relative;
             overflow: hidden;
         }
@@ -574,7 +584,7 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: linear-gradient(90deg, var(--accent-gold), transparent 70%);
+            background: linear-gradient(90deg, var(--gold-green), transparent 70%);
         }
         
         .cart-modal-title {
@@ -588,12 +598,12 @@
         }
         
         .cart-modal-title i {
-            color: var(--accent-gold);
+            color: var(--gold-green);
         }
         
         .cart-item-count {
             background: rgba(255, 255, 255, 0.2);
-            color: var(--accent-gold);
+            color: var(--gold-green);
             font-size: 0.8rem;
             padding: 0.25rem 0.75rem;
             border-radius: 20px;
@@ -615,12 +625,12 @@
         }
         
         .cart-modal-body::-webkit-scrollbar-thumb {
-            background: var(--light-blue);
+            background: var(--light-green);
             border-radius: 3px;
         }
         
         .cart-modal-body::-webkit-scrollbar-thumb:hover {
-            background: var(--secondary-blue);
+            background: var(--secondary-green);
         }
         
         /* Cart items list */
@@ -634,7 +644,7 @@
             display: flex;
             align-items: center;
             padding: 1rem 1.25rem;
-            border-bottom: 1px solid rgba(30, 58, 138, 0.08);
+            border-bottom: 1px solid rgba(42, 110, 63, 0.08);
             transition: all 0.3s ease;
             background: white;
         }
@@ -650,19 +660,19 @@
         .cart-item-image {
             width: 60px;
             height: 60px;
-            background: linear-gradient(135deg, #e0e7ff, #dbeafe);
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 1rem;
-            border: 1px solid rgba(30, 58, 138, 0.1);
+            border: 1px solid rgba(42, 110, 63, 0.1);
             flex-shrink: 0;
         }
         
         .cart-item-image i {
             font-size: 1.5rem;
-            color: var(--primary-blue);
+            color: var(--primary-green);
             opacity: 0.8;
         }
         
@@ -673,7 +683,7 @@
         
         .cart-item-name {
             font-weight: 600;
-            color: var(--navy-blue);
+            color: var(--navy-green);
             font-size: 0.95rem;
             margin-bottom: 0.25rem;
             white-space: nowrap;
@@ -690,7 +700,7 @@
         
         .cart-item-price {
             font-weight: 700;
-            color: var(--primary-blue);
+            color: var(--primary-green);
             font-size: 1rem;
             white-space: nowrap;
             margin-left: 1rem;
@@ -720,9 +730,9 @@
         }
         
         .qty-btn:hover {
-            background: var(--primary-blue);
+            background: var(--primary-green);
             color: white;
-            border-color: var(--primary-blue);
+            border-color: var(--primary-green);
         }
         
         .qty-btn:disabled {
@@ -764,7 +774,7 @@
         /* Cart summary */
         .cart-summary {
             background: #f8fafc;
-            border-top: 1px solid rgba(30, 58, 138, 0.1);
+            border-top: 1px solid rgba(42, 110, 63, 0.1);
             padding: 1.5rem;
         }
         
@@ -791,7 +801,7 @@
         }
         
         .cart-total-row {
-            border-top: 2px dashed rgba(30, 58, 138, 0.2);
+            border-top: 2px dashed rgba(42, 110, 63, 0.2);
             padding-top: 1rem;
             margin-top: 1rem;
         }
@@ -799,20 +809,20 @@
         .cart-total-label {
             font-weight: 700;
             font-size: 1.1rem;
-            color: var(--navy-blue);
+            color: var(--navy-green);
         }
         
         .cart-total-value {
             font-weight: 800;
             font-size: 1.3rem;
-            color: var(--primary-blue);
+            color: var(--primary-green);
             font-family: 'Playfair Display', serif;
         }
         
         /* Cart modal footer */
         .cart-modal-footer {
             background: white;
-            border-top: 1px solid rgba(30, 58, 138, 0.1);
+            border-top: 1px solid rgba(42, 110, 63, 0.1);
             padding: 1rem 1.5rem;
             display: flex;
             justify-content: space-between;
@@ -862,7 +872,7 @@
         }
         
         .cart-btn-checkout {
-            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            background: var(--gradient-green);
             color: white;
             border: none;
             padding: 0.5rem 1.5rem;
@@ -870,12 +880,12 @@
             font-size: 0.9rem;
             font-weight: 600;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
+            box-shadow: 0 4px 12px rgba(42, 110, 63, 0.2);
         }
         
         .cart-btn-checkout:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(30, 58, 138, 0.3);
+            box-shadow: 0 6px 20px rgba(42, 110, 63, 0.3);
         }
         
         .cart-btn-checkout:disabled {
@@ -890,7 +900,7 @@
             top: 90px;
             right: 20px;
             background: white;
-            border-left: 4px solid var(--accent-gold);
+            border-left: 4px solid var(--gold-green);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             padding: 1rem 1.5rem;
             border-radius: 4px;
@@ -908,7 +918,7 @@
         }
         
         .cart-notification-icon {
-            color: var(--accent-gold);
+            color: var(--gold-green);
             font-size: 1.5rem;
         }
         
@@ -918,7 +928,7 @@
         
         .cart-notification-title {
             font-weight: 600;
-            color: var(--navy-blue);
+            color: var(--navy-green);
             margin-bottom: 0.25rem;
         }
         
@@ -1132,23 +1142,6 @@
                         </ul>
                     </li>
                     
-                    <!-- Cart Button -->
-                    <li class="nav-item">
-                        <div class="navbar-cart-container">
-                            <button class="navbar-cart-btn" data-bs-toggle="modal" data-bs-target="#cartModal">
-                                <i class="bi bi-cart3"></i>
-                                @if($cartCount > 0)
-                                    <span class="cart-badge">{{ $cartCount }}</span>
-                                @endif
-                            </button>
-                            @if($cartCount > 0)
-                                <span class="cart-total-amount d-none d-lg-inline">
-                                    <span class="currency">KSh</span>
-                                    {{ number_format($cartTotal) }}
-                                </span>
-                            @endif
-                        </div>
-                    </li>
                     
                     <li class="nav-item">
                         <a class="nav-link" href="/about">About</a>
@@ -1180,6 +1173,24 @@
                                 </li>
                             </ul>
                         </li>
+
+                         <!-- Cart Button -->
+                    <li class="nav-item">
+                        <div class="navbar-cart-container">
+                            <button class="navbar-cart-btn" data-bs-toggle="modal" data-bs-target="#cartModal">
+                                <i class="bi bi-cart3"></i>
+                                @if($cartCount > 0)
+                                    <span class="cart-badge">{{ $cartCount }}</span>
+                                @endif
+                            </button>
+                            @if($cartCount > 0)
+                                <span class="cart-total-amount d-none d-lg-inline">
+                                    <span class="currency">KSh</span>
+                                    {{ number_format($cartTotal) }}
+                                </span>
+                            @endif
+                        </div>
+                    </li>
                     @else
                         <li class="nav-item ms-2">
                             <a href="{{ route('login') }}" class="btn btn-premium-outline">Login</a>
@@ -1207,7 +1218,7 @@
                         <div class="logo-image-container d-inline-block">
                             <img src="{{ asset('images/logo.jpeg') }}" alt="Premium Farming Feeds" 
                                  class="logo-image mb-3" 
-                                 style="border-color: var(--accent-gold); filter: brightness(1.1);">
+                                 style="border-color: var(--gold-green); filter: brightness(1.1);">
                         </div>
                         <div class="logo-text-container text-center text-lg-start">
                             <div class="company-name" style="color: white; font-size: 1.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Premium Farming Feeds</div>
@@ -1349,9 +1360,9 @@
                             <i class="bi bi-cart-x"></i>
                             <h5>Your cart is empty</h5>
                             <p>Add products to get started</p>
-                            <button class="btn btn-premium-outline mt-3" data-bs-dismiss="modal">
+                            <a href="{{ route('shop.products') }}" class="btn btn-premium-outline mt-3">
                                 Continue Shopping
-                            </button>
+                            </a>
                         </div>
                     @endif
                 </div>
@@ -1384,9 +1395,9 @@
                             <button type="button" class="cart-btn-clear" id="clearCartBtn">
                                 <i class="bi bi-trash me-1"></i>Clear Cart
                             </button>
-                            <button type="button" class="cart-btn-close" data-bs-dismiss="modal">
+                            <a href="{{ route('shop.products') }}" class="cart-btn-close" data-bs-dismiss="modal">
                                 Continue Shopping
-                            </button>
+                            </a>
                         </div>
                         <div class="cart-actions-right">
                             <a href="{{ route('checkout') }}" class="cart-btn-checkout">

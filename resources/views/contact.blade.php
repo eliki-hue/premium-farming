@@ -1,144 +1,232 @@
+{{-- contact.blade.php --}}
 @extends('layouts.app')
 
-@section('title', 'Contact Premium Farming Feeds')
+@section('title', 'Contact Us | Premium Farming Feeds')
 
 @section('content')
 <div class="min-h-screen pt-24">
     <!-- Contact Hero -->
     <section class="contact-hero" style="
-        background: linear-gradient(rgba(42, 110, 63, 0.9), rgba(30, 82, 46, 0.9)),
+        background: var(--gradient-dark-green),
                     url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070') center/cover;
-        padding: 6rem 0;
+        padding: 6rem 0 4rem;
         color: white;
-        text-align: center;
+        position: relative;
+        overflow: hidden;
     ">
-        <div class="container">
-            <h1 class="display-4 fw-bold mb-3">Contact Us</h1>
-            <p class="lead mb-0">We're here to help you grow your farm successfully</p>
+        <div class="position-absolute top-0 end-0 w-50 h-100" style="
+            background: linear-gradient(45deg, transparent 50%, rgba(212, 175, 55, 0.1) 50%);
+        "></div>
+        
+        <div class="container position-relative z-1">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h1 class="display-4 fw-bold mb-3 animate__animated animate__fadeInDown" 
+                        style="font-family: 'Cormorant Garamond', serif;">
+                        Contact Premium Farming Feeds
+                    </h1>
+                    <p class="lead mb-0 animate__animated animate__fadeInUp animate__delay-1s" 
+                       style="font-size: 1.2rem;">
+                        Expert agricultural support and premium quality feeds
+                    </p>
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- Contact Information -->
-    <section class="py-5">
+    <section class="py-5 bg-light" id="contactInfo">
         <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold mb-3" style="font-family: 'Cormorant Garamond', serif; color: var(--navy-green);">
+                    How to Reach Us
+                </h2>
+                <p class="text-muted">
+                    Multiple channels for your convenience
+                </p>
+            </div>
+            
             <div class="row g-4">
-                <!-- Branch Information -->
+                <!-- Contact Details -->
                 <div class="col-lg-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <div class="mb-4">
-                                <i class="bi bi-shop text-primary" style="font-size: 3rem;"></i>
+                    <div class="card h-100 border-0 shadow-lg premium-card">
+                        <div class="card-header border-0 bg-transparent pt-4">
+                            <div class="icon-wrapper mx-auto mb-3" style="
+                                width: 70px;
+                                height: 70px;
+                                background: var(--gradient-green);
+                                border-radius: 50%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            ">
+                                <i class="bi bi-telephone text-white" style="font-size: 1.8rem;"></i>
                             </div>
-                            <h3 class="card-title mb-3">Our Branches</h3>
-                            <div class="text-start">
-                                <div class="mb-3">
-                                    <h5 class="text-primary mb-1">🏪 Turitu Branch</h5>
-                                    <p class="mb-1 text-muted">Main Branch & Headquarters</p>
-                                    <p class="mb-1">Along Thika-Gatundu Road</p>
-                                    <p><strong>Hours:</strong> 8:00 AM - 6:00 PM (Mon-Sat)</p>
+                            <h3 class="card-title text-center mb-0" style="font-size: 1.3rem; color: var(--navy-green);">
+                                Contact Details
+                            </h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <!-- Phone Numbers -->
+                            <div class="mb-4">
+                                <h5 class="text-green mb-3 fw-bold">
+                                    <i class="bi bi-telephone me-2"></i>Phone Numbers
+                                </h5>
+                                @foreach([
+                                    ['number' => '0786 571 173', 'label' => 'Customer Service'],
+                                    ['number' => '0708 488 688', 'label' => 'Sales & Orders'],
+                                    ['number' => '0711 633 900', 'label' => 'Technical Support']
+                                ] as $contact)
+                                <div class="contact-item d-flex align-items-center mb-3 p-3 border rounded-3">
+                                    <div class="me-3">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                             style="width: 45px; height: 45px; background: rgba(56, 161, 105, 0.1); border: 2px solid var(--primary-green);">
+                                            <i class="bi bi-telephone text-green"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-bold fs-5 mb-1 text-dark">{{ $contact['number'] }}</div>
+                                        <div class="text-muted small">{{ $contact['label'] }}</div>
+                                    </div>
+                                    <div>
+                                        <a href="tel:+254{{ str_replace(' ', '', substr($contact['number'], 1)) }}" 
+                                           class="btn btn-sm" style="background: var(--gradient-green); color: white;">
+                                            <i class="bi bi-telephone-outbound"></i>
+                                        </a>
+                                    </div>
                                 </div>
-                                
-                                <div class="mb-3">
-                                    <h5 class="text-primary mb-1">🏪 Githiga Branch</h5>
-                                    <p class="mb-1 text-muted">Processing Plant</p>
-                                    <p class="mb-1">Githiga Shopping Center</p>
-                                    <p><strong>Hours:</strong> 8:00 AM - 6:00 PM (Mon-Sat)</p>
+                                @endforeach
+                            </div>
+
+                            <!-- Payment Details -->
+                            <div class="mb-4">
+                                <h5 class="text-green mb-3 fw-bold">
+                                    <i class="bi bi-credit-card me-2"></i>Payment Details
+                                </h5>
+                                <div class="payment-card p-3 border rounded-3">
+                                    <div class="row text-center">
+                                        <div class="col-6 mb-3">
+                                            <i class="bi bi-phone text-green fs-3 d-block mb-2"></i>
+                                            <div class="fw-bold">Paybill</div>
+                                            <div class="fs-4 fw-bold text-green">247247</div>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <i class="bi bi-hash text-green fs-3 d-block mb-2"></i>
+                                            <div class="fw-bold">Account</div>
+                                            <div class="fs-4 fw-bold text-green">470470</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <small class="text-muted">Premium Farming Feeds</small>
+                                    </div>
                                 </div>
-                                
-                                <div class="mb-3">
-                                    <h5 class="text-primary mb-1">🏪 Ikinu Branch</h5>
-                                    <p class="mb-1 text-muted">Latest Expansion</p>
-                                    <p class="mb-1">Ikinu Town Center</p>
-                                    <p><strong>Hours:</strong> 8:00 AM - 6:00 PM (Mon-Sat)</p>
-                                </div>
-                                
-                                <div class="alert alert-warning mt-3 p-2">
-                                    <small><i class="bi bi-info-circle me-1"></i> <strong>Note:</strong> All branches closed on Sundays</small>
+                            </div>
+
+                            <!-- Service Hours -->
+                            <div>
+                                <h5 class="text-green mb-3 fw-bold">
+                                    <i class="bi bi-clock me-2"></i>Service Hours
+                                </h5>
+                                <div class="row g-2">
+                                    <div class="col-12 mb-2">
+                                        <div class="d-flex align-items-center p-2 border rounded-2">
+                                            <i class="bi bi-telephone text-green me-3"></i>
+                                            <div>
+                                                <div class="fw-bold">Phone Support</div>
+                                                <small class="text-muted">Mon-Sat, 8AM-6PM</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <div class="d-flex align-items-center p-2 border rounded-2">
+                                            <i class="bi bi-envelope text-green me-3"></i>
+                                            <div>
+                                                <div class="fw-bold">Email Support</div>
+                                                <small class="text-muted">Response within 24hrs</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex align-items-center p-2 border rounded-2">
+                                            <i class="bi bi-truck text-green me-3"></i>
+                                            <div>
+                                                <div class="fw-bold">Delivery</div>
+                                                <small class="text-muted">Mon-Sat, 8AM-6PM</small>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Contact Details -->
+                <!-- Branches -->
                 <div class="col-lg-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <div class="mb-4">
-                                <i class="bi bi-clock text-warning" style="font-size: 3rem;"></i>
+                    <div class="card h-100 border-0 shadow-lg premium-card">
+                        <div class="card-header border-0 bg-transparent pt-4">
+                            <div class="icon-wrapper mx-auto mb-3" style="
+                                width: 70px;
+                                height: 70px;
+                                background: var(--gradient-green);
+                                border-radius: 50%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            ">
+                                <i class="bi bi-shop-window text-white" style="font-size: 1.8rem;"></i>
                             </div>
-                            <h3 class="card-title mb-3">Operating Hours</h3>
-                            
-                            <!-- Operating Hours Box -->
-                            <div class="alert alert-info text-start mb-4">
+                            <h3 class="card-title text-center mb-0" style="font-size: 1.3rem; color: var(--navy-green);">
+                                Our Branches
+                            </h3>
+                        </div>
+                        <div class="card-body p-4">
+                            @foreach([
+                                [
+                                    'name' => 'Turitu Branch',
+                                    'address' => 'Along Thika-Gatundu Road',
+                                    'description' => 'Main Headquarters'
+                                ],
+                                [
+                                    'name' => 'Githiga Branch',
+                                    'address' => 'Githiga Shopping Center',
+                                    'description' => 'Processing Plant'
+                                ],
+                                [
+                                    'name' => 'Ikinu Branch',
+                                    'address' => 'Ikinu Town Center',
+                                    'description' => 'Latest Branch'
+                                ]
+                            ] as $branch)
+                            <div class="branch-item mb-4 p-3 border rounded-3">
                                 <div class="d-flex align-items-start">
-                                    <i class="bi bi-info-circle me-2 mt-1"></i>
-                                    <div>
-                                        <h6 class="fw-bold mb-2">All Branches:</h6>
-                                        <div class="mb-2">
-                                            <strong>Monday - Saturday</strong><br>
-                                            8:00 AM - 6:00 PM
+                                    <div class="me-3">
+                                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center"
+                                             style="width: 45px; height: 45px; border: 2px solid var(--primary-green);">
+                                            <i class="bi bi-geo-alt text-green"></i>
                                         </div>
-                                        <div class="mb-0">
-                                            <strong>Sunday</strong><br>
-                                            Closed
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h5 class="text-green mb-1 fw-bold">{{ $branch['name'] }}</h5>
+                                        <p class="text-muted small mb-2">{{ $branch['description'] }}</p>
+                                        <p class="mb-2">
+                                            <i class="bi bi-geo-alt me-1 text-green"></i>
+                                            {{ $branch['address'] }}
+                                        </p>
+                                        <div class="hours-badge rounded-pill px-3 py-1 d-inline-block" style="background: rgba(56, 161, 105, 0.1); color: var(--secondary-green);">
+                                            <i class="bi bi-clock me-1"></i>
+                                            <span>8AM-6PM</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="text-start">
-                                <div class="mb-4">
-                                    <h5 class="text-success mb-2">📞 Phone Numbers</h5>
-                                    <div class="d-flex align-items-center mb-2">
-                                        <i class="bi bi-phone me-2 text-primary"></i>
-                                        <div>
-                                            <p class="mb-0 fw-bold">0786 571 173</p>
-                                            <small class="text-muted">Customer Service</small>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-center mb-2">
-                                        <i class="bi bi-phone me-2 text-primary"></i>
-                                        <div>
-                                            <p class="mb-0 fw-bold">0708 488 688</p>
-                                            <small class="text-muted">Sales & Orders</small>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-center mb-2">
-                                        <i class="bi bi-phone me-2 text-primary"></i>
-                                        <div>
-                                            <p class="mb-0 fw-bold">0711 633 900</p>
-                                            <small class="text-muted">Technical Support</small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Add Operating Hours Info -->
-                                <div class="mb-4">
-                                    <h5 class="text-success mb-2">⏰ Service Hours</h5>
-                                    <div class="small">
-                                        <p class="mb-1"><strong>Phone Support:</strong> Mon-Sat, 8AM-6PM</p>
-                                        <p class="mb-1"><strong>Email Support:</strong> 24/7 (Response within 24hrs)</p>
-                                        <p class="mb-1"><strong>Delivery Services:</strong> Mon-Sat, 8AM-6PM</p>
-                                        <p class="mb-0"><strong>Online Orders:</strong> Available 24/7</p>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <h5 class="text-success mb-2">🏦 Payment Details</h5>
-                                    <div class="d-flex align-items-center mb-2">
-                                        <i class="bi bi-bank me-2 text-primary"></i>
-                                        <div>
-                                            <p class="mb-0 fw-bold">Paybill: 247247</p>
-                                            <small class="text-muted">M-Pesa Payment</small>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-hash me-2 text-primary"></i>
-                                        <div>
-                                            <p class="mb-0 fw-bold">Account: 470470</p>
-                                            <small class="text-muted">Premium Farming Feeds</small>
-                                        </div>
+                            @endforeach
+                            
+                            <div class="alert alert-warning mt-3 p-3 border-0" style="background: rgba(245, 158, 11, 0.1); border-left: 4px solid #f59e0b !important;">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-info-circle fs-5 text-warning me-3"></i>
+                                    <div>
+                                        <strong>Note:</strong> Closed on Sundays & Public Holidays
                                     </div>
                                 </div>
                             </div>
@@ -148,84 +236,110 @@
 
                 <!-- Contact Form -->
                 <div class="col-lg-4">
-                    <div class="card h-100 border-0 shadow-sm">
+                    <div class="card h-100 border-0 shadow-lg premium-card">
+                        <div class="card-header border-0 bg-transparent pt-4">
+                            <div class="icon-wrapper mx-auto mb-3" style="
+                                width: 70px;
+                                height: 70px;
+                                background: var(--gradient-green);
+                                border-radius: 50%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            ">
+                                <i class="bi bi-chat-left-text text-white" style="font-size: 1.8rem;"></i>
+                            </div>
+                            <h3 class="card-title text-center mb-0" style="font-size: 1.3rem; color: var(--navy-green);">
+                                Send Message
+                            </h3>
+                        </div>
                         <div class="card-body p-4">
-                            <h3 class="card-title mb-4 text-center">Send Us a Message</h3>
-                            <form action="{{ route('contact.send') }}" method="POST">
+                            <form action="{{ route('contact.send') }}" method="POST" class="needs-validation" novalidate>
                                 @csrf
                                 
                                 @if(session('success'))
-                                <div class="alert alert-success alert-dismissible fade show mb-3">
-                                    {{ session('success') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                                </div>
-                                @endif
-                                
-                                @if(session('error'))
-                                <div class="alert alert-danger alert-dismissible fade show mb-3">
-                                    {{ session('error') }}
+                                <div class="alert alert-success alert-dismissible fade show mb-4" style="border-left: 4px solid var(--secondary-green) !important;">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-check-circle-fill fs-4 me-2" style="color: var(--secondary-green);"></i>
+                                        <div>{{ session('success') }}</div>
+                                    </div>
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                 </div>
                                 @endif
                                 
                                 @if($errors->any())
-                                <div class="alert alert-danger alert-dismissible fade show mb-3">
-                                    <ul class="mb-0">
-                                        @foreach($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
+                                <div class="alert alert-danger alert-dismissible fade show mb-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-exclamation-circle-fill fs-4 me-2"></i>
+                                        <div>
+                                            <strong>Please fix errors:</strong>
+                                            <ul class="mb-0 mt-1">
+                                                @foreach($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </div>
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                 </div>
                                 @endif
 
                                 <div class="mb-3">
-                                    <label for="name" class="form-label">Your Name *</label>
+                                    <label for="name" class="form-label fw-bold" style="color: var(--navy-green);">
+                                        <i class="bi bi-person me-1"></i>Your Name *
+                                    </label>
                                     <input type="text" class="form-control" id="name" name="name" 
-                                           value="{{ old('name') }}" required>
+                                           value="{{ old('name') }}" required style="border-color: rgba(42, 110, 63, 0.2);">
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <label for="phone" class="form-label">Phone Number *</label>
+                                    <label for="phone" class="form-label fw-bold" style="color: var(--navy-green);">
+                                        <i class="bi bi-phone me-1"></i>Phone Number *
+                                    </label>
                                     <input type="tel" class="form-control" id="phone" name="phone" 
-                                           value="{{ old('phone') }}" required>
+                                           value="{{ old('phone') }}" required style="border-color: rgba(42, 110, 63, 0.2);">
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">Email Address *</label>
+                                    <label for="email" class="form-label fw-bold" style="color: var(--navy-green);">
+                                        <i class="bi bi-envelope me-1"></i>Email Address
+                                    </label>
                                     <input type="email" class="form-control" id="email" name="email" 
-                                           value="{{ old('email') }}" required>
+                                           value="{{ old('email') }}" style="border-color: rgba(42, 110, 63, 0.2);">
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <label for="subject" class="form-label">Subject *</label>
-                                    <select class="form-control" id="subject" name="subject" required>
+                                    <label for="subject" class="form-label fw-bold" style="color: var(--navy-green);">
+                                        <i class="bi bi-tag me-1"></i>Subject *
+                                    </label>
+                                    <select class="form-select" id="subject" name="subject" required style="border-color: rgba(42, 110, 63, 0.2);">
                                         <option value="">Select Subject</option>
                                         <option value="product_inquiry" {{ old('subject') == 'product_inquiry' ? 'selected' : '' }}>Product Inquiry</option>
                                         <option value="order_status" {{ old('subject') == 'order_status' ? 'selected' : '' }}>Order Status</option>
-                                        <option value="delivery_issue" {{ old('subject') == 'delivery_issue' ? 'selected' : '' }}>Delivery Issue</option>
                                         <option value="technical_support" {{ old('subject') == 'technical_support' ? 'selected' : '' }}>Technical Support</option>
                                         <option value="feedback" {{ old('subject') == 'feedback' ? 'selected' : '' }}>Feedback</option>
-                                        <option value="other" {{ old('subject') == 'other' ? 'selected' : '' }}>Other</option>
                                     </select>
                                 </div>
                                 
                                 <div class="mb-4">
-                                    <label for="message" class="form-label">Message *</label>
-                                    <textarea class="form-control" id="message" name="message" rows="4" 
-                                              required>{{ old('message') }}</textarea>
+                                    <label for="message" class="form-label fw-bold" style="color: var(--navy-green);">
+                                        <i class="bi bi-chat-left-text me-1"></i>Message *
+                                    </label>
+                                    <textarea class="form-control" id="message" name="message" 
+                                              rows="4" required style="border-color: rgba(42, 110, 63, 0.2);">{{ old('message') }}</textarea>
                                 </div>
                                 
-                                <button type="submit" class="btn btn-success w-100">
-                                    <i class="bi bi-send me-2"></i> Send Message
+                                <button type="submit" class="btn w-100" style="background: var(--gradient-green); color: white;">
+                                    <i class="bi bi-send-fill me-2"></i> Send Message
                                 </button>
                             </form>
                             
                             <div class="mt-4 text-center">
-                                <p class="text-muted small">
-                                    <i class="bi bi-clock me-1"></i>
-                                    We respond within 24 hours
-                                </p>
+                                <div class="alert p-3" style="background: rgba(14, 165, 233, 0.1); border-left: 4px solid #0ea5e9 !important;">
+                                    <i class="bi bi-lightning-charge-fill text-green me-2"></i>
+                                    <span class="fw-bold">Fast Response:</span>
+                                    <span class="text-muted ms-1">We respond within 24 hours</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -235,200 +349,82 @@
     </section>
 
     <!-- Map Section -->
-    <section class="py-5 bg-light">
+    <section class="py-5 bg-white" id="mapSection">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="display-6 fw-bold mb-3">Find Us</h2>
-                <p class="text-muted">Visit any of our conveniently located branches</p>
+                <h2 class="display-5 fw-bold mb-3" style="font-family: 'Cormorant Garamond', serif; color: var(--navy-green);">
+                    Find Our Locations
+                </h2>
+                <p class="text-muted">
+                    Visit any of our conveniently located branches
+                </p>
             </div>
             
             <div class="row g-4">
+                @foreach([
+                    [
+                        'name' => 'Turitu Branch',
+                        'address' => 'Along Thika-Gatundu Road, opposite Turitu Market',
+                        'coords' => '!1m18!1m12!1m3!1d3989.032018745386!2d36.893577614458355!3d-1.090570099199527!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f407c5f2e8b0f%3A0x9f9d3b5b5b5b5b5b!2sTuritu%2C%20Kenya!5e0!3m2!1sen!2ske!4v1648035456782!5m2!1sen!2ske',
+                        'color' => 'green'
+                    ],
+                    [
+                        'name' => 'Githiga Branch',
+                        'address' => 'Githiga Shopping Center, next to Githiga Police Station',
+                        'coords' => '!1m18!1m12!1m3!1d3989.129218754389!2d36.839268414458355!3d-1.0674640992121215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f3b5b5b5b5b5b%3A0x9f9d3b5b5b5b5b5b!2sGithiga%2C%20Kenya!5e0!3m2!1sen!2ske!4v1648035456782!5m2!1sen!2ske',
+                        'color' => 'green'
+                    ],
+                    [
+                        'name' => 'Ikinu Branch',
+                        'address' => 'Ikinu Town Center, next to Ikinu Market',
+                        'coords' => '!1m18!1m12!1m3!1d3989.0747321272835!2d36.876447714458355!3d-1.0789991992059185!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f3b5b5b5b5b5b%3A0x9f9d3b5b5b5b5b5b!2sIkinu%2C%20Kenya!5e0!3m2!1sen!2ske!4v1648035456782!5m2!1sen!2ske',
+                        'color' => 'green'
+                    ]
+                ] as $branch)
                 <div class="col-lg-4">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title text-primary mb-3">📍 Turitu Branch</h5>
-                            <p class="card-text">Along Thika-Gatundu Road, opposite Turitu Market</p>
-                            <div class="branch-hours mb-3 p-2 bg-light rounded">
-                                <small><strong>Hours:</strong> Monday-Saturday, 8:00 AM - 6:00 PM</small><br>
-                                <small><strong>Closed:</strong> Sunday & Public Holidays</small>
+                    <div class="card h-100 border-0 shadow-sm premium-card">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-start mb-4">
+                                <div class="me-3">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                         style="width: 50px; height: 50px; background: rgba(56, 161, 105, 0.1); border: 2px solid var(--primary-green);">
+                                        <i class="bi bi-geo-alt-fill text-green"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="text-green mb-2 fw-bold">{{ $branch['name'] }}</h5>
+                                    <p class="text-muted small">{{ $branch['address'] }}</p>
+                                </div>
                             </div>
-                            <div class="ratio ratio-16x9">
-                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.032018745386!2d36.893577614458355!3d-1.090570099199527!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f407c5f2e8b0f%3A0x9f9d3b5b5b5b5b5b!2sTuritu%2C%20Kenya!5e0!3m2!1sen!2ske!4v1648035456782!5m2!1sen!2ske" 
+                            
+                            <div class="branch-hours mb-4 p-3 rounded-3 bg-light">
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <i class="bi bi-calendar-check text-green d-block fs-4 mb-2"></i>
+                                        <div class="small fw-bold">Mon-Sat</div>
+                                        <div class="small">8AM-6PM</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <i class="bi bi-calendar-x text-danger d-block fs-4 mb-2"></i>
+                                        <div class="small fw-bold">Sunday</div>
+                                        <div class="small">Closed</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="ratio ratio-16x9 border rounded-3 overflow-hidden mb-3">
+                                <iframe src="https://www.google.com/maps/embed?pb={{ $branch['coords'] }}" 
                                         style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                             </div>
+                            
+                            <a href="https://maps.google.com/?q={{ urlencode($branch['address']) }}" 
+                               target="_blank" class="btn btn-outline-success w-100" style="border-color: var(--primary-green); color: var(--primary-green);">
+                                <i class="bi bi-arrow-up-right-square me-2"></i> Get Directions
+                            </a>
                         </div>
                     </div>
                 </div>
-                
-                <div class="col-lg-4">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title text-primary mb-3">📍 Githiga Branch</h5>
-                            <p class="card-text">Githiga Shopping Center, next to Githiga Police Station</p>
-                            <div class="branch-hours mb-3 p-2 bg-light rounded">
-                                <small><strong>Hours:</strong> Monday-Saturday, 8:00 AM - 6:00 PM</small><br>
-                                <small><strong>Closed:</strong> Sunday & Public Holidays</small>
-                            </div>
-                            <div class="ratio ratio-16x9">
-                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.129218754389!2d36.839268414458355!3d-1.0674640992121215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f3b5b5b5b5b5b%3A0x9f9d3b5b5b5b5b5b!2sGithiga%2C%20Kenya!5e0!3m2!1sen!2ske!4v1648035456782!5m2!1sen!2ske" 
-                                        style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title text-primary mb-3">📍 Ikinu Branch</h5>
-                            <p class="card-text">Ikinu Town Center, next to Ikinu Market</p>
-                            <div class="branch-hours mb-3 p-2 bg-light rounded">
-                                <small><strong>Hours:</strong> Monday-Saturday, 8:00 AM - 6:00 PM</small><br>
-                                <small><strong>Closed:</strong> Sunday & Public Holidays</small>
-                            </div>
-                            <div class="ratio ratio-16x9">
-                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.0747321272835!2d36.876447714458355!3d-1.0789991992059185!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f3b5b5b5b5b5b%3A0x9f9d3b5b5b5b5b5b!2sIkinu%2C%20Kenya!5e0!3m2!1sen!2ske!4v1648035456782!5m2!1sen!2ske" 
-                                        style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Customer Reviews Section -->
-    <section class="py-5">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center mb-5">
-                <div>
-                    <h2 class="display-6 fw-bold mb-2">What Farmers Say</h2>
-                    <p class="text-muted">Read reviews from our satisfied customers</p>
-                </div>
-                <div>
-                    <!-- ADD THIS BUTTON TO GO TO REVIEWS PAGE -->
-<a href="{{ route('reviews') }}" class="btn btn-outline-primary btn-lg">
-                        <i class="bi bi-chat-left-text me-2"></i> Write a Review
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Static Dummy Reviews -->
-            <div class="row g-4">
-                <!-- Review 1 -->
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body">
-                            <div class="d-flex align-items-start mb-3">
-                                <div class="me-3">
-                                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center"
-                                         style="width: 50px; height: 50px;">
-                                        <span class="text-white fw-bold">J</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h5 class="card-title mb-1">James Kariuki</h5>
-                                    <div class="text-muted small">
-                                        <i class="bi bi-geo-alt me-1"></i>Dairy Farmer, Kiambu
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                            </div>
-                            
-                            <p class="card-text">"The dairy meal increased my milk production by 30%. The delivery was on time and the customer service is excellent!"</p>
-                            
-                            <div class="mt-3">
-                                <span class="badge bg-success">Dairy Farming</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Review 2 -->
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body">
-                            <div class="d-flex align-items-start mb-3">
-                                <div class="me-3">
-                                    <div class="rounded-circle bg-success d-flex align-items-center justify-content-center"
-                                         style="width: 50px; height: 50px;">
-                                        <span class="text-white fw-bold">M</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h5 class="card-title mb-1">Mary Wanjiku</h5>
-                                    <div class="text-muted small">
-                                        <i class="bi bi-geo-alt me-1"></i>Poultry Farmer, Nairobi
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                            </div>
-                            
-                            <p class="card-text">"My broilers gained weight faster with Premium feeds. The technical advice from their team helped me reduce mortality rates."</p>
-                            
-                            <div class="mt-3">
-                                <span class="badge bg-warning text-dark">Poultry Farming</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Review 3 -->
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body">
-                            <div class="d-flex align-items-start mb-3">
-                                <div class="me-3">
-                                    <div class="rounded-circle bg-warning d-flex align-items-center justify-content-center"
-                                         style="width: 50px; height: 50px;">
-                                        <span class="text-white fw-bold">P</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h5 class="card-title mb-1">Peter Maina</h5>
-                                    <div class="text-muted small">
-                                        <i class="bi bi-geo-alt me-1"></i>Pig Farmer, Thika
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-half text-warning"></i>
-                            </div>
-                            
-                            <p class="card-text">"Quality feeds at affordable prices. The delivery service to my farm is reliable even during rainy seasons."</p>
-                            
-                            <div class="mt-3">
-                                <span class="badge bg-danger">Pig Farming</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- ADD THIS TEXT CENTERED WITH BUTTON -->
-            <div class="text-center mt-5">
-                <a href="{{ route('reviews') }}" class="btn btn-outline-primary btn-lg">
-                    <i class="bi bi-chat-left-text me-2"></i> View All Reviews & Add Your Own
-                </a>
+                @endforeach
             </div>
         </div>
     </section>
@@ -437,78 +433,74 @@
     <section class="py-5 bg-light">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="display-6 fw-bold mb-3">Frequently Asked Questions</h2>
-                <p class="text-muted">Quick answers to common questions</p>
+                <h2 class="display-5 fw-bold mb-3" style="font-family: 'Cormorant Garamond', serif; color: var(--navy-green);">
+                    Frequently Asked Questions
+                </h2>
+                <p class="text-muted">
+                    Quick answers to common questions
+                </p>
             </div>
             
-            <div class="accordion" id="faqAccordion">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                            What are your operating hours?
-                        </button>
-                    </h2>
-                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            All our branches are open <strong>Monday to Saturday, 8:00 AM - 6:00 PM</strong>. 
-                            We are closed on Sundays and public holidays. Online orders can be placed 24/7.
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="accordion" id="faqAccordion">
+                        @foreach([
+                            [
+                                'question' => 'What are your operating hours?',
+                                'answer' => 'Our branches are open Monday to Saturday, 8:00 AM - 6:00 PM. We are closed on Sundays and public holidays.'
+                            ],
+                            [
+                                'question' => 'What payment methods do you accept?',
+                                'answer' => 'We accept M-Pesa (Paybill: 247247, Account: 470470), cash on delivery, and bank transfers.'
+                            ],
+                            [
+                                'question' => 'Do you offer delivery?',
+                                'answer' => 'Yes, we deliver Monday to Saturday, 8:00 AM - 6:00 PM within our service areas.'
+                            ],
+                            [
+                                'question' => 'Can I get technical advice for my farm?',
+                                'answer' => 'Yes, our technical support team is available to provide expert advice for your farming needs.'
+                            ]
+                        ] as $index => $faq)
+                        <div class="accordion-item border-0 mb-3 shadow-sm">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed px-4 py-3 fw-bold" type="button" 
+                                        data-bs-toggle="collapse" data-bs-target="#faq{{ $index }}"
+                                        style="color: var(--navy-green);">
+                                    <i class="bi bi-question-circle text-green me-3"></i>
+                                    {{ $faq['question'] }}
+                                </button>
+                            </h2>
+                            <div id="faq{{ $index }}" class="accordion-collapse collapse" 
+                                 data-bs-parent="#faqAccordion">
+                                <div class="accordion-body px-4 py-3">
+                                    {{ $faq['answer'] }}
+                                </div>
+                            </div>
                         </div>
+                        @endforeach
                     </div>
                 </div>
-                
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                            What are your delivery hours?
-                        </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-5" style="background: var(--gradient-dark-green); color: white;">
+        <div class="container">
+            <div class="row align-items-center text-center text-lg-start">
+                <div class="col-lg-8 mb-4 mb-lg-0">
+                    <h2 class="display-6 fw-bold mb-3" style="font-family: 'Cormorant Garamond', serif;">
+                        Need Help With Your Farm?
                     </h2>
-                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            We deliver <strong>Monday to Saturday, 8:00 AM - 6:00 PM</strong>. 
-                            Orders placed after 3:00 PM are delivered the next business day.
-                        </div>
-                    </div>
+                    <p class="lead mb-0 opacity-75">
+                        Contact us today for expert advice and premium feeds
+                    </p>
                 </div>
-                
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                            Do you open on Sundays?
-                        </button>
-                    </h2>
-                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            No, all our branches are <strong>closed on Sundays</strong> and public holidays. 
-                            This allows our team to rest and prepare for the coming week.
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
-                            What payment methods do you accept?
-                        </button>
-                    </h2>
-                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            We accept M-Pesa (Paybill: 247247, Account: 470470), cash on delivery, and bank transfers.
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
-                            Do you offer bulk discounts?
-                        </button>
-                    </h2>
-                    <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            Yes, we offer special discounts for orders above 50 bags. 
-                            Contact our sales team during business hours for customized pricing.
-                        </div>
-                    </div>
+                <div class="col-lg-4">
+                    <a href="tel:+254786571173" class="btn btn-lg w-100" style="background: var(--gradient-green); color: white;">
+                        <i class="bi bi-telephone-outbound-fill me-2"></i> Call Now
+                    </a>
                 </div>
             </div>
         </div>
@@ -517,52 +509,109 @@
 
 <style>
     .contact-hero {
-        background-size: cover;
-        background-position: center;
+        position: relative;
+        overflow: hidden;
     }
     
-    .card {
+    .premium-card {
         border-radius: 15px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(42, 110, 63, 0.1);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .premium-card .card-body {
+        flex: 1;
+    }
+    
+    .premium-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(42, 110, 63, 0.15) !important;
+    }
+    
+    .btn {
+        transition: all 0.3s ease;
+        border: none;
+        font-weight: 600;
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(42, 110, 63, 0.3);
+    }
+    
+    .icon-wrapper {
         transition: all 0.3s ease;
     }
     
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+    .premium-card:hover .icon-wrapper {
+        transform: scale(1.05);
+    }
+    
+    .contact-item {
+        transition: all 0.3s ease;
+    }
+    
+    .contact-item:hover {
+        transform: translateX(3px);
+    }
+    
+    .branch-item {
+        transition: all 0.3s ease;
+    }
+    
+    .branch-item:hover {
+        transform: translateY(-2px);
     }
     
     .accordion-button:not(.collapsed) {
-        background-color: rgba(42, 110, 63, 0.1);
-        color: #2a6e3f;
+        background-color: rgba(56, 161, 105, 0.1);
+        color: var(--primary-green);
     }
     
     .accordion-button:focus {
-        box-shadow: 0 0 0 0.25rem rgba(42, 110, 63, 0.25);
+        box-shadow: 0 0 0 0.25rem rgba(56, 161, 105, 0.25);
     }
     
-    .branch-hours {
-        background: linear-gradient(135deg, #fff8e1, #fff3cd);
-        border-left: 4px solid #f57c00;
+    .text-green {
+        color: var(--primary-green) !important;
     }
-
-    .operating-hours-box {
-        background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-        border-radius: 10px;
-        padding: 15px;
-        margin: 15px 0;
-    }
-
-    .business-hours {
-        font-size: 0.9rem;
-    }
-
-    .business-hours strong {
-        color: #2a6e3f;
-    }
-
-    .closed-day {
-        color: #dc3545;
-        font-weight: bold;
+    
+    @media (max-width: 768px) {
+        .contact-hero {
+            padding: 4rem 0 3rem;
+        }
+        
+        .display-4 {
+            font-size: 2rem;
+        }
+        
+        .display-5 {
+            font-size: 1.5rem;
+        }
+        
+        .display-6 {
+            font-size: 1.3rem;
+        }
     }
 </style>
+
+<script>
+// Form validation
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+</script>
 @endsection
