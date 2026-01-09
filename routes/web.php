@@ -196,7 +196,22 @@ Route::middleware('auth')->group(function () {
         // User order history (authenticated only)
         Route::get('/orders', [CheckoutController::class, 'orders'])->name('checkout.orders');
         Route::get('/orders/{orderId}', [CheckoutController::class, 'viewOrder'])->name('checkout.order.view');
-        
+        Route::get('/mpesa/{order}', [CheckoutController::class, 'showMpesaInstructions'])->name('checkout.mpesa');
+    Route::get('/cheque/{order}', [CheckoutController::class, 'showChequeInstructions'])->name('checkout.cheque');
+    Route::get('/bank-transfer/{order}', [CheckoutController::class, 'showBankTransferInstructions'])->name('checkout.bank-transfer');
+
+    
+Route::get('/', [CheckoutController::class, 'index'])->name('checkout');
+    Route::post('/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.place.order');
+    Route::get('/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
+    Route::get('/receipt/{orderId}', [CheckoutController::class, 'receipt'])->name('checkout.receipt');
+    Route::get('/print-receipt/{orderId}', [CheckoutController::class, 'printReceipt'])->name('checkout.print.receipt');
+    Route::get('/download-receipt/{orderId}', [CheckoutController::class, 'downloadReceipt'])->name('checkout.download.receipt');
+    Route::get('/track', [CheckoutController::class, 'trackOrder'])->name('checkout.track');
+    Route::post('/track', [CheckoutController::class, 'trackOrder'])->name('checkout.track.post');
+    Route::post('/confirm-payment/{orderId}', [CheckoutController::class, 'confirmPayment'])->name('checkout.confirm.payment');
+    Route::get('/generate-receipt/{orderId}', [CheckoutController::class, 'generateReceipt'])->name('checkout.generate.receipt');
+
         // Saved addresses and preferences (authenticated only)
         Route::get('/addresses', function () {
             return view('checkout.addresses');

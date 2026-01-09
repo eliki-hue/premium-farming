@@ -11,6 +11,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
+use App\Models\Receipt;
 
 class CheckoutController extends Controller
 {
@@ -31,69 +32,18 @@ class CheckoutController extends Controller
             $totalWeight += $itemWeight * $item['quantity'];
         }
         
-        $shipping = 500; // Default shipping
-        $tax = $subtotal * 0.16;
+        // Delivery fee commented out - set to 0
+        $shipping = 0;
+        
+        // VAT commented out - set to 0
+        $tax = 0;
+        
         $total = $subtotal + $shipping + $tax;
         
-        // Get delivery zones for the form
-        $deliveryZones = DeliveryZone::where('is_active', true)->get();
-        
-        // Determine weight category for display
-        $weightCategory = $this->getWeightCategory($totalWeight);
+        $deliveryZones = [];
+        $weightCategory = 'Not Applicable';
         
         return view('checkout.index', compact('cart', 'subtotal', 'shipping', 'tax', 'total', 'totalWeight', 'deliveryZones', 'weightCategory'));
-    }
-    
-    public function calculateDelivery(Request $request)
-    {
-        $request->validate([
-            'zone_id' => 'required|exists:delivery_zones,id',
-            'distance' => 'required|numeric|min:0',
-            'weight' => 'required|numeric|min:0'
-        ]);
-
-        $zone = DeliveryZone::find($request->zone_id);
-        $distance = $request->distance;
-        $weight = $request->weight;
-
-        // Calculate delivery fee
-        $baseFee = $zone->base_fee;
-        $freeDistance = $zone->free_distance_km;
-        $perKmFee = $zone->per_km_fee;
-        $perKgFee = $zone->per_kg_fee ?? 10; // Default per kg fee
-        
-        // Calculate distance fee
-        $distanceFee = 0;
-        if ($distance > $freeDistance) {
-            $distanceFee = ($distance - $freeDistance) * $perKmFee;
-        }
-        
-        // Calculate weight fee
-        $weightFee = $weight * $perKgFee;
-        
-        // Total delivery fee
-        $deliveryFee = $baseFee + $distanceFee + $weightFee;
-        
-        // Store in session for later use
-        Session::put([
-            'delivery_zone_id' => $zone->id,
-            'delivery_distance' => $distance,
-            'delivery_weight' => $weight,
-            'delivery_fee' => $deliveryFee,
-            'delivery_zone_name' => $zone->name
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'delivery_fee' => number_format($deliveryFee, 2),
-            'zone_name' => $zone->name,
-            'breakdown' => [
-                'base_fee' => number_format($baseFee, 2),
-                'distance_fee' => number_format($distanceFee, 2),
-                'weight_fee' => number_format($weightFee, 2),
-                'free_distance' => $freeDistance . 'km'
-            ]
-        ]);
     }
     
     public function placeOrder(Request $request)
@@ -102,15 +52,16 @@ class CheckoutController extends Controller
             'customer_name' => 'required|string|max:255',
             'customer_phone' => 'required|string|max:20',
             'customer_email' => 'required|email|max:255',
-            'delivery_address' => 'required|string|max:500',
-            'delivery_notes' => 'nullable|string|max:500',
-            'payment_method' => 'required|in:mpesa,cash_on_delivery,bank_transfer',
-            'delivery_zone_id' => 'required|exists:delivery_zones,id',
-            'delivery_distance' => 'required|numeric|min:0',
-            'delivery_type' => 'required|in:farm_delivery,pickup_station',
-            'county' => 'required|string|max:100',
-            'town' => 'required|string|max:100',
+            
+            // Updated payment methods: mpesa, cheque, bank_transfer (removed cash_on_delivery)
+            'payment_method' => 'required|in:mpesa,cheque,bank_transfer',
+            
+            // Fields for specific payment methods
             'mpesa_number' => 'required_if:payment_method,mpesa|nullable|string|max:20',
+            'cheque_number' => 'required_if:payment_method,cheque|nullable|string|max:50',
+            'bank_name' => 'required_if:payment_method,bank_transfer|nullable|string|max:100',
+            'account_name' => 'required_if:payment_method,bank_transfer|nullable|string|max:255',
+            'account_number' => 'required_if:payment_method,bank_transfer|nullable|string|max:50',
             'bank_slip' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048'
         ]);
 
@@ -129,29 +80,33 @@ class CheckoutController extends Controller
             $totalWeight += $itemWeight * $item['quantity'];
         }
         
-        // Get delivery fee from session or calculate default
-        $deliveryFee = Session::get('delivery_fee', 500);
-        $deliveryZoneId = $request->delivery_zone_id;
-        $deliveryDistance = $request->delivery_distance;
+        // Delivery fee commented out - set to 0
+        $deliveryFee = 0;
         
-        // Get delivery zone
-        $deliveryZone = DeliveryZone::find($deliveryZoneId);
-        $deliveryZoneName = $deliveryZone ? $deliveryZone->name : 'Standard Delivery';
+        // Delivery zone fields commented out
+        $deliveryZoneId = null;
+        $deliveryDistance = 0;
+        $deliveryZoneName = 'Not Applicable';
         
-        // Apply delivery type - pickup station is free
-        $shipping = ($request->delivery_type === 'pickup_station') ? 0 : $deliveryFee;
+        // Apply delivery type - pickup station is free (commented out)
+        $shipping = 0;
         
-        $tax = $subtotal * 0.16;
+        // VAT commented out - set to 0
+        $tax = 0;
+        
         $total = $subtotal + $shipping + $tax;
         
         // Generate order number
         $orderNumber = 'ORD-' . date('Ymd') . '-' . Str::upper(Str::random(6));
         
-        // Handle file upload if bank transfer
-        $bankSlipPath = null;
+        // Handle file upload if bank transfer or cheque
+        $paymentProofPath = null;
         if ($request->hasFile('bank_slip')) {
-            $bankSlipPath = $request->file('bank_slip')->store('bank-slips', 'public');
+            $paymentProofPath = $request->file('bank_slip')->store('payment-proofs', 'public');
         }
+        
+        // Generate receipt number
+        $receiptNumber = 'RCT-' . date('Ymd') . '-' . Str::upper(Str::random(6));
         
         // Start database transaction
         DB::beginTransaction();
@@ -160,28 +115,46 @@ class CheckoutController extends Controller
             // Create order in database
             $order = Order::create([
                 'order_number' => $orderNumber,
-                // REMOVED: 'user_id' => Auth::id(), // No user_id for guest checkout
+                'receipt_number' => $receiptNumber, // Add receipt number to order
                 'customer_name' => $request->customer_name,
                 'customer_phone' => $request->customer_phone,
                 'customer_email' => $request->customer_email,
-                'delivery_address' => $request->delivery_address,
-                'county' => $request->county,
-                'town' => $request->town,
-                'delivery_zone_id' => $deliveryZoneId,
-                'delivery_distance' => $deliveryDistance,
+                
+                // Delivery fields commented out - set placeholder values
+                'delivery_address' => 'Not Required',
+                'county' => 'Not Required',
+                'town' => 'Not Required',
+                'delivery_zone_id' => null,
+                'delivery_distance' => 0,
                 'total_weight' => $totalWeight,
                 'delivery_fee' => $shipping,
-                'delivery_type' => $request->delivery_type,
-                'delivery_notes' => $request->delivery_notes,
+                'delivery_type' => 'pickup',
+                'delivery_notes' => 'No delivery required',
                 'subtotal' => $subtotal,
-                'vat' => $tax,
+                'vat' => 0,
                 'grand_total' => $total,
+                
+                // Payment information
                 'payment_method' => $request->payment_method,
+                
+                // M-Pesa details
                 'mpesa_number' => $request->mpesa_number,
-                'bank_slip_path' => $bankSlipPath,
-                'payment_status' => $request->payment_method === 'cash_on_delivery' ? 'pending' : ($request->payment_method === 'mpesa' ? 'pending' : 'pending'),
+                
+                // Cheque details
+                'cheque_number' => $request->cheque_number,
+                
+                // Bank transfer details
+                'bank_name' => $request->bank_name,
+                'account_name' => $request->account_name,
+                'account_number' => $request->account_number,
+                
+                'payment_proof_path' => $paymentProofPath,
+                
+                // Payment status - all methods require proof/confirmation
+                'payment_status' => 'pending',
                 'order_status' => 'pending',
-                'notes' => $request->delivery_notes
+                
+                'notes' => 'Customer notes: ' . ($request->notes ?? 'None')
             ]);
             
             // Add order items
@@ -207,25 +180,42 @@ class CheckoutController extends Controller
                 }
             }
             
+            // Create receipt record
+            $receipt = Receipt::create([
+                'receipt_number' => $receiptNumber,
+                'order_id' => $order->id,
+                'customer_name' => $order->customer_name,
+                'customer_phone' => $order->customer_phone,
+                'customer_email' => $order->customer_email,
+                'amount' => $order->grand_total,
+                'payment_method' => $order->payment_method,
+                'payment_status' => 'pending',
+                'issued_date' => now(),
+                'issued_by' => 'System',
+                'notes' => 'Order placed - Payment confirmation pending via WhatsApp'
+            ]);
+            
             DB::commit();
             
             // Clear cart and delivery data
             Session::forget('cart');
-            Session::forget('delivery_zone_id');
-            Session::forget('delivery_distance');
-            Session::forget('delivery_weight');
-            Session::forget('delivery_fee');
-            Session::forget('delivery_zone_name');
             
-            // Handle M-Pesa payment if selected
+            // Store order and receipt info in session for receipt access
+            Session::put('last_order', [
+                'order_number' => $orderNumber,
+                'receipt_number' => $receiptNumber,
+                'customer_email' => $order->customer_email
+            ]);
+            
+            // Handle payment method specific redirection
             if ($request->payment_method === 'mpesa') {
                 return $this->processMpesaPayment($order);
+            } elseif ($request->payment_method === 'cheque') {
+                return $this->processChequePayment($order);
+            } elseif ($request->payment_method === 'bank_transfer') {
+                return $this->processBankTransferPayment($order);
             }
             
-            // Redirect to success page
-            return redirect()->route('checkout.success', $order)
-                ->with('success', 'Order placed successfully! Your order number is: ' . $orderNumber);
-                
         } catch (\Exception $e) {
             DB::rollBack();
             
@@ -237,16 +227,65 @@ class CheckoutController extends Controller
     
     private function processMpesaPayment($order)
     {
-        // Here you would integrate with Safaricom M-Pesa API
-        
-        // For now, simulate M-Pesa payment process
+        // Update order status
         $order->update([
             'payment_status' => 'pending',
-            'order_status' => 'payment_pending'
+            'order_status' => 'mpesa_pending'
         ]);
         
-        // Show M-Pesa payment instructions
-        return view('checkout.mpesa', compact('order'));
+        // Update receipt status
+        Receipt::where('order_id', $order->id)->update([
+            'payment_status' => 'pending',
+            'notes' => 'M-Pesa payment pending confirmation'
+        ]);
+        
+        // WhatsApp message template
+        $whatsappMessage = "Hello! I would like to make payment for Order #{$order->order_number} (Receipt: {$order->receipt_number}). Amount: KES " . number_format($order->grand_total, 2);
+        
+        // Show M-Pesa payment instructions with PayBill details and WhatsApp
+        return view('checkout.mpesa', compact('order', 'whatsappMessage'));
+    }
+    
+    private function processChequePayment($order)
+    {
+        // Update order status
+        $order->update([
+            'payment_status' => 'pending',
+            'order_status' => 'cheque_pending'
+        ]);
+        
+        // Update receipt status
+        Receipt::where('order_id', $order->id)->update([
+            'payment_status' => 'pending',
+            'notes' => 'Cheque payment pending confirmation'
+        ]);
+        
+        // WhatsApp message template
+        $whatsappMessage = "Hello! I would like to confirm cheque payment for Order #{$order->order_number} (Receipt: {$order->receipt_number}). Cheque #: {$order->cheque_number}. Amount: KES " . number_format($order->grand_total, 2);
+        
+        // Show cheque payment instructions with WhatsApp
+        return view('checkout.cheque', compact('order', 'whatsappMessage'));
+    }
+    
+    private function processBankTransferPayment($order)
+    {
+        // Update order status
+        $order->update([
+            'payment_status' => 'pending',
+            'order_status' => 'bank_transfer_pending'
+        ]);
+        
+        // Update receipt status
+        Receipt::where('order_id', $order->id)->update([
+            'payment_status' => 'pending',
+            'notes' => 'Bank transfer payment pending confirmation'
+        ]);
+        
+        // WhatsApp message template
+        $whatsappMessage = "Hello! I would like to confirm bank transfer for Order #{$order->order_number} (Receipt: {$order->receipt_number}). Amount: KES " . number_format($order->grand_total, 2);
+        
+        // Show bank transfer instructions with WhatsApp
+        return view('checkout.bank-transfer', compact('order', 'whatsappMessage'));
     }
     
     public function success(Order $order)
@@ -257,38 +296,28 @@ class CheckoutController extends Controller
     
     public function receipt($orderId)
     {
+        // Try to find by order number first
         $order = Order::with('items')->where('order_number', $orderId)->first();
+        
+        // If not found by order number, try by receipt number
+        if (!$order) {
+            $order = Order::with('items')->where('receipt_number', $orderId)->first();
+        }
+        
+        // If still not found, try by ID
+        if (!$order) {
+            $order = Order::with('items')->find($orderId);
+        }
         
         if (!$order) {
             return redirect()->route('home')->with('error', 'Order not found');
         }
         
+        // Get receipt information
+        $receipt = Receipt::where('order_id', $order->id)->first();
+        
         // No authentication check - anyone with order number can view receipt
-        return view('checkout.receipt', compact('order'));
-    }
-    
-    public function orders()
-    {
-        // COMPLETELY REMOVE THIS METHOD OR REDIRECT TO TRACK ORDER
-        
-        // Since there's no authentication, we can't show user-specific orders
-        // Redirect to track order page instead
-        return redirect()->route('checkout.track')
-            ->with('info', 'Please use the Track Order feature to find your orders');
-    }
-    
-    public function viewOrder($orderId)
-    {
-        // COMPLETELY REMOVE THIS METHOD OR MAKE IT PUBLIC
-        
-        $order = Order::with('items')->where('order_number', $orderId)->first();
-        
-        if (!$order) {
-            return redirect()->route('checkout.track')->with('error', 'Order not found');
-        }
-        
-        // Allow anyone to view order with order number
-        return view('checkout.order-details', compact('order'));
+        return view('checkout.receipt', compact('order', 'receipt'));
     }
     
     public function printReceipt($orderId)
@@ -296,61 +325,162 @@ class CheckoutController extends Controller
         $order = Order::with('items')->where('order_number', $orderId)->first();
         
         if (!$order) {
+            $order = Order::with('items')->find($orderId);
+        }
+        
+        if (!$order) {
             return redirect()->back()->with('error', 'Order not found');
         }
         
-        // No authentication - anyone can print receipt
-        return view('checkout.print-receipt', compact('order'));
+        $receipt = Receipt::where('order_id', $order->id)->first();
+        
+        return view('checkout.print-receipt', compact('order', 'receipt'));
     }
     
     public function trackOrder(Request $request)
     {
         if ($request->isMethod('post')) {
             $request->validate([
-                'order_number' => 'required|string',
-                'customer_email' => 'required|email'
+                'order_number' => 'required_without_all:receipt_number,customer_email',
+                'receipt_number' => 'required_without_all:order_number,customer_email',
+                'customer_email' => 'required_without_all:order_number,receipt_number|email'
+            ], [
+                'order_number.required_without_all' => 'Please enter at least one search criteria',
+                'receipt_number.required_without_all' => 'Please enter at least one search criteria',
+                'customer_email.required_without_all' => 'Please enter at least one search criteria'
             ]);
             
-            $order = Order::where('order_number', $request->order_number)
-                ->where('customer_email', $request->customer_email)
-                ->first();
+            $query = Order::with('items');
+            
+            if ($request->filled('order_number')) {
+                $query->where('order_number', $request->order_number);
+            }
+            
+            if ($request->filled('receipt_number')) {
+                $query->where('receipt_number', $request->receipt_number);
+            }
+            
+            if ($request->filled('customer_email')) {
+                $query->where('customer_email', $request->customer_email);
+            }
+            
+            $order = $query->first();
                 
             if (!$order) {
                 return view('checkout.track', [
                     'found' => false,
-                    'message' => 'Order not found. Please check your order number and email.'
+                    'message' => 'Order not found. Please check your search criteria.'
                 ]);
             }
             
-            return view('checkout.track', compact('order'));
+            $receipt = Receipt::where('order_id', $order->id)->first();
+            
+            return view('checkout.track', compact('order', 'receipt'));
         }
         
         return view('checkout.track');
     }
     
-    // Helper method for weight category
-    private function getWeightCategory($weight)
+    /**
+     * Download receipt as PDF
+     */
+    public function downloadReceipt($orderId)
     {
-        if ($weight <= 5) {
-            return 'Light';
-        } elseif ($weight <= 20) {
-            return 'Medium';
-        } else {
-            return 'Heavy';
+        $order = Order::with('items')->where('order_number', $orderId)->first();
+        
+        if (!$order) {
+            $order = Order::with('items')->find($orderId);
         }
+        
+        if (!$order) {
+            return redirect()->back()->with('error', 'Order not found');
+        }
+        
+        $receipt = Receipt::where('order_id', $order->id)->first();
+        
+        // Generate PDF (you'll need to install a PDF library like barryvdh/laravel-dompdf)
+        // For now, we'll redirect to print view
+        return view('checkout.receipt-pdf', compact('order', 'receipt'));
     }
     
-    // M-Pesa callback (for webhook)
-    public function mpesaCallback(Request $request)
+    /**
+     * Generate receipt after payment confirmation
+     */
+    public function generateReceipt($orderId)
     {
-        // Handle M-Pesa callback from Safaricom
-        // This would be called by Safaricom's API
+        $order = Order::with('items')->where('order_number', $orderId)->first();
         
-        $data = $request->all();
+        if (!$order) {
+            return redirect()->back()->with('error', 'Order not found');
+        }
         
-        // Process the callback data
-        // Update order payment status, etc.
+        // Check if receipt already exists
+        $receipt = Receipt::where('order_id', $order->id)->first();
         
-        return response()->json(['ResultCode' => 0, 'ResultDesc' => 'Success']);
+        if (!$receipt) {
+            // Generate new receipt
+            $receiptNumber = 'RCT-' . date('Ymd') . '-' . Str::upper(Str::random(6));
+            
+            $receipt = Receipt::create([
+                'receipt_number' => $receiptNumber,
+                'order_id' => $order->id,
+                'customer_name' => $order->customer_name,
+                'customer_phone' => $order->customer_phone,
+                'customer_email' => $order->customer_email,
+                'amount' => $order->grand_total,
+                'payment_method' => $order->payment_method,
+                'payment_status' => 'completed',
+                'issued_date' => now(),
+                'issued_by' => 'System',
+                'notes' => 'Payment confirmed via WhatsApp'
+            ]);
+            
+            // Update order with receipt number
+            $order->update(['receipt_number' => $receiptNumber]);
+        }
+        
+        return redirect()->route('checkout.receipt', ['orderId' => $order->order_number])
+            ->with('success', 'Receipt generated successfully!');
+    }
+    
+    /**
+     * Confirm payment and update receipt
+     */
+    public function confirmPayment(Request $request, $orderId)
+    {
+        $request->validate([
+            'transaction_code' => 'required|string|max:50',
+            'payment_date' => 'required|date',
+            'payment_amount' => 'required|numeric'
+        ]);
+        
+        $order = Order::where('order_number', $orderId)->first();
+        
+        if (!$order) {
+            return redirect()->back()->with('error', 'Order not found');
+        }
+        
+        // Update order payment status
+        $order->update([
+            'payment_status' => 'completed',
+            'order_status' => 'processing',
+            'payment_date' => $request->payment_date
+        ]);
+        
+        // Update or create receipt
+        $receipt = Receipt::updateOrCreate(
+            ['order_id' => $order->id],
+            [
+                'payment_status' => 'completed',
+                'transaction_code' => $request->transaction_code,
+                'payment_date' => $request->payment_date,
+                'amount_received' => $request->payment_amount,
+                'notes' => 'Payment confirmed manually',
+                'issued_by' => Auth::check() ? Auth::user()->name : 'Admin'
+            ]
+        );
+        
+        return redirect()->route('checkout.receipt', ['orderId' => $order->order_number])
+            ->with('success', 'Payment confirmed and receipt updated!');
     }
 }
