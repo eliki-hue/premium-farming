@@ -1123,16 +1123,19 @@
             </button>
             
             <div class="collapse navbar-collapse" id="navbarPremium">
+                <!-- Navigation Menu -->
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
                         <a class="nav-link active" href="{{ url('/') }}">Home</a>
                     </li>
+                    
+                    <!-- Products Dropdown - Visible to Everyone -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            Categories
+                            Products
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('shop.products') }}">All products</a></li>
+                            <li><a class="dropdown-item" href="{{ route('shop.products') }}">All Products</a></li>
                             <li><a class="dropdown-item" href="{{ route('category.poultry') }}">Poultry Feeds</a></li>
                             <li><a class="dropdown-item" href="{{ route('category.dairy') }}">Dairy Feeds</a></li>
                             <li><a class="dropdown-item" href="{{ route('category.swine') }}">Swine Feeds</a></li>
@@ -1142,7 +1145,7 @@
                         </ul>
                     </li>
                     
-                    
+                    <!-- Other Public Links -->
                     <li class="nav-item">
                         <a class="nav-link" href="/about">About</a>
                     </li>
@@ -1154,6 +1157,7 @@
                     </li>
                     
                     @auth
+                        <!-- Show user menu for logged in users -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-person-circle me-1"></i> {{ Auth::user()->name }}
@@ -1161,6 +1165,9 @@
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item" href="/dashboard">
                                     <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ route('checkout.orders') }}">
+                                    <i class="bi bi-bag-check me-2"></i>My Orders
                                 </a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
@@ -1173,8 +1180,16 @@
                                 </li>
                             </ul>
                         </li>
-
-                         <!-- Cart Button -->
+                    @else
+                        <!-- Show minimal login option for guests -->
+                        <li class="nav-item">
+                            <a href="{{ route('login') }}" class="nav-link">
+                                <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                            </a>
+                        </li>
+                    @endauth
+                    
+                    <!-- Cart button - shows for both guests and authenticated users -->
                     <li class="nav-item">
                         <div class="navbar-cart-container">
                             <button class="navbar-cart-btn" data-bs-toggle="modal" data-bs-target="#cartModal">
@@ -1191,14 +1206,6 @@
                             @endif
                         </div>
                     </li>
-                    @else
-                        <li class="nav-item ms-2">
-                            <a href="{{ route('login') }}" class="btn btn-premium-outline">Login</a>
-                        </li>
-                        <li class="nav-item ms-2">
-                            <a href="{{ route('register') }}" class="btn btn-premium">Register</a>
-                        </li>
-                    @endauth
                 </ul>
             </div>
         </div>

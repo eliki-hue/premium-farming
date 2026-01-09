@@ -125,21 +125,20 @@ class ShopController extends Controller
     */
 
     // Online shop index (DB products)
-    public function index()
-    {
-        $products = Product::all();
-        return view('shop.index', [
-            'products' => $products,
-            'mode' => 'shop'
-        ]);
-    }
+public function index()
+{
+    // Public access to all products
+    $products = Product::where('status', 'active')->paginate(20);
+    
+    return view('products.index', compact('products'));
+}
 
     // Single DB product
-    public function show($id)
-    {
-        $product = Product::findOrFail($id);
-        return view('shop.show', compact('product'));
-    }
+   public function show(Product $product)
+{
+    // Public access to single product
+    return view('products.show', compact('product'));
+}
 
     /*
     |--------------------------------------------------------------------------

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -47,6 +48,18 @@ class CartController extends Controller
      */
     public function storeProduct(Request $request)
     {
+        // KEEP AUTH FOR ADMIN FUNCTION - Adding custom products
+        if (!Auth::check()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Authentication required for this action.',
+                    'requires_auth' => true
+                ], 401);
+            }
+            return redirect()->route('login')->with('error', 'Please sign in to perform this action.');
+        }
+        
         try {
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|max:255',
@@ -107,6 +120,9 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * Add item to cart (unified for both web and POS)
+     */
     public function add(Request $request)
     {
         try {
@@ -180,8 +196,10 @@ class CartController extends Controller
         }
     }
 
-
-   public function increment(Request $request)
+    /**
+     * Increment cart item quantity
+     */
+    public function increment(Request $request)
     {
         try {
             $request->validate([
@@ -345,10 +363,7 @@ class CartController extends Controller
             ], 500);
         }
     }
-    /**
-     * Add item to cart (unified for both web and POS)
-     */
-    
+
     /**
      * Update cart item quantity (by ID or index)
      */
@@ -553,7 +568,8 @@ class CartController extends Controller
                 'count' => $cartData['count'],
                 'total' => $cartData['total'],
                 'items_count' => $cartData['items_count'],
-                'subtotal' => $cartData['subtotal']
+                'subtotal' => $cartData['subtotal'],
+                'is_authenticated' => Auth::check()
             ]);
             
         } catch (\Exception $e) {
@@ -565,7 +581,8 @@ class CartController extends Controller
                 'total' => 0,
                 'items_count' => 0,
                 'subtotal' => 0,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'is_authenticated' => Auth::check()
             ], 500);
         }
     }
@@ -632,7 +649,7 @@ class CartController extends Controller
     }
 
     /**
-     * Checkout process
+     * Checkout process - REMOVED AUTH FOR GUEST CHECKOUT
      */
     public function checkout(Request $request)
     {
@@ -750,6 +767,15 @@ class CartController extends Controller
      */
     public function addMultiple(Request $request)
     {
+        // KEEP AUTH FOR THIS - This is usually a POS/admin function
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Authentication required for this action.',
+                'requires_auth' => true
+            ], 401);
+        }
+        
         try {
             $request->validate([
                 'items' => 'required|array',
@@ -822,6 +848,18 @@ class CartController extends Controller
      */
     public function quickAdd(Request $request)
     {
+        // KEEP AUTH FOR THIS - This is usually a POS/admin function
+        if (!Auth::check()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Authentication required for this action.',
+                    'requires_auth' => true
+                ], 401);
+            }
+            return redirect()->route('login')->with('error', 'Please sign in to perform this action.');
+        }
+        
         try {
             $request->validate([
                 'name' => 'required|string',
@@ -907,10 +945,18 @@ class CartController extends Controller
     }
 
     /**
-     * Apply discount to cart
+     * Apply discount to cart - KEEP AUTH (usually admin/privileged action)
      */
     public function applyDiscount(Request $request)
     {
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Authentication required for this action.',
+                'requires_auth' => true
+            ], 401);
+        }
+        
         try {
             $request->validate([
                 'discount_type' => 'required|in:percentage,fixed',
@@ -960,10 +1006,18 @@ class CartController extends Controller
     }
 
     /**
-     * Remove discount from cart
+     * Remove discount from cart - KEEP AUTH (usually admin/privileged action)
      */
     public function removeDiscount(Request $request)
     {
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Authentication required for this action.',
+                'requires_auth' => true
+            ], 401);
+        }
+        
         try {
             Session::forget('cart_discount');
             
@@ -980,5 +1034,33 @@ class CartController extends Controller
                 'message' => 'Error removing discount: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Get user-specific cart (optional method for user isolation)
+     */
+    public function getUserCart()
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Authentication required',
+                'requires_auth' => true
+            ], 401);
+        }
+        
+        $userId = Auth::id();
+        $cart = Session::get('cart', []);
+        
+        // Filter cart items by user ID (if stored)
+        $userCart = array_filter($cart, function($item) use ($userId) {
+            return ($item['user_id'] ?? null) == $userId;
+        });
+        
+        return response()->json([
+            'success' => true,
+            'cart' => $userCart,
+            'count' => count($userCart)
+        ]);
     }
 }

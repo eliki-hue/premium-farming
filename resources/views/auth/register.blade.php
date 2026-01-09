@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Sign Up - Premium Farming Feeds')
+@section('title', 'Login - Premium Farming Feeds')
 
 @push('styles')
 <style>
@@ -13,7 +13,7 @@
     }
 
     .auth-container {
-        max-width: 600px;
+        max-width: 500px;
         margin: 0 auto;
     }
 
@@ -66,12 +66,6 @@
         font-size: 1rem;
     }
 
-    .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-    }
-
     .form-group {
         margin-bottom: 1.5rem;
     }
@@ -120,91 +114,158 @@
         color: var(--primary-green);
     }
 
-    .password-strength {
-        height: 4px;
-        background-color: #e5e7eb;
-        border-radius: 2px;
-        margin-top: 0.5rem;
-        overflow: hidden;
-    }
-
-    .password-strength-bar {
-        height: 100%;
-        width: 0%;
-        transition: all 0.3s ease;
-    }
-
-    .password-strength-bar.weak {
-        width: 33%;
-        background-color: #ef4444;
-    }
-
-    .password-strength-bar.medium {
-        width: 66%;
-        background-color: #f59e0b;
-    }
-
-    .password-strength-bar.strong {
-        width: 100%;
-        background-color: #10b981;
-    }
-
-    .terms-checkbox {
+    .form-options {
         display: flex;
-        align-items: start;
-        gap: 0.7rem;
+        justify-content: space-between;
+        align-items: center;
         margin-bottom: 1.5rem;
     }
 
-    .terms-checkbox input[type="checkbox"] {
-        width: 20px;
-        height: 20px;
-        cursor: pointer;
-        accent-color: var(--primary-green);
-        margin-top: 2px;
-        flex-shrink: 0;
+    .remember-me {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
-    .terms-checkbox label {
+    .remember-me input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        accent-color: var(--primary-green);
+    }
+
+    .remember-me label {
         font-size: 0.9rem;
         color: var(--text-dark);
         cursor: pointer;
         margin: 0;
-        line-height: 1.6;
     }
 
-    .terms-checkbox label a {
+    .forgot-link {
         color: var(--primary-green);
         text-decoration: none;
-        font-weight: 600;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: color 0.3s ease;
     }
 
-    .terms-checkbox label a:hover {
+    .forgot-link:hover {
         color: var(--accent-orange);
     }
 
+    /* ENHANCED LOGIN BUTTON - MATCHES SIGNUP */
     .btn-auth {
         width: 100%;
-        padding: 1rem;
-        background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-dark) 100%);
+        padding: 1.1rem;
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
         color: white;
         border: none;
-        border-radius: 10px;
-        font-size: 1.1rem;
-        font-weight: 600;
+        border-radius: 12px;
+        font-size: 1.2rem;
+        font-weight: 700;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.4s ease;
         margin-bottom: 1.5rem;
+        position: relative;
+        overflow: hidden;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
     }
 
     .btn-auth:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(45, 95, 78, 0.3);
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(40, 167, 69, 0.4);
+    }
+
+    .btn-auth:active {
+        transform: translateY(-1px);
     }
 
     .btn-auth:disabled {
         opacity: 0.6;
         cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* Add a subtle shine effect */
+    .btn-auth::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.1) 50%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        transform: rotate(30deg);
+        transition: transform 0.6s;
+    }
+
+    .btn-auth:hover::after {
+        transform: rotate(30deg) translate(20%, 20%);
+    }
+
+    /* Add a subtle pulse animation for attention */
+    @keyframes subtlePulse {
+        0% { box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3); }
+        50% { box-shadow: 0 8px 30px rgba(40, 167, 69, 0.5); }
+        100% { box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3); }
+    }
+
+    .btn-auth {
+        animation: subtlePulse 3s infinite;
+    }
+
+    /* Add a key icon for login */
+    .btn-auth::before {
+        content: '🔑';
+        position: absolute;
+        left: 1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.3rem;
+        opacity: 0.8;
+    }
+
+    /* Benefits section */
+    .login-benefits {
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.05) 0%, rgba(32, 201, 151, 0.05) 100%);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        border-left: 4px solid #28a745;
+    }
+
+    .login-benefits h5 {
+        color: #28a745;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+    }
+
+    .login-benefits ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .login-benefits li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.7rem;
+        color: var(--text-dark);
+    }
+
+    .login-benefits li i {
+        color: #28a745;
+        margin-right: 0.8rem;
+        font-size: 1.1rem;
     }
 
     .auth-footer {
@@ -217,17 +278,20 @@
     .auth-footer p {
         color: var(--text-muted);
         margin: 0;
+        font-size: 1rem;
     }
 
     .auth-footer a {
-        color: var(--primary-green);
+        color: #28a745;
         text-decoration: none;
-        font-weight: 600;
+        font-weight: 700;
         transition: color 0.3s ease;
+        font-size: 1.05rem;
     }
 
     .auth-footer a:hover {
         color: var(--accent-orange);
+        text-decoration: underline;
     }
 
     .alert {
@@ -243,6 +307,24 @@
         color: #c33;
     }
 
+    .alert-success {
+        background-color: #efe;
+        border-color: #cfc;
+        color: #3c3;
+    }
+
+    /* Call to Action text */
+    .cta-text {
+        text-align: center;
+        color: var(--text-dark);
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        padding: 0.8rem;
+        background: rgba(40, 167, 69, 0.08);
+        border-radius: 8px;
+    }
+
     @media (max-width: 576px) {
         .auth-card {
             padding: 2rem 1.5rem;
@@ -251,9 +333,15 @@
         .auth-header h1 {
             font-size: 1.75rem;
         }
-
-        .form-row {
-            grid-template-columns: 1fr;
+        
+        .btn-auth {
+            padding: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .btn-auth::before {
+            left: 1rem;
+            font-size: 1.1rem;
         }
     }
 </style>
@@ -268,8 +356,8 @@
                     <div class="auth-logo">
                         <img src="{{ asset('images/logo.jpeg') }}" alt="Premium Farming Feeds">
                     </div>
-                    <h1>Create Account</h1>
-                    <p>Join us for premium livestock feeds</p>
+                    <h1>Welcome Back</h1>
+                    <p>Login to access your account</p>
                 </div>
 
                 @if(session('error'))
@@ -278,43 +366,26 @@
                 </div>
                 @endif
 
-                <form method="POST" action="{{ route('register') }}" id="registerForm">
+                @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+                @endif
+
+                <!-- Benefits section -->
+                <div class="login-benefits">
+                    <h5><i class="bi bi-stars me-2"></i>Benefits of Logging In:</h5>
+                    <ul>
+                        <li><i class="bi bi-check-circle"></i> Access your shopping cart</li>
+                        <li><i class="bi bi-check-circle"></i> Track your orders & delivery</li>
+                        <li><i class="bi bi-check-circle"></i> View order history</li>
+                        <li><i class="bi bi-check-circle"></i> Manage your profile</li>
+                    </ul>
+                </div>
+
+                <form method="POST" action="{{ route('login') }}">
                     @csrf
                     
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="first_name" class="form-label">First Name</label>
-                            <input 
-                                type="text" 
-                                id="first_name" 
-                                name="first_name" 
-                                class="form-control-custom" 
-                                placeholder="John"
-                                required
-                                value="{{ old('first_name') }}"
-                            >
-                            @error('first_name')
-                            <small style="color: #c33; margin-top: 0.5rem; display: block;">{{ $message }}</small>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <label for="last_name" class="form-label">Last Name</label>
-                            <input 
-                                type="text" 
-                                id="last_name" 
-                                name="last_name" 
-                                class="form-control-custom" 
-                                placeholder="Doe"
-                                required
-                                value="{{ old('last_name') }}"
-                            >
-                            @error('last_name')
-                            <small style="color: #c33; margin-top: 0.5rem; display: block;">{{ $message }}</small>
-                            @enderror
-                        </div>
-                    </div>
-
                     <div class="form-group">
                         <label for="email" class="form-label">Email Address</label>
                         <input 
@@ -332,22 +403,6 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="phone" class="form-label">Phone Number</label>
-                        <input 
-                            type="tel" 
-                            id="phone" 
-                            name="phone" 
-                            class="form-control-custom" 
-                            placeholder="+254 700 000 000"
-                            required
-                            value="{{ old('phone') }}"
-                        >
-                        @error('phone')
-                        <small style="color: #c33; margin-top: 0.5rem; display: block;">{{ $message }}</small>
-                        @enderror
-                    </div>
-
-                    <div class="form-group">
                         <label for="password" class="form-label">Password</label>
                         <div class="password-wrapper">
                             <input 
@@ -355,57 +410,39 @@
                                 id="password" 
                                 name="password" 
                                 class="form-control-custom" 
-                                placeholder="Create a strong password"
+                                placeholder="Enter your password"
                                 required
-                                onkeyup="checkPasswordStrength()"
                             >
-                            <button type="button" class="password-toggle" onclick="togglePassword('password', 'toggleIcon1')">
-                                <i class="bi bi-eye" id="toggleIcon1"></i>
+                            <button type="button" class="password-toggle" onclick="togglePassword()">
+                                <i class="bi bi-eye" id="toggleIcon"></i>
                             </button>
                         </div>
-                        <div class="password-strength">
-                            <div class="password-strength-bar" id="strengthBar"></div>
-                        </div>
-                        <small style="color: var(--text-muted); margin-top: 0.5rem; display: block;">
-                            Use 8+ characters with mix of letters, numbers & symbols
-                        </small>
                         @error('password')
                         <small style="color: #c33; margin-top: 0.5rem; display: block;">{{ $message }}</small>
                         @enderror
                     </div>
 
-                    <div class="form-group">
-                        <label for="password_confirmation" class="form-label">Confirm Password</label>
-                        <div class="password-wrapper">
-                            <input 
-                                type="password" 
-                                id="password_confirmation" 
-                                name="password_confirmation" 
-                                class="form-control-custom" 
-                                placeholder="Re-enter your password"
-                                required
-                            >
-                            <button type="button" class="password-toggle" onclick="togglePassword('password_confirmation', 'toggleIcon2')">
-                                <i class="bi bi-eye" id="toggleIcon2"></i>
-                            </button>
+                    <div class="form-options">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember" name="remember">
+                            <label for="remember">Remember me</label>
                         </div>
+                        <a href="#" class="forgot-link">Forgot Password?</a>
                     </div>
 
-                    <div class="terms-checkbox">
-                        <input type="checkbox" id="terms" name="terms" required>
-                        <label for="terms">
-                            I agree to the <a href="{{ url('/terms') }}" target="_blank">Terms of Service</a> 
-                            and <a href="{{ url('/privacy') }}" target="_blank">Privacy Policy</a>
-                        </label>
+                    <!-- Call to Action text -->
+                    <div class="cta-text">
+                        🔑 Access your account now!
                     </div>
 
+                    <!-- Enhanced Login Button -->
                     <button type="submit" class="btn-auth">
-                        Create Account
+                        LOGIN TO YOUR ACCOUNT
                     </button>
                 </form>
 
                 <div class="auth-footer">
-                    <p>Already have an account? <a href="{{ route('login') }}">Login here</a></p>
+                    <p>Don't have an account? <a href="{{ route('register') }}">Sign up here</a></p>
                 </div>
             </div>
         </div>
@@ -415,9 +452,9 @@
 
 @push('scripts')
 <script>
-    function togglePassword(inputId, iconId) {
-        const passwordInput = document.getElementById(inputId);
-        const toggleIcon = document.getElementById(iconId);
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.getElementById('toggleIcon');
         
         if (passwordInput.type === 'password') {
             passwordInput.type = 'text';
@@ -430,59 +467,15 @@
         }
     }
 
-    function checkPasswordStrength() {
-        const password = document.getElementById('password').value;
-        const strengthBar = document.getElementById('strengthBar');
-        
-        // Remove all classes
-        strengthBar.classList.remove('weak', 'medium', 'strong');
-        
-        if (password.length === 0) {
-            strengthBar.style.width = '0%';
-            return;
-        }
-        
-        let strength = 0;
-        
-        // Check password length
-        if (password.length >= 8) strength++;
-        if (password.length >= 12) strength++;
-        
-        // Check for lowercase and uppercase
-        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
-        
-        // Check for numbers
-        if (/\d/.test(password)) strength++;
-        
-        // Check for special characters
-        if (/[^a-zA-Z\d]/.test(password)) strength++;
-        
-        // Set strength class
-        if (strength <= 2) {
-            strengthBar.classList.add('weak');
-        } else if (strength <= 4) {
-            strengthBar.classList.add('medium');
-        } else {
-            strengthBar.classList.add('strong');
-        }
-    }
-
     // Form validation
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('password_confirmation').value;
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('.btn-auth');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i> Logging in...';
+        submitBtn.disabled = true;
         
-        if (password !== confirmPassword) {
-            e.preventDefault();
-            alert('Passwords do not match!');
-            return false;
-        }
-        
-        if (password.length < 8) {
-            e.preventDefault();
-            alert('Password must be at least 8 characters long!');
-            return false;
-        }
+        // Allow form to submit naturally
+        return true;
     });
 </script>
 @endpush

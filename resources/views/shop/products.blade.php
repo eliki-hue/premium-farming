@@ -16,6 +16,17 @@
                     <p class="hero-subtitle mb-5 animate__animated animate__fadeInUp animate__delay-1s">
                         Discover our complete collection of scientifically formulated feeds for all livestock types
                     </p>
+                    
+                    <!-- Sign Up Notice -->
+                    {{-- @guest
+                    <div class="alert alert-info alert-dismissible fade show mb-4 mx-auto" style="max-width: 600px;" role="alert">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Sign up required!</strong> You need to create an account to add items to cart and make purchases.
+                        <a href="{{ route('register') }}" class="alert-link ms-1">Sign up here</a> or 
+                        <a href="{{ route('login') }}" class="alert-link">log in</a> if you already have an account.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    @endguest --}}
                 </div>
             </div>
         </div>
@@ -45,6 +56,17 @@
                         <div class="product-image-container">
                             <img src="{{ asset($product['image']) }}" alt="{{ $product['name'] }}" class="product-image-full">
                             <span class="product-badge pig">{{ $product['specs']['stage'] }}</span>
+                            
+                            @guest
+                            <div class="signup-overlay">
+                                <div class="overlay-content">
+                                    <i class="bi bi-lock fs-1 mb-3"></i>
+                                    <h6 class="mb-2">Sign Up Required</h6>
+                                    <p class="small mb-3">Create an account to add to cart</p>
+                                    <a href="{{ route('register') }}" class="btn btn-sm btn-light">Sign Up Free</a>
+                                </div>
+                            </div>
+                            @endguest
                         </div>
                         <div class="product-content">
                             <h4 class="fw-bold mb-2">{{ $product['name'] }}</h4>
@@ -82,6 +104,8 @@
                                     <span class="price-tag">Ksh {{ number_format($product['price']) }}</span>
                                     <small class="text-muted d-block">per 50kg bag</small>
                                 </div>
+                                
+                                @auth
                                 <form action="{{ route('cart.add') }}" method="POST" class="mb-0">
                                     @csrf
                                     <input type="hidden" name="id" value="{{ $product['id'] }}">
@@ -92,6 +116,12 @@
                                         <i class="bi bi-cart-plus me-2"></i> Add
                                     </button>
                                 </form>
+                                @else
+                                <!-- Sign Up Button for Guests -->
+                                <button type="button" class="btn btn-premium" data-bs-toggle="modal" data-bs-target="#signupModal">
+                                    <i class="bi bi-cart-plus me-2"></i> Add
+                                </button>
+                                @endauth
                             </div>
                         </div>
                     </div>
@@ -101,7 +131,7 @@
         </div>
     </section>
 
-    <!-- POULTRY FEEDS -->
+    <!-- POULTRY FEEDS Section -->
     <section id="poultry-feeds" class="section">
         <div class="container">
             <div class="section-title animate-on-scroll">
@@ -126,6 +156,17 @@
                         <div class="product-image-container">
                             <img src="{{ asset($product['image']) }}" alt="{{ $product['name'] }}" class="product-image-full">
                             <span class="product-badge poultry">{{ $product['specs']['type'] }}</span>
+                            
+                            @guest
+                            <div class="signup-overlay">
+                                <div class="overlay-content">
+                                    <i class="bi bi-lock fs-1 mb-3"></i>
+                                    <h6 class="mb-2">Sign Up Required</h6>
+                                    <p class="small mb-3">Create an account to add to cart</p>
+                                    <a href="{{ route('register') }}" class="btn btn-sm btn-light">Sign Up Free</a>
+                                </div>
+                            </div>
+                            @endguest
                         </div>
                         <div class="product-content">
                             <h4 class="fw-bold mb-2">{{ $product['name'] }}</h4>
@@ -166,6 +207,8 @@
                                     <span class="price-tag">Ksh {{ number_format($product['price']) }}</span>
                                     <small class="text-muted d-block">per 50kg bag</small>
                                 </div>
+                                
+                                @auth
                                 <form action="{{ route('cart.add') }}" method="POST" class="mb-0">
                                     @csrf
                                     <input type="hidden" name="id" value="{{ $product['id'] }}">
@@ -176,6 +219,11 @@
                                         <i class="bi bi-cart-plus me-2"></i> Add
                                     </button>
                                 </form>
+                                @else
+                                <button type="button" class="btn btn-premium" data-bs-toggle="modal" data-bs-target="#signupModal">
+                                    <i class="bi bi-cart-plus me-2"></i> Add
+                                </button>
+                                @endauth
                             </div>
                         </div>
                     </div>
@@ -185,7 +233,7 @@
         </div>
     </section>
 
-    <!-- PET FEEDS -->
+    <!-- PET FEEDS Section -->
     <section id="pet-feeds" class="section bg-light">
         <div class="container">
             <div class="section-title animate-on-scroll">
@@ -208,6 +256,17 @@
                         <div class="product-image-container">
                             <img src="{{ asset($product['image']) }}" alt="{{ $product['name'] }}" class="product-image-full">
                             <span class="product-badge pet">{{ $product['specs']['type'] }}</span>
+                            
+                            @guest
+                            <div class="signup-overlay">
+                                <div class="overlay-content">
+                                    <i class="bi bi-lock fs-1 mb-3"></i>
+                                    <h6 class="mb-2">Sign Up Required</h6>
+                                    <p class="small mb-3">Create an account to add to cart</p>
+                                    <a href="{{ route('register') }}" class="btn btn-sm btn-light">Sign Up Free</a>
+                                </div>
+                            </div>
+                            @endguest
                         </div>
                         <div class="product-content">
                             <h4 class="fw-bold mb-2">{{ $product['name'] }}</h4>
@@ -248,6 +307,8 @@
                                     <span class="price-tag">Ksh {{ number_format($product['price']) }}</span>
                                     <small class="text-muted d-block">per bag</small>
                                 </div>
+                                
+                                @auth
                                 <form action="{{ route('cart.add') }}" method="POST" class="mb-0">
                                     @csrf
                                     <input type="hidden" name="id" value="{{ $product['id'] }}">
@@ -258,6 +319,11 @@
                                         <i class="bi bi-cart-plus me-2"></i> Add
                                     </button>
                                 </form>
+                                @else
+                                <button type="button" class="btn btn-premium" data-bs-toggle="modal" data-bs-target="#signupModal">
+                                    <i class="bi bi-cart-plus me-2"></i> Add
+                                </button>
+                                @endauth
                             </div>
                         </div>
                     </div>
@@ -267,7 +333,7 @@
         </div>
     </section>
 
-    <!-- BY-PRODUCTS -->
+    <!-- BY-PRODUCTS Section -->
     <section id="by-products" class="section">
         <div class="container">
             <div class="section-title animate-on-scroll">
@@ -290,6 +356,17 @@
                         <div class="product-image-container">
                             <img src="{{ asset($product['image']) }}" alt="{{ $product['name'] }}" class="product-image-full">
                             <span class="product-badge byproduct">{{ $product['specs']['type'] }}</span>
+                            
+                            @guest
+                            <div class="signup-overlay">
+                                <div class="overlay-content">
+                                    <i class="bi bi-lock fs-1 mb-3"></i>
+                                    <h6 class="mb-2">Sign Up Required</h6>
+                                    <p class="small mb-3">Create an account to add to cart</p>
+                                    <a href="{{ route('register') }}" class="btn btn-sm btn-light">Sign Up Free</a>
+                                </div>
+                            </div>
+                            @endguest
                         </div>
                         <div class="product-content">
                             <h4 class="fw-bold mb-2">{{ $product['name'] }}</h4>
@@ -330,6 +407,8 @@
                                     <span class="price-tag">Ksh {{ number_format($product['price']) }}</span>
                                     <small class="text-muted d-block">per 50kg bag</small>
                                 </div>
+                                
+                                @auth
                                 <form action="{{ route('cart.add') }}" method="POST" class="mb-0">
                                     @csrf
                                     <input type="hidden" name="id" value="{{ $product['id'] }}">
@@ -340,6 +419,11 @@
                                         <i class="bi bi-cart-plus me-2"></i> Add
                                     </button>
                                 </form>
+                                @else
+                                <button type="button" class="btn btn-premium" data-bs-toggle="modal" data-bs-target="#signupModal">
+                                    <i class="bi bi-cart-plus me-2"></i> Add
+                                </button>
+                                @endauth
                             </div>
                         </div>
                     </div>
@@ -361,32 +445,38 @@
                         </p>
                         
                         <div class="d-grid gap-3 d-md-flex justify-content-center">
-                            <!-- If user has items in cart -->
-                            @php
-                                $cartItems = session('cart', []);
-                                $cartCount = count($cartItems);
-                            @endphp
-                            
-                            @if($cartCount > 0)
-                                <a href="{{ route('checkout') }}" class="btn btn-success btn-lg px-5 py-3 fw-bold me-md-3">
-                                    <i class="bi bi-lock-fill me-2"></i>
-                                    Secure Checkout ({{ $cartCount }} items)
-                                </a>
-                                <a href="{{ route('cart.view') }}" class="btn btn-outline-light btn-lg px-5 py-3 fw-bold">
-                                    <i class="bi bi-cart me-2"></i>
-                                    View Cart
-                                </a>
+                            @auth
+                                @php
+                                    $cartItems = session('cart', []);
+                                    $cartCount = count($cartItems);
+                                @endphp
+                                
+                                @if($cartCount > 0)
+                                    <a href="{{ route('checkout') }}" class="btn btn-success btn-lg px-5 py-3 fw-bold me-md-3">
+                                        <i class="bi bi-lock-fill me-2"></i>
+                                        Secure Checkout ({{ $cartCount }} items)
+                                    </a>
+                                    <a href="{{ route('cart.view') }}" class="btn btn-outline-light btn-lg px-5 py-3 fw-bold">
+                                        <i class="bi bi-cart me-2"></i>
+                                        View Cart
+                                    </a>
+                                @else
+                                    <a href="#pig-feeds" class="btn btn-success btn-lg px-5 py-3 fw-bold me-md-3">
+                                        <i class="bi bi-cart-plus me-2"></i>
+                                        Browse Products
+                                    </a>
+                                @endif
                             @else
-                                <!-- If cart is empty -->
-                                <a href="{{ route('checkout') }}" class="btn btn-success btn-lg px-5 py-3 fw-bold me-md-3">
-                                    <i class="bi bi-arrow-right-circle me-2"></i>
-                                    Go to Payment
+                                <!-- For guests -->
+                                <a href="{{ route('register') }}" class="btn btn-success btn-lg px-5 py-3 fw-bold me-md-3">
+                                    <i class="bi bi-person-plus me-2"></i>
+                                    Sign Up to Shop
                                 </a>
-                                <a href="#pig-feeds" class="btn btn-outline-light btn-lg px-5 py-3 fw-bold">
-                                    <i class="bi bi-search me-2"></i>
-                                    Browse Products
+                                <a href="{{ route('login') }}" class="btn btn-outline-light btn-lg px-5 py-3 fw-bold">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                                    Log In
                                 </a>
-                            @endif
+                            @endauth
                         </div>
                         
                         <!-- Trust indicators -->
@@ -419,7 +509,49 @@
     </section>
 </div>
 
+<!-- Sign Up Modal -->
+<div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-premium text-white">
+                <h5 class="modal-title" id="signupModalLabel">
+                    <i class="bi bi-lock me-2"></i>Sign Up Required
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <i class="bi bi-cart-plus display-1 text-premium mb-3"></i>
+                    <h4>Create Your Account</h4>
+                    <p class="text-muted">You need to sign up to add items to your cart and make purchases</p>
+                </div>
+                
+                <div class="benefits mb-4">
+                    <h6 class="mb-3">Benefits of signing up:</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Add products to cart</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Save favorite products</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Track your orders</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Faster checkout</li>
+                        <li><i class="bi bi-check-circle text-success me-2"></i> Exclusive offers</li>
+                    </ul>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <a href="{{ route('register') }}" class="btn btn-premium btn-lg">
+                        <i class="bi bi-person-plus me-2"></i> Sign Up Now
+                    </a>
+                    <a href="{{ route('login') }}" class="btn btn-outline-secondary">
+                        Already have an account? Log In
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
+    /* Add to existing styles */
     .hero-section {
         min-height: 70vh;
         background: linear-gradient(rgba(42, 110, 63, 0.9), rgba(30, 82, 46, 0.9)),
@@ -433,6 +565,67 @@
         color: white;
     }
     
+    /* Sign Up Overlay Styles */
+    .signup-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 1;
+    }
+    
+    .product-image-container:hover .signup-overlay {
+        opacity: 1;
+    }
+    
+    .overlay-content {
+        text-align: center;
+        color: white;
+        padding: 20px;
+    }
+    
+    .overlay-content i {
+        font-size: 2.5rem;
+        color: #fff;
+        margin-bottom: 10px;
+    }
+    
+    .overlay-content h6 {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .overlay-content .btn {
+        font-size: 0.8rem;
+        padding: 5px 15px;
+    }
+    
+    /* Disabled button style for guests */
+    .btn-premium:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    
+    /* Modal styles */
+    .modal-header.bg-premium {
+        background: linear-gradient(135deg, #2a6e3f 0%, #1e522e 100%);
+    }
+    
+    .benefits {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 4px solid #2a6e3f;
+    }
+    
+    /* Existing styles remain the same */
     .hero-title {
         font-size: 3.5rem;
         font-weight: 700;
@@ -447,7 +640,6 @@
         font-weight: 300;
     }
     
-    /* Product Card Styles - FULL VISIBLE IMAGES */
     .product-card {
         height: 100%;
         display: flex;
@@ -457,6 +649,7 @@
         background: white;
         box-shadow: var(--shadow-soft);
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
     }
     
     .product-card:hover {
@@ -464,7 +657,6 @@
         box-shadow: var(--shadow-medium);
     }
     
-    /* FULL VISIBLE IMAGE CONTAINER */
     .product-image-container {
         position: relative;
         height: 300px;
@@ -476,7 +668,7 @@
     .product-image-full {
         width: 100%;
         height: 100%;
-        object-fit: contain !important; /* Show full image without cropping */
+        object-fit: contain !important;
         object-position: center center;
         padding: 25px;
         transition: all 0.5s ease;
@@ -487,265 +679,99 @@
         padding: 20px;
     }
     
-    .product-badge {
-        position: absolute;
-        top: 15px;
-        left: 15px;
-        padding: 8px 20px;
-        border-radius: 25px;
-        font-size: 0.85rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-        color: white;
-        z-index: 2;
-    }
-    
-    .product-badge.pig {
-        background: linear-gradient(135deg, #8b4513, #dc2626);
-    }
-    
-    .product-badge.poultry {
-        background: linear-gradient(135deg, #dc2626, #f59e0b);
-    }
-    
-    .product-badge.pet {
-        background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    }
-    
-    .product-badge.byproduct {
-        background: linear-gradient(135deg, #047857, #065f46);
-    }
-    
-    .product-content {
-        padding: 1.5rem;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .product-description-container {
-        flex-grow: 1;
-        margin-bottom: 1.5rem;
-    }
-    
-    .product-description {
-        line-height: 1.6;
-        color: #4a5568;
-    }
-    
-    /* Read More/Less Styles */
-    .read-more-link {
-        color: var(--primary-color);
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.9rem;
-        cursor: pointer;
-        display: inline-block;
-        margin-left: 4px;
-        transition: all 0.3s ease;
-    }
-    
-    .read-more-link:hover {
-        text-decoration: underline;
-        color: #2d4a3e;
-    }
-    
-    .show-more, .show-less {
-        display: inline;
-    }
-    
-    .collapse.show + .read-more-link .show-more {
-        display: none;
-    }
-    
-    .collapse.show + .read-more-link .show-less {
-        display: inline;
-    }
-    
-    .collapse:not(.show) + .read-more-link .show-more {
-        display: inline;
-    }
-    
-    .collapse:not(.show) + .read-more-link .show-less {
-        display: none;
-    }
-    
-    .price-tag {
-        font-size: 1.75rem;
-        font-weight: 800;
-        color: var(--primary-color);
-        margin-bottom: 0.5rem;
-    }
-    
-    .product-specs {
-        background: rgba(42, 110, 63, 0.05);
-        padding: 1.25rem;
-        border-radius: 12px;
-        margin-bottom: 1.5rem;
-    }
-    
-    /* Make buttons align at bottom */
-    .mt-auto {
-        margin-top: auto;
-    }
-    
-    /* CTA Section Styles */
-    .cta-section {
-        background: linear-gradient(135deg, #2a6e3f 0%, #1e522e 100%);
-        padding: 100px 0;
-        margin-top: 50px;
-        color: white;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .cta-section::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('https://images.unsplash.com/photo-1589923186741-7d1d6ccee3c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') center/cover;
-        opacity: 0.1;
-        z-index: 0;
-    }
-    
-    .cta-content {
-        position: relative;
-        z-index: 1;
-    }
-    
-    .cta-title {
-        font-size: 3rem;
-        font-weight: 800;
-        margin-bottom: 1.5rem;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    }
-    
-    .cta-text {
-        font-size: 1.25rem;
-        opacity: 0.9;
-        max-width: 700px;
-        margin: 0 auto 2.5rem;
-        font-weight: 300;
-    }
-    
-    .btn-success {
-        background: linear-gradient(135deg, #28a745, #20c997);
-        border: none;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-success:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
-    }
-    
-    .btn-outline-light:hover {
-        background: rgba(255, 255, 255, 0.1);
-    }
-    
     /* Responsive adjustments */
-    @media (max-width: 1200px) {
-        .product-image-container {
-            height: 280px;
-        }
-    }
-    
-    @media (max-width: 992px) {
-        .product-image-container {
-            height: 250px;
-        }
-        
-        .product-image-full {
-            padding: 20px;
-        }
-    }
-    
     @media (max-width: 768px) {
-        .hero-title {
-            font-size: 2.5rem;
+        .signup-overlay .overlay-content {
+            padding: 10px;
         }
         
-        .product-image-container {
-            height: 220px;
-        }
-        
-        .product-content {
-            padding: 1.25rem;
-        }
-        
-        .price-tag {
+        .overlay-content i {
             font-size: 1.5rem;
         }
         
-        .read-more-link {
-            font-size: 0.85rem;
-        }
-        
-        /* CTA responsive */
-        .cta-section {
-            padding: 60px 0;
-        }
-        
-        .cta-title {
-            font-size: 2.2rem;
-        }
-        
-        .cta-text {
-            font-size: 1.1rem;
-        }
-        
-        .btn-lg {
-            padding: 0.8rem 1.5rem;
-            font-size: 1rem;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        
-        .d-flex {
-            flex-direction: column;
-            gap: 15px;
-        }
-    }
-    
-    @media (max-width: 576px) {
-        .product-image-container {
-            height: 200px;
-        }
-        
-        .product-image-full {
-            padding: 15px;
+        .overlay-content h6 {
+            font-size: 0.9rem;
         }
     }
 </style>
 
-<!-- JavaScript for Read More/Less -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle Bootstrap collapse events for read more/less
-    const readMoreLinks = document.querySelectorAll('.read-more-link');
+    // Handle Add to Cart button clicks for guests
+    const guestAddButtons = document.querySelectorAll('.btn-premium[data-bs-toggle="modal"]');
     
-    readMoreLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
+    guestAddButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
             e.preventDefault();
-            // Bootstrap handles the collapse, we just need to update text
-            const targetId = this.getAttribute('data-bs-target');
-            const target = document.querySelector(targetId);
-            const isExpanded = this.getAttribute('aria-expanded') === 'true';
             
-            // Update aria-expanded attribute
-            this.setAttribute('aria-expanded', !isExpanded);
+            // Get product name from the nearest product card
+            const productCard = this.closest('.product-card');
+            const productName = productCard.querySelector('h4').textContent;
+            
+            // Update modal content with product info
+            const modalBody = document.querySelector('#signupModal .modal-body');
+            const originalContent = modalBody.innerHTML;
+            
+            modalBody.innerHTML = `
+                <div class="text-center mb-4">
+                    <i class="bi bi-cart-plus display-1 text-premium mb-3"></i>
+                    <h4>Sign Up to Add "${productName}"</h4>
+                    <p class="text-muted">Create an account to add this item to your cart</p>
+                </div>
+                
+                <div class="benefits mb-4">
+                    <h6 class="mb-3">Get started in seconds:</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Add products to cart</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Save favorite products</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Track your orders</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Faster checkout</li>
+                        <li><i class="bi bi-check-circle text-success me-2"></i> Exclusive offers</li>
+                    </ul>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <a href="{{ route('register') }}" class="btn btn-premium btn-lg">
+                        <i class="bi bi-person-plus me-2"></i> Sign Up Free
+                    </a>
+                    <a href="{{ route('login') }}" class="btn btn-outline-secondary">
+                        Already have an account? Log In
+                    </a>
+                </div>
+            `;
         });
     });
     
-    // Initialize tooltips if you have any
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
+    // Reset modal content when modal is hidden
+    document.getElementById('signupModal').addEventListener('hidden.bs.modal', function () {
+        const modalBody = document.querySelector('#signupModal .modal-body');
+        modalBody.innerHTML = `
+            <div class="text-center mb-4">
+                <i class="bi bi-cart-plus display-1 text-premium mb-3"></i>
+                <h4>Create Your Account</h4>
+                <p class="text-muted">You need to sign up to add items to your cart and make purchases</p>
+            </div>
+            
+            <div class="benefits mb-4">
+                <h6 class="mb-3">Benefits of signing up:</h6>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Add products to cart</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Save favorite products</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Track your orders</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Faster checkout</li>
+                    <li><i class="bi bi-check-circle text-success me-2"></i> Exclusive offers</li>
+                </ul>
+            </div>
+            
+            <div class="d-grid gap-2">
+                <a href="{{ route('register') }}" class="btn btn-premium btn-lg">
+                    <i class="bi bi-person-plus me-2"></i> Sign Up Now
+                </a>
+                <a href="{{ route('login') }}" class="btn btn-outline-secondary">
+                    Already have an account? Log In
+                </a>
+            </div>
+        `;
     });
 });
 </script>
