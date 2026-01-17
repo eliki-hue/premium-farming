@@ -163,6 +163,7 @@
                                     <li>You will receive an M-Pesa prompt on your phone</li>
                                     <li>Enter your M-Pesa PIN to complete payment</li>
                                     <li>Payment confirmation will be sent via SMS</li>
+                                    <li>wats up to confirm delivery charges</li>
                                 </ol>
                                 <div class="mb-3">
                                     <label for="mpesa_number" class="form-label">M-Pesa Phone Number *</label>
@@ -225,7 +226,7 @@
                                 <span id="shippingAmount">Ksh {{ number_format($shipping) }}</span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
-                                <span>Tax (16% VAT)</span>
+                                <span>Tax (10% VAT)</span>
                                 <span>Ksh {{ number_format($tax) }}</span>
                             </div>
                             <hr>
@@ -266,6 +267,7 @@
                 <ul>
                     <li>Delivery within 2-3 business days for major towns</li>
                     <li>Remote areas may take 4-5 business days</li>
+                    <li>watsup to confirm delivery charges</li>
                     <li>Delivery fees are non-refundable</li>
                 </ul>
                 

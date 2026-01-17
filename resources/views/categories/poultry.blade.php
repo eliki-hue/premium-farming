@@ -5,8 +5,19 @@
 @section('content')
 
 <div class="min-h-screen pt-24">
-    <!-- Hero Section -->
+    <!-- Hero Section with Video Background -->
     <section class="hero-section">
+        <div class="video-background">
+            <video autoplay muted loop playsinline>
+                <!-- Try different paths -->
+                <source src="{{ asset('videos/chicken out.mp4') }}" type="video/mp4">
+                <source src="{{ url('videos/chicken out.mp4') }}" type="video/mp4">
+                <source src="/videos/chicken out.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay"></div>
+        </div>
+        
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-12 text-center">
@@ -21,6 +32,7 @@
         </div>
     </section>
 
+    <!-- Rest of your code remains exactly the same... -->
     <!-- Stats Section -->
     <section class="py-5 bg-white">
         <div class="container">
@@ -332,7 +344,7 @@
                 <p class="cta-text">
                     Join thousands of successful poultry farmers using Premium Farming Feeds.
                 </p>
-                <a href="{{ route('shop.products') }}" class="btn btn-dark btn-lg px-5 py-3 fw-bold me-3">
+                <a href="{{ route('products') }}" class="btn btn-dark btn-lg px-5 py-3 fw-bold me-3">
                     <i class="bi bi-cart-check me-2"></i>
                     Order Feeds Now
                 </a>
@@ -347,16 +359,64 @@
 
 <style>
     .hero-section {
-        min-height: 60vh;
-        background: linear-gradient(rgba(42, 110, 63, 0.9), rgba(30, 82, 46, 0.9)),
-                    url('https://images.unsplash.com/photo-1595698164298-131a42c1aba2?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
-        background-size: cover;
-        background-position: center;
+        min-height: 70vh;
+        background: #2a6e3f; /* Fallback color */
         display: flex;
         align-items: center;
         position: relative;
         overflow: hidden;
         color: white;
+    }
+    
+    .video-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        overflow: hidden;
+    }
+    
+    .video-background video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        transform: translate(-50%, -50%);
+        object-fit: cover;
+    }
+    
+    .video-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(rgba(42, 110, 63, 0.85), rgba(30, 82, 46, 0.9));
+        z-index: 2;
+    }
+    
+    .hero-section .container {
+        position: relative;
+        z-index: 3;
+    }
+    
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+        margin-bottom: 1rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.5rem;
+        font-weight: 300;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+        opacity: 0.95;
     }
     
     /* Product Card Styles */
@@ -367,13 +427,13 @@
         border-radius: 20px;
         overflow: hidden;
         background: white;
-        box-shadow: var(--shadow-soft);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     
     .product-card:hover {
         transform: translateY(-10px);
-        box-shadow: var(--shadow-medium);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15);
     }
     
     .product-image-container {
@@ -437,7 +497,7 @@
     .price-tag {
         font-size: 1.75rem;
         font-weight: 800;
-        color: var(--primary-color);
+        color: #2a6e3f;
         margin-bottom: 0.5rem;
     }
     
@@ -448,8 +508,135 @@
         margin-bottom: 1.5rem;
     }
     
+    /* Stats Cards */
+    .stat-card {
+        text-align: center;
+        padding: 30px 20px;
+        border-radius: 15px;
+        background: linear-gradient(135deg, rgba(42, 110, 63, 0.1), rgba(30, 82, 46, 0.05));
+        border: 2px solid rgba(42, 110, 63, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        border-color: #2a6e3f;
+        box-shadow: 0 10px 20px rgba(42, 110, 63, 0.1);
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #2a6e3f;
+        margin-bottom: 10px;
+    }
+    
+    .stat-label {
+        font-size: 1.1rem;
+        color: #555;
+        font-weight: 600;
+    }
+    
+    /* Section Styles */
+    .section {
+        padding: 80px 0;
+    }
+    
+    .section-title {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+    
+    .section-title h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #2a6e3f;
+        margin-bottom: 15px;
+    }
+    
+    .section-title p {
+        font-size: 1.2rem;
+        color: #666;
+    }
+    
+    /* Premium Card */
+    .premium-card {
+        padding: 30px;
+        border-radius: 20px;
+        background: white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border: 1px solid #eaeaea;
+        transition: all 0.3s ease;
+    }
+    
+    .premium-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(42, 110, 63, 0.15);
+    }
+    
+    /* CTA Section */
+    .cta-section {
+        padding: 100px 0;
+        background: linear-gradient(135deg, #2a6e3f, #1a4f2d);
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-title {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .cta-text {
+        font-size: 1.3rem;
+        margin-bottom: 40px;
+        opacity: 0.9;
+    }
+    
+    /* Buttons */
+    .btn-premium {
+        background: linear-gradient(135deg, #2a6e3f, #1a4f2d);
+        color: white;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-premium:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(42, 110, 63, 0.4);
+        color: white;
+    }
+    
+    .btn-dark {
+        background: #1a1a1a;
+        border: none;
+    }
+    
+    .btn-dark:hover {
+        background: #333;
+    }
+    
+    .btn-outline-light:hover {
+        background: rgba(255,255,255,0.1);
+    }
+    
     /* Responsive */
     @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+        }
+        
         .product-image-container {
             height: 240px;
         }
@@ -457,7 +644,91 @@
         .product-image-full {
             padding: 20px;
         }
+        
+        .cta-title {
+            font-size: 2.2rem;
+        }
+        
+        .section {
+            padding: 60px 0;
+        }
+        
+        .section-title h2 {
+            font-size: 2rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+        
+        .cta-title {
+            font-size: 1.8rem;
+        }
+        
+        .cta-section {
+            padding: 60px 0;
+        }
+        
+        .video-background video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+    
+    /* Animation for scroll */
+    .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    .animate-on-scroll.visible {
+        opacity: 1;
+        transform: translateY(0);
     }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animation on scroll
+    const animateElements = document.querySelectorAll('.animate-on-scroll');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+    
+    animateElements.forEach(element => {
+        observer.observe(element);
+    });
+    
+    // Add to cart animation
+    document.querySelectorAll('form[action*="cart.add"]').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const button = this.querySelector('button[type="submit"]');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="bi bi-check-circle me-2"></i> Added!';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }, 2000);
+        });
+    });
+});
+</script>
 
 @endsection

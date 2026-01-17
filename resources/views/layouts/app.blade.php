@@ -1135,7 +1135,7 @@
                             Products
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('shop.products') }}">All Products</a></li>
+                            <li><a class="dropdown-item" href="{{ route('products') }}">All Products</a></li>
                             <li><a class="dropdown-item" href="{{ route('category.poultry') }}">Poultry Feeds</a></li>
                             <li><a class="dropdown-item" href="{{ route('category.dairy') }}">Dairy Feeds</a></li>
                             <li><a class="dropdown-item" href="{{ route('category.swine') }}">Swine Feeds</a></li>
@@ -1249,7 +1249,7 @@
                     <h5 class="mb-4">Quick Links</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="{{ url('/') }}">Home</a></li>
-                        <li class="mb-2"><a href="{{ route('shop.products') }}">Products</a></li>
+                        <li class="mb-2"><a href="{{ route('products') }}">Products</a></li>
                         <li class="mb-2"><a href="/about">About Us</a></li>
                         <li class="mb-2"><a href="/contact">Contact</a></li>
                         <li class="mb-2"><a href="/reviews">Reviews</a></li>
@@ -1367,7 +1367,7 @@
                             <i class="bi bi-cart-x"></i>
                             <h5>Your cart is empty</h5>
                             <p>Add products to get started</p>
-                            <a href="{{ route('shop.products') }}" class="btn btn-premium-outline mt-3">
+                            <a href="{{ route('products') }}" class="btn btn-premium-outline mt-3">
                                 Continue Shopping
                             </a>
                         </div>
@@ -1402,7 +1402,7 @@
                             <button type="button" class="cart-btn-clear" id="clearCartBtn">
                                 <i class="bi bi-trash me-1"></i>Clear Cart
                             </button>
-                            <a href="{{ route('shop.products') }}" class="cart-btn-close" data-bs-dismiss="modal">
+                            <a href="{{ route('sproducts') }}" class="cart-btn-close" data-bs-dismiss="modal">
                                 Continue Shopping
                             </a>
                         </div>

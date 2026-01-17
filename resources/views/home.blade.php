@@ -30,18 +30,49 @@
         --shadow-dark: 0 10px 40px rgba(30, 66, 46, 0.2);
     }
 
-    /* Hero Section - Green Theme */
+    /* Hero Section - Video Background */
     .hero-section {
         min-height: 90vh;
-        background: linear-gradient(rgba(42, 110, 63, 0.95), rgba(30, 66, 46, 0.95)),
-                    url('https://images.unsplash.com/photo-1542838135-4b6e3f616300?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
-        background-size: cover;
-        background-position: center;
+        position: relative;
         display: flex;
         align-items: center;
-        position: relative;
         overflow: hidden;
         color: white;
+    }
+    
+    /* Video Background */
+    .hero-video-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+    }
+    
+    .hero-video-bg video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: cover;
+        filter: brightness(0.7);
+        -webkit-filter: brightness(0.7);
+    }
+    
+    /* Video Overlay - Classic Green Gradient */
+    .hero-video-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(rgba(42, 110, 63, 0.95), rgba(30, 66, 46, 0.95));
+        z-index: 1;
     }
     
     .hero-section::before {
@@ -52,11 +83,12 @@
         right: 0;
         bottom: 0;
         background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+        z-index: 2;
     }
     
     .hero-content {
         position: relative;
-        z-index: 2;
+        z-index: 3;
         padding: 2rem 0;
     }
     
@@ -609,8 +641,18 @@
 @endpush
 
 @section('content')
-    <!-- Hero Section -->
+    <!-- Hero Section with Video Background -->
     <section class="hero-section">
+        <!-- Video Background Added Here -->
+        <div class="hero-video-bg">
+            <video autoplay muted loop playsinline preload="metadata">
+                <source src="{{ asset('public/videos/recaphm.mp4') }}" type="video/mp4">
+                <!-- Fallback image if video doesn't load -->
+                <img src="https://images.unsplash.com/photo-1542838135-4b6e3f616300?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Premium Farming Feeds" style="width: 100%; height: 100%; object-fit: cover;">
+            </video>
+            <div class="hero-video-overlay"></div>
+        </div>
+        
         <div class="container">
             <div class="hero-content">
                 <div class="hero-logo-container animate__animated animate__fadeInDown">
@@ -628,7 +670,7 @@
                 </p>
                 
                 <div class="hero-buttons animate__animated animate__fadeInUp animate__delay-3s">
-                    <a href="{{ route('shop.products') }}" class="btn btn-premium btn-lg">
+                    <a href="{{ route('products') }}" class="btn btn-premium btn-lg">
                         <i class="bi bi-cart-plus me-2"></i>
                         Browse Products
                     </a>
@@ -770,7 +812,7 @@
                     Experience the difference in quality, yield, and profitability.
                 </p>
                 <div class="d-flex flex-wrap justify-content-center gap-3">
-                    <a href="{{ route('shop.products') }}" class="btn btn-light btn-lg px-5 py-3 fw-bold text-green">
+                    <a href="{{ route('products') }}" class="btn btn-light btn-lg px-5 py-3 fw-bold text-green">
                         <i class="bi bi-cart-check me-2"></i>
                         Start Buying Now
                     </a>

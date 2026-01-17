@@ -14,11 +14,40 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
+      public function login(Request $request)
+    {
+        $response = Http::post(
+            'http://127.0.0.1:8000/api/auth/token/',
+            [
+                'username' => $request->username,
+                'password' => $request->password,
+            ]
+        );
+
+        if ($response->failed()) {
+            return back()->withErrors(['login' => 'Invalid credentials']);
+        }
+
+        $data = $response->json();
+
+        // Store tokens
+        session([
+            'access_token' => $data['access'],
+            'refresh_token' => $data['refresh'],
+        ]);
+
+        return redirect('/home');
+    }
     public function create(): View
     {
         return view('auth.login');
     }
 
+    public function logout()
+    {
+        session()->flush();
+        return redirect('/login');
+    }
     /**
      * Handle an incoming authentication request.
      */

@@ -524,7 +524,7 @@
                     <h3>Our Mission</h3>
                     <p>
                         To provide farmers with high-quality, affordable, and scientifically balanced animal 
-                        feeds that optimize livestock growth, health, and productivity. We are committed to 
+                        feeds that optimize livestock growth and productivity. We are committed to 
                         sustainable farming practices, farmer education, and exceptional customer service.
                     </p>
                 </div>
@@ -699,7 +699,7 @@
                 <div class="value-icon">
                     <i class="bi bi-award-fill"></i>
                 </div>
-                <h3>Quality Excellence</h3>
+                <h3>Excellence</h3>
                 <p>We never compromise on quality. Every product undergoes rigorous testing to ensure it meets our high standards.</p>
             </div>
 

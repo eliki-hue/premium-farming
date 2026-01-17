@@ -142,6 +142,225 @@ Route::prefix('checkout')->group(function () {
     Route::get('/track', [CheckoutController::class, 'trackOrder'])->name('checkout.track');
     Route::post('/track', [CheckoutController::class, 'trackOrder'])->name('checkout.track.post');
 });
+Route::get('/debug-django-real', function() {
+    echo "<h1>Debug: Real Django Connection</h1>";
+    
+    $config = config('services.django_api');
+    
+    echo "<h2>Current Configuration:</h2>";
+    echo "<pre>";
+    print_r([
+        'DJANGO_API_URL' => $config['url'],
+        'DJANGO_API_USERNAME' => $config['username'],
+        'DJANGO_API_PASSWORD' => $config['password'] ? '***SET***' : 'NOT SET',
+        'DJANGO_API_USE_MOCK' => env('DJANGO_API_USE_MOCK', 'not set'),
+        'APP_ENV' => env('APP_ENV'),
+        'APP_DEBUG' => env('APP_DEBUG')
+    ]);
+    echo "</pre>";
+    
+    echo "<h2>Testing Direct Connection to Django:</h2>";
+    
+    try {
+        // Test 1: Direct authentication
+        echo "<h3>1. Testing Authentication</h3>";
+        $authResponse = \Illuminate\Support\Facades\Http::withOptions(['verify' => false])
+            ->post($config['url'] . '/api/auth/login/', [
+                'username' => $config['username'],
+                'password' => $config['password']
+            ]);
+        
+        echo "Status: " . $authResponse->status() . "<br>";
+        
+        if ($authResponse->successful()) {
+            $token = $authResponse->json()['access'];
+            echo "✅ Token obtained: " . substr($token, 0, 30) . "...<br>";
+            
+            // Test 2: Direct API call
+            echo "<h3>2. Testing Products API</h3>";
+            $productsResponse = \Illuminate\Support\Facades\Http::withOptions(['verify' => false])
+                ->withToken($token)
+                ->get($config['url'] . '/api/products/');
+            
+            echo "Status: " . $productsResponse->status() . "<br>";
+            
+            if ($productsResponse->successful()) {
+                $products = $productsResponse->json();
+                $count = is_array($products) ? count($products) : 0;
+                
+                echo "✅ Found " . $count . " real products from Django!<br>";
+                
+                if ($count > 0) {
+                    echo "<h4>Real Products from Django:</h4>";
+                    echo "<table border='1' cellpadding='5'>";
+                    echo "<tr><th>ID</th><th>Name</th><th>SKU</th><th>Unit Price</th><th>Unit Cost</th><th>Active</th></tr>";
+                    
+                    foreach ($products as $product) {
+                        echo "<tr>";
+                        echo "<td>" . $product['id'] . "</td>";
+                        echo "<td>" . $product['name'] . "</td>";
+                        echo "<td>" . $product['sku'] . "</td>";
+                        echo "<td>" . $product['unit_price'] . "</td>";
+                        echo "<td>" . $product['unit_cost'] . "</td>";
+                        echo "<td>" . ($product['is_active'] ? 'Yes' : 'No') . "</td>";
+                        echo "</tr>";
+                    }
+                    
+                    echo "</table>";
+                }
+            } else {
+                echo "❌ Products API Error: " . $productsResponse->body() . "<br>";
+            }
+            
+            // Test 3: Test DjangoApiService
+            echo "<h3>3. Testing DjangoApiService</h3>";
+            $serviceProducts = \App\Services\DjangoApiService::getProducts();
+            
+            echo "Service returned: " . $serviceProducts->count() . " products<br>";
+            
+            if ($serviceProducts->count() > 0) {
+                echo "<h4>Products from Service:</h4>";
+                
+                // Check if these are mock or real products
+                $firstProduct = $serviceProducts->first();
+                
+                if (isset($firstProduct['unit_price'])) {
+                    echo "✅ These are REAL products from Django!<br>";
+                    echo "<pre>" . json_encode($serviceProducts->toArray(), JSON_PRETTY_PRINT) . "</pre>";
+                } else {
+                    echo "❌ These are MOCK products!<br>";
+                    echo "First product keys: " . implode(', ', array_keys($firstProduct)) . "<br>";
+                    echo "Mock products have: id, name, description, price, category, stock<br>";
+                    echo "Real products have: id, name, sku, unit_price, unit_cost, is_active, etc.<br>";
+                }
+            }
+            
+        } else {
+            echo "❌ Authentication failed: " . $authResponse->body() . "<br>";
+        }
+        
+    } catch (\Exception $e) {
+        echo "❌ Exception: " . $e->getMessage() . "<br>";
+        echo "<pre>" . $e->getTraceAsString() . "</pre>";
+    }
+    
+    // Check cache
+    echo "<h2>Cache Status:</h2>";
+    $cachedToken = \Illuminate\Support\Facades\Cache::get('django_api_token');
+    echo "Cached Token: " . ($cachedToken ? substr($cachedToken, 0, 30) . '...' : 'NO TOKEN') . "<br>";
+    
+    return "<h3>Debug Complete</h3>";
+});
+Route::get('/test-minimal', function() {
+    $config = config('services.django_api');
+    
+    // Direct API call - bypassing service
+    $auth = \Illuminate\Support\Facades\Http::withOptions(['verify' => false])
+        ->post($config['url'] . '/api/auth/login/', [
+            'username' => $config['username'],
+            'password' => $config['password']
+        ]);
+    
+    if (!$auth->successful()) {
+        return response()->json(['error' => 'Auth failed'], 401);
+    }
+    
+    $token = $auth->json()['access'];
+    
+    $response = \Illuminate\Support\Facades\Http::withOptions(['verify' => false])
+        ->withToken($token)
+        ->get($config['url'] . '/api/products/');
+    
+    if ($response->successful()) {
+        $products = $response->json();
+        return response()->json([
+            'success' => true,
+            'count' => count($products),
+            'data' => $products,
+            'source' => 'direct_api_call',
+            'note' => 'This is directly from Django, not through service'
+        ]);
+    }
+    
+    return response()->json(['error' => 'API failed'], $response->status());
+});
+
+Route::get('/api-diagnosis', function() {
+    echo "<h1>API Connection Diagnosis</h1>";
+    
+    $config = config('services.django_api');
+    $laravelUrl = config('app.url');
+    
+    echo "<h2>Current Configuration:</h2>";
+    echo "<pre>";
+    print_r([
+        'Laravel App URL' => $laravelUrl,
+        'Django API URL' => $config['url'],
+        'Django Username' => $config['username'] ? 'SET' : 'NOT SET',
+        'Using Mock' => env('DJANGO_API_USE_MOCK', false) ? 'YES' : 'NO'
+    ]);
+    echo "</pre>";
+    
+    echo "<h2>Testing Connection to Django API:</h2>";
+    
+    // Test 1: Direct connection to Django URL
+    $djangoUrl = $config['url'];
+    echo "<h3>1. Testing: $djangoUrl</h3>";
+    
+    try {
+        $test = Http::withOptions(['verify' => false])
+            ->timeout(5)
+            ->get($djangoUrl);
+        
+        echo "Status: " . $test->status() . "<br>";
+        echo "Response Headers: <pre>";
+        print_r($test->headers());
+        echo "</pre>";
+        
+        if (str_contains($test->body(), 'Django') || str_contains($test->body(), 'django')) {
+            echo "<span style='color: green;'>✅ This looks like a Django server!</span><br>";
+        } else {
+            echo "<span style='color: orange;'>⚠️ This might not be Django</span><br>";
+            echo "Response preview: " . substr($test->body(), 0, 500) . "...<br>";
+        }
+    } catch (\Exception $e) {
+        echo "<span style='color: red;'>❌ Cannot connect: " . $e->getMessage() . "</span><br>";
+    }
+    
+    echo "<h2>Common Django Ports Test:</h2>";
+    $commonPorts = [8000, 8001, 8002, 8003, 8004, 8005, 8006, 8007, 8008, 8009, 8010];
+    
+    foreach ($commonPorts as $port) {
+        $testUrl = "http://localhost:$port";
+        echo "Testing $testUrl: ";
+        
+        try {
+            $response = Http::withOptions(['verify' => false])
+                ->timeout(2)
+                ->get($testUrl);
+            
+            echo "Status: " . $response->status() . " - ";
+            
+            $body = $response->body();
+            $isDjango = str_contains($body, 'Django') || 
+                       str_contains($body, 'django') ||
+                       str_contains($body, 'csrfmiddlewaretoken');
+            
+            if ($isDjango) {
+                echo "<span style='color: green; font-weight: bold;'>DJANGO FOUND!</span>";
+            } else {
+                echo "Not Django";
+            }
+            
+        } catch (\Exception $e) {
+            echo "Connection failed";
+        }
+        
+        echo "<br>";
+    }
+    
+    return "<h3>Diagnosis Complete</h3>";
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -211,7 +430,9 @@ Route::get('/', [CheckoutController::class, 'index'])->name('checkout');
     Route::post('/track', [CheckoutController::class, 'trackOrder'])->name('checkout.track.post');
     Route::post('/confirm-payment/{orderId}', [CheckoutController::class, 'confirmPayment'])->name('checkout.confirm.payment');
     Route::get('/generate-receipt/{orderId}', [CheckoutController::class, 'generateReceipt'])->name('checkout.generate.receipt');
-
+// Checkout routes
+Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
+Route::get('/checkout/receipt/{orderId}', [CheckoutController::class, 'receipt'])->name('checkout.receipt');
         // Saved addresses and preferences (authenticated only)
         Route::get('/addresses', function () {
             return view('checkout.addresses');
@@ -238,6 +459,14 @@ Route::get('/', [CheckoutController::class, 'index'])->name('checkout');
         // Orders (authenticated only)
         Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
         Route::post('/orders/store', [OrderController::class, 'store'])->name('orders.store');
+        // Product routes
+     // Use ProductController for products
+Route::get('/products', [ProductController::class, 'index'])->name('products');
+Route::get('/shop/products', [ProductController::class, 'index'])->name('shop.products');
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/products/category/{category}', [ProductController::class, 'byCategory'])->name('products.category');
+
     });
 
     /*
@@ -364,7 +593,44 @@ Route::get('/', [CheckoutController::class, 'index'])->name('checkout');
         Route::get('/settings', function () {
             return view('pos.settings');
         })->name('settings');
-        
+            
+        Route::post('/product/store', [PosController::class, 'storeProduct'])->name('pos.product.store');
+
+        // Add to routes/web.php
+
+Route::get('/test-direct-api', function() {
+    $config = config('services.django_api');
+    
+    // First get token
+    $authResponse = \Illuminate\Support\Facades\Http::withOptions(['verify' => false])
+        ->post($config['url'] . '/api/auth/login/', [
+            'username' => $config['username'],
+            'password' => $config['password']
+        ]);
+    
+    if (!$authResponse->successful()) {
+        return response()->json([
+            'error' => 'Auth failed',
+            'status' => $authResponse->status(),
+            'body' => $authResponse->body()
+        ]);
+    }
+    
+    $token = $authResponse->json()['access'];
+    
+    // Now try to get products
+    $productsResponse = \Illuminate\Support\Facades\Http::withOptions(['verify' => false])
+        ->withToken($token)
+        ->get($config['url'] . '/api/products/');
+    
+    return response()->json([
+        'auth_status' => $authResponse->status(),
+        'products_status' => $productsResponse->status(),
+        'products_data' => $productsResponse->json(),
+        'products_headers' => $productsResponse->headers()
+    ]);
+});
+Route::get('/products', [ProductController::class, 'index']);        
         // Additional POS Routes
         Route::get('/stores', [StockController::class, 'stores'])->name('stores');
         Route::get('/update-prices', [StockController::class, 'updatePrices'])->name('update-prices');

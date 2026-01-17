@@ -233,7 +233,7 @@
                 <p class="cta-text">
                     Join thousands of successful dairy farmers using Premium Farming Feeds.
                 </p>
-                <a href="{{ route('shop.products') }}" class="btn btn-light btn-lg px-5 py-3 fw-bold me-3">
+                <a href="{{ route('products') }}" class="btn btn-light btn-lg px-5 py-3 fw-bold me-3">
                     <i class="bi bi-cart-check me-2"></i>
                     Order Now
                 </a>

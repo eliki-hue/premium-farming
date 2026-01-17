@@ -2,41 +2,66 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use Illuminate\Http\Request; 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http; // <-- THIS IS REQUIRED
+use App\Services\DjangoApiService;
 
 class ProductController extends Controller
 {
+    /**
+     * Display a listing of the products.
+     */
 public function index()
 {
-    $products = Product::orderBy('created_at', 'desc')->paginate(10);
+    try {
+        $response = Http::get(config('services.django_api.url') . '/products/');
 
-    return view('products.index', compact('products'));
+        // DEBUG: Dump response
+        if (!$response->successful()) {
+            dd($response->status(), $response->body());
+        }
+
+        $products = $response->json()['data'] ?? [];
+        $groupedProducts = ['uncategorized' => $products];
+
+        return view('shop.products', compact('groupedProducts'));
+    } catch (\Exception $e) {
+        dd($e->getMessage(), $e->getTraceAsString());
+    }
 }
 
-
-
-    public function show(Product $product)
+    /**
+     * Test Django API connection.
+     */
+    public function testConnection()
     {
-        return view('products.show', compact('product'));
-    }
+        try {
+            $token = DjangoApiService::getToken();
 
-     public function create()
-    {
-        return view('products.create');
-    }
+            if ($token) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Successfully connected to Django API',
+                    'token_obtained' => true,
+                    'token_preview' => substr($token, 0, 20) . '...'
+                ]);
+            }
 
-public function stores()
-    {
-        $products = Product::with('category')->orderBy('stock_quantity', 'asc')->get();
-        $lowStock = $products->where('stock_quantity', '<=', 20)->count();
-        
-        return view('pos.stores', compact('products', 'lowStock'));
-    }
-    
-    public function sell()
-    {
-        // Your POS sell logic
-        return view('pos.sell');
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to obtain token from Django API'
+            ], 500);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Connection error: ' . $e->getMessage(),
+                'config' => [
+                    'url' => config('services.django_api.url'),
+                    'username_configured' => !empty(config('services.django_api.username')),
+                    'password_configured' => !empty(config('services.django_api.password'))
+                ]
+            ], 500);
+        }
     }
 }
