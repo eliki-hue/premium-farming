@@ -17,12 +17,12 @@ return [
         'key' => env('POSTMARK_API_KEY'),
     ],
 
-    'django_api' => [
-    'url' => env('DJANGO_API_URL', 'http://localhost:8000'),
-    'username' => env('DJANGO_API_USERNAME'),
-    'password' => env('DJANGO_API_PASSWORD'),
-],
-
+  'django' => [
+        'url' => env('DJANGO_API_URL', 'http://127.0.0.1:8000'),
+        'username' => env('DJANGO_API_USERNAME'),
+        'password' => env('DJANGO_API_PASSWORD'),
+        'use_mock' => env('DJANGO_API_USE_MOCK', false),
+    ],
 
     'resend' => [
         'key' => env('RESEND_API_KEY'),

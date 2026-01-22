@@ -5,26 +5,19 @@
 @section('content')
 
 <div class="min-h-screen pt-24">
-    <!-- Hero Section with Video Background -->
-    <section class="hero-section">
-        <div class="video-background">
-            <video autoplay muted loop playsinline>
-                <!-- Try different paths -->
-                <source src="{{ asset('videos/chicken out.mp4') }}" type="video/mp4">
-                <source src="{{ url('videos/chicken out.mp4') }}" type="video/mp4">
-                <source src="/videos/chicken out.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <div class="video-overlay"></div>
+    <!-- Hero Section with Full Background Image -->
+    <section class="hero-section-full-bg">
+        <div class="hero-bg-container">
+            <img src="{{ asset('images/economy.jpeg') }}" alt="Premium Poultry Farming" class="hero-bg-image">
         </div>
         
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-12 text-center">
-                    <h1 class="hero-title mb-4 animate__animated animate__fadeInDown">
+                    <h1 class="hero-title-full-bg mb-4 animate__animated animate__fadeInDown">
                         Premium Poultry Feeds
                     </h1>
-                    <p class="hero-subtitle mb-5 animate__animated animate__fadeInUp animate__delay-1s">
+                    <p class="hero-subtitle-full-bg mb-5 animate__animated animate__fadeInUp animate__delay-1s">
                         Scientifically formulated feeds for optimal growth, health, and egg production
                     </p>
                 </div>
@@ -358,65 +351,56 @@
 </div>
 
 <style>
-    .hero-section {
-        min-height: 70vh;
-        background: #2a6e3f; /* Fallback color */
+    /* Hero Section with Full Background Fill */
+    .hero-section-full-bg {
+        position: relative;
+        min-height: 90vh;
         display: flex;
         align-items: center;
-        position: relative;
         overflow: hidden;
         color: white;
+        margin-top: 76px;
     }
     
-    .video-background {
+    .hero-bg-container {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
         z-index: 1;
-        overflow: hidden;
     }
     
-    .video-background video {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        min-width: 100%;
-        min-height: 100%;
-        width: auto;
-        height: auto;
-        transform: translate(-50%, -50%);
-        object-fit: cover;
-    }
-    
-    .video-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
+    .hero-bg-image {
         width: 100%;
         height: 100%;
-        background: linear-gradient(rgba(42, 110, 63, 0.85), rgba(30, 82, 46, 0.9));
+        object-fit: cover; /* Changed to cover to fill the background */
+        object-position: center center;
+        filter: brightness(0.95) contrast(1.05);
+    }
+    
+    .hero-section-full-bg .container {
+        position: relative;
         z-index: 2;
     }
     
-    .hero-section .container {
-        position: relative;
-        z-index: 3;
-    }
-    
-    .hero-title {
-        font-size: 3.5rem;
+    .hero-title-full-bg {
+        font-size: 4rem;
         font-weight: 800;
-        text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
+        color: white;
+        text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7);
+        line-height: 1.2;
     }
     
-    .hero-subtitle {
+    .hero-subtitle-full-bg {
         font-size: 1.5rem;
         font-weight: 300;
-        text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
         opacity: 0.95;
+        color: white;
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+        max-width: 800px;
+        margin: 0 auto;
     }
     
     /* Product Card Styles */
@@ -628,12 +612,27 @@
     }
     
     /* Responsive */
+    @media (max-width: 992px) {
+        .hero-title-full-bg {
+            font-size: 3rem;
+        }
+        
+        .hero-subtitle-full-bg {
+            font-size: 1.3rem;
+        }
+    }
+    
     @media (max-width: 768px) {
-        .hero-title {
+        .hero-section-full-bg {
+            min-height: 70vh;
+            margin-top: 56px;
+        }
+        
+        .hero-title-full-bg {
             font-size: 2.5rem;
         }
         
-        .hero-subtitle {
+        .hero-subtitle-full-bg {
             font-size: 1.2rem;
         }
         
@@ -659,12 +658,16 @@
     }
     
     @media (max-width: 576px) {
-        .hero-title {
+        .hero-title-full-bg {
             font-size: 2rem;
         }
         
-        .hero-subtitle {
+        .hero-subtitle-full-bg {
             font-size: 1rem;
+        }
+        
+        .hero-section-full-bg {
+            min-height: 60vh;
         }
         
         .cta-title {
@@ -673,12 +676,6 @@
         
         .cta-section {
             padding: 60px 0;
-        }
-        
-        .video-background video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
     }
     

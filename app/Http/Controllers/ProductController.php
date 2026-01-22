@@ -3,65 +3,44 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http; // <-- THIS IS REQUIRED
-use App\Services\DjangoApiService;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the products.
-     */
-public function index()
-{
-    try {
-        $response = Http::get(config('services.django_api.url') . '/products/');
-
-        // DEBUG: Dump response
-        if (!$response->successful()) {
-            dd($response->status(), $response->body());
-        }
-
-        $products = $response->json()['data'] ?? [];
-        $groupedProducts = ['uncategorized' => $products];
-
-        return view('shop.products', compact('groupedProducts'));
-    } catch (\Exception $e) {
-        dd($e->getMessage(), $e->getTraceAsString());
-    }
-}
-
-    /**
-     * Test Django API connection.
-     */
-    public function testConnection()
+    public function index()
     {
-        try {
-            $token = DjangoApiService::getToken();
+        $djangoUrl = config('services.django.url');
+        $endpoint = $djangoUrl . '/api/public/products/';
 
-            if ($token) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Successfully connected to Django API',
-                    'token_obtained' => true,
-                    'token_preview' => substr($token, 0, 20) . '...'
+        try {
+            // Make the request to Django API
+            $response = Http::withOptions([
+                'verify' => false, // skip SSL verification for ngrok HTTPS
+                'timeout' => 15,   // set timeout
+            ])->get($endpoint);
+
+            if ($response->successful()) {
+                $products = collect($response->json());
+            } else {
+                $products = collect([]);
+                Log::warning('Failed to fetch products from Django API', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
                 ]);
             }
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to obtain token from Django API'
-            ], 500);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Connection error: ' . $e->getMessage(),
-                'config' => [
-                    'url' => config('services.django_api.url'),
-                    'username_configured' => !empty(config('services.django_api.username')),
-                    'password_configured' => !empty(config('services.django_api.password'))
-                ]
-            ], 500);
+        } catch (\Throwable $e) {
+            $products = collect([]);
+            Log::error('Error fetching products from Django API', [
+                'message' => $e->getMessage(),
+            ]);
         }
+
+        // Debug: uncomment if needed
+        // dd($products);
+
+        return view('shop.products', [
+            'products' => $products,
+        ]);
     }
 }

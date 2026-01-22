@@ -3,74 +3,47 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\Http;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Display the login view.
-     */
-      public function login(Request $request)
-    {
-        $response = Http::post(
-            'http://127.0.0.1:8000/api/auth/token/',
-            [
-                'username' => $request->username,
-                'password' => $request->password,
-            ]
-        );
-
-        if ($response->failed()) {
-            return back()->withErrors(['login' => 'Invalid credentials']);
-        }
-
-        $data = $response->json();
-
-        // Store tokens
-        session([
-            'access_token' => $data['access'],
-            'refresh_token' => $data['refresh'],
-        ]);
-
-        return redirect('/home');
-    }
-    public function create(): View
+    public function showLogin()
     {
         return view('auth.login');
     }
 
-    public function logout()
+    public function login(Request $request)
     {
-        session()->flush();
-        return redirect('/login');
-    }
-    /**
-     * Handle an incoming authentication request.
-     */
-    public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
 
-        $request->session()->regenerate();
+        $response = Http::withOptions(['verify' => false])
+            ->asForm()
+            ->post(config('services.django.url') . '/api/auth/login/', [
+                'username' => $request->username,
+                'password' => $request->password,
+            ]);
 
-        return redirect()->intended(route('dashboard', absolute: false));
-    }
+        if (! $response->successful()) {
+            return back()->withErrors(['login' => 'Invalid credentials']);
+        }
 
-    /**
-     * Destroy an authenticated session.
-     */
-    public function destroy(Request $request): RedirectResponse
-    {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
+        // Django sets HttpOnly cookies
         return redirect('/');
+    }
+
+    public function logout(Request $request)
+    {
+        $djangoUrl = config('services.django.url');
+        $djangoHost = parse_url($djangoUrl, PHP_URL_HOST);
+
+        Http::withOptions(['verify' => false])
+            ->withCookies($request->cookies->all(), $djangoHost)
+            ->post($djangoUrl . '/api/auth/logout/');
+
+        return redirect('/login');
     }
 }

@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\POSController;
@@ -180,7 +180,7 @@ Route::get('/debug-django-real', function() {
             echo "<h3>2. Testing Products API</h3>";
             $productsResponse = \Illuminate\Support\Facades\Http::withOptions(['verify' => false])
                 ->withToken($token)
-                ->get($config['url'] . '/api/products/');
+                ->get($config['url'] . '/api/public/products/');
             
             echo "Status: " . $productsResponse->status() . "<br>";
             
@@ -269,7 +269,7 @@ Route::get('/test-minimal', function() {
     
     $response = \Illuminate\Support\Facades\Http::withOptions(['verify' => false])
         ->withToken($token)
-        ->get($config['url'] . '/api/products/');
+        ->get($config['url'] . '/api/public/products/');
     
     if ($response->successful()) {
         $products = $response->json();
@@ -621,7 +621,7 @@ Route::get('/test-direct-api', function() {
     // Now try to get products
     $productsResponse = \Illuminate\Support\Facades\Http::withOptions(['verify' => false])
         ->withToken($token)
-        ->get($config['url'] . '/api/products/');
+        ->get($config['url'] . '/api/public/products/');
     
     return response()->json([
         'auth_status' => $authResponse->status(),
@@ -661,14 +661,22 @@ Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.
 Route::get('/pos/login', function () {
     return redirect()->route('login')->with('info', 'Please login to access POS system');
 })->name('pos.login');
+Route::get('/cart/count', function () {
+    return response()->json([
+        'count' => session('cart') ? count(session('cart')) : 0
+    ]);
+});
+
 
 /*
 |--------------------------------------------------------------------------
 | AUTHENTICATION HANDLERS (Keep at bottom)
 |--------------------------------------------------------------------------
 */
-Route::post('/login', [App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'store'])->name('login');
-Route::post('/register', [\App\Http\Controllers\Auth\RegisteredUserController::class, 'store'])->name('register');
-Route::post('/forgot-password', [App\Http\Controllers\Auth\PasswordResetLinkController::class, 'store'])->name('password.email');
 
+Route::get('/login', [AuthenticatedSessionController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthenticatedSessionController::class, 'login'])->name('auth.login');
+Route::post('/logout', [AuthenticatedSessionController::class, 'logout'])->name('auth.logout');
+
+Route::get('/', [ProductController::class, 'index'])->name('home');
 require __DIR__.'/auth.php';

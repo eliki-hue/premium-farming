@@ -225,7 +225,7 @@ class DjangoApiService
         // Remove this line if you want to respect DJANGO_API_USE_MOCK
         self::$useMock = false;
         
-        $endpoint = '/api/products/';
+        $endpoint = '/api/public/products/';
         
         if ($category) {
             $endpoint .= '?category=' . urlencode($category);
