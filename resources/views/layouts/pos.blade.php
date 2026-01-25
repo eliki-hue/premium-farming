@@ -213,6 +213,12 @@
                         <span>Customers</span>
                     </a>
                 </div>
+                  <div class="nav-item">
+                    <a href="{{ route('pos.conversion') }}" class="nav-link {{ request()->routeIs('pos.conversion') ? 'active' : '' }}">
+                        <i class="fas fa-users"></i>
+                        <span>Conversions</span>
+                    </a>
+                </div>
                 
                 <div class="nav-item">
                     <a href="{{ route('pos.inventory') }}" class="nav-link {{ request()->routeIs('pos.inventory') ? 'active' : '' }}">

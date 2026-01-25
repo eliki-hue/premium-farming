@@ -273,18 +273,18 @@
                     @csrf
                     
                     <div class="form-group">
-                        <label for="name" class="form-label">Full Name</label>
+                        <label for="username" class="form-label">Username</label>
                         <input 
                             type="text" 
-                            id="name" 
-                            name="name" 
+                            id="username" 
+                            name="username" 
                             class="form-control-custom" 
-                            placeholder="John Doe"
+                            placeholder="johndoe"
                             required
                             autofocus
-                            value="{{ old('name') }}"
+                            value="{{ old('username') }}"
                         >
-                        @error('name')
+                        @error('username')
                         <small style="color: #c33; margin-top: 0.4rem; display: block; font-size: 0.85rem;">{{ $message }}</small>
                         @enderror
                     </div>

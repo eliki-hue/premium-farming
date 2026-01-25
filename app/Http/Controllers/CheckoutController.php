@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -225,26 +226,95 @@ class CheckoutController extends Controller
         }
     }
     
-    private function processMpesaPayment($order)
-    {
-        // Update order status
-        $order->update([
-            'payment_status' => 'pending',
-            'order_status' => 'mpesa_pending'
-        ]);
-        
-        // Update receipt status
-        Receipt::where('order_id', $order->id)->update([
-            'payment_status' => 'pending',
-            'notes' => 'M-Pesa payment pending confirmation'
-        ]);
-        
-        // WhatsApp message template
-        $whatsappMessage = "Hello! I would like to make payment for Order #{$order->order_number} (Receipt: {$order->receipt_number}). Amount: KES " . number_format($order->grand_total, 2);
-        
-        // Show M-Pesa payment instructions with PayBill details and WhatsApp
-        return view('checkout.mpesa', compact('order', 'whatsappMessage'));
+    public function process(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'phone' => 'required|string|max:20',
+        'email' => 'required|email|max:255',
+        'address' => 'required|string',
+        'county' => 'required|string',
+        'town' => 'required|string',
+        'delivery_type' => 'required|in:farm_delivery,pickup_station',
+        'payment_method' => 'required|in:mpesa,cash,bank',
+        'mpesa_number' => 'required_if:payment_method,mpesa|nullable|string|max:20',
+    ]);
+
+    $cart = Session::get('cart', []);
+    
+    if (empty($cart)) {
+        return redirect()->route('cart.view')->with('error', 'Your cart is empty');
     }
+
+    // Calculate order totals
+    $subtotal = 0;
+    $totalWeight = 0;
+    foreach ($cart as $item) {
+        $subtotal += $item['price'] * $item['quantity'];
+        $itemWeight = $item['weight'] ?? 0;
+        $totalWeight += $itemWeight * $item['quantity'];
+    }
+    
+    // Calculate shipping
+    $shipping = ($request->delivery_type === 'farm_delivery') ? 500 : 0;
+    
+    // Calculate tax (10%)
+    $tax = $subtotal * 0.10;
+    
+    $total = $subtotal + $shipping + $tax;
+    
+    // Generate order number
+    $orderNumber = 'ORD-' . date('Ymd') . '-' . strtoupper(Str::random(6));
+    
+    // Format data for receipt
+    $orderData = [
+        'order_id' => $orderNumber,
+        'order_date' => now(),
+        'status' => 'processing',
+        'payment' => [
+            'method' => $request->payment_method,
+            'status' => 'pending',
+            'mpesa_number' => $request->mpesa_number ?? null,
+            'amount_paid' => $total,
+            'change' => 0,
+        ],
+        'customer' => [
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'address' => $request->address,
+            'town' => $request->town,
+            'county' => $request->county,
+        ],
+        'delivery' => [
+            'type' => $request->delivery_type,
+            'instructions' => $request->delivery_notes ?? '',
+        ],
+        'items' => array_map(function($item) {
+            return [
+                'name' => $item['name'],
+                'quantity' => $item['quantity'],
+                'price' => $item['price'],
+                'unit' => $item['unit'] ?? 'bag',
+            ];
+        }, array_values($cart)),
+        'totals' => [
+            'subtotal' => $subtotal,
+            'shipping' => $shipping,
+            'tax' => $tax,
+            'total' => $total,
+        ]
+    ];
+    
+    // Clear cart
+    Session::forget('cart');
+    
+    // Store order in session for temporary
+    Session::put('current_order', $orderData);
+    
+    // Redirect to receipt page
+    return redirect()->route('checkout.receipt', ['orderId' => $orderNumber]);
+}
     
     private function processChequePayment($order)
     {

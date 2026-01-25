@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Third Party Services
@@ -16,6 +15,13 @@ return [
 
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
+    ],
+
+  'django' => [
+        'url' => env('DJANGO_API_URL', 'http://127.0.0.1:8000'),
+        'username' => env('DJANGO_API_USERNAME'),
+        'password' => env('DJANGO_API_PASSWORD'),
+        'use_mock' => env('DJANGO_API_USE_MOCK', false),
     ],
 
     'resend' => [
@@ -34,5 +40,4 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
 ];

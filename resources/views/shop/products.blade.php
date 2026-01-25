@@ -1,778 +1,384 @@
 @extends('layouts.app')
 
-@section('title', 'All Products | Premium Farming Feeds')
+@section('title', 'Our Products | Premium Farming Feeds')
 
 @section('content')
 
-<div class="min-h-screen pt-24">
-    <!-- Hero Section -->
-    <section class="hero-section">
+<!-- Hero Section with Video -->
+<section class="hero-section-products">
+    <video autoplay muted loop playsinline class="hero-video">
+        <source src="{{ asset('videos/kkk.mp4') }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div class="hero-overlay">
         <div class="container">
-            <div class="row align-items-center">
+            <div class="row align-items-center min-vh-50">
                 <div class="col-lg-12 text-center">
-                    <h1 class="hero-title mb-4 animate__animated animate__fadeInDown">
-                        Our Premium Product Range
-                    </h1>
-                    <p class="hero-subtitle mb-5 animate__animated animate__fadeInUp animate__delay-1s">
-                        Discover our complete collection of scientifically formulated feeds for all livestock types
-                    </p>
-                    
-                    <!-- Sign Up Notice -->
-                    {{-- @guest
-                    <div class="alert alert-info alert-dismissible fade show mb-4 mx-auto" style="max-width: 600px;" role="alert">
-                        <i class="bi bi-info-circle me-2"></i>
-                        <strong>Sign up required!</strong> You need to create an account to add items to cart and make purchases.
-                        <a href="{{ route('register') }}" class="alert-link ms-1">Sign up here</a> or 
-                        <a href="{{ route('login') }}" class="alert-link">log in</a> if you already have an account.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    @endguest --}}
+                    <h1 class="hero-title mb-3">Premium Farming Products</h1>
+                    <p class="hero-subtitle mb-4">Quality feeds for all your livestock needs</p>
+                    <a href="#products" class="btn btn-success btn-lg px-4">
+                        <i class="bi bi-arrow-down me-2"></i> Browse Products
+                    </a>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- PIG FEEDS -->
-    <section id="pig-feeds" class="section bg-light">
-        <div class="container">
-            <div class="section-title animate-on-scroll">
-                <h2>🐖 Pig Feeds</h2>
-                <p>Complete nutrition for profitable pig farming</p>
-            </div>
-
-            <div class="row g-4">
-                @php
-                $pigFeeds = [
-                    ['id'=>101,'name'=>'Pig Starter Pellets','price'=>3200,'image'=>'images/piggrower.jpeg','desc'=>'Supports early growth and strong immunity for piglets. High protein formula with essential vitamins, amino acids, and probiotics for optimal health and disease resistance.','specs'=>['protein'=>'18-22%','weight'=>'10-25kg','stage'=>'Starter']],
-                    ['id'=>102,'name'=>'Pig Grower Mash','price'=>2950,'image'=>'images/spig grower.jpeg','desc'=>'Balanced nutrition for rapid weight gain and muscle development. Contains optimal energy levels and digestible proteins for efficient feed conversion.','specs'=>['protein'=>'16-18%','weight'=>'25-60kg','stage'=>'Grower']],
-                    ['id'=>103,'name'=>'Sow & Weaner Feed','price'=>3100,'image'=>'images/sowwen.jpeg','desc'=>'Enhances sow fertility, milk production and healthy piglet development. Fortified with calcium, phosphorus, and vitamins for reproductive health.','specs'=>['protein'=>'16-18%','weight'=>'Breeding','stage'=>'Reproduction']],
-                    ['id'=>104,'name'=>'Pig Fattener','price'=>2850,'image'=>'images/pfter.jpeg','desc'=>'Maximum weight gain formula for premium meat quality and finish. Optimized for marbling and lean meat percentage with energy-rich ingredients.','specs'=>['protein'=>'14-16%','weight'=>'60kg+','stage'=>'Finisher']]
-                ];
-                @endphp
-
-                @foreach($pigFeeds as $product)
-                <div class="col-lg-3 col-md-6">
-                    <div class="product-card premium-card animate-on-scroll">
-                        <div class="product-image-container">
-                            <img src="{{ asset($product['image']) }}" alt="{{ $product['name'] }}" class="product-image-full">
-                            <span class="product-badge pig">{{ $product['specs']['stage'] }}</span>
-                            
-                            @guest
-                            <div class="signup-overlay">
-                                <div class="overlay-content">
-                                    <i class="bi bi-lock fs-1 mb-3"></i>
-                                    <h6 class="mb-2">Sign Up Required</h6>
-                                    <p class="small mb-3">Create an account to add to cart</p>
-                                    <a href="{{ route('register') }}" class="btn btn-sm btn-light">Sign Up Free</a>
-                                </div>
-                            </div>
-                            @endguest
-                        </div>
-                        <div class="product-content">
-                            <h4 class="fw-bold mb-2">{{ $product['name'] }}</h4>
-                            <div class="product-description-container mb-3">
-                                <p class="product-description mb-0">
-                                    {{ Str::limit($product['desc'], 80) }}
-                                    @if(strlen($product['desc']) > 80)
-                                        <span class="collapse" id="desc-{{ $product['id'] }}">
-                                            {{ substr($product['desc'], 80) }}
-                                        </span>
-                                        <a href="#desc-{{ $product['id'] }}" 
-                                           class="read-more-link" 
-                                           data-bs-toggle="collapse"
-                                           data-bs-target="#desc-{{ $product['id'] }}"
-                                           aria-expanded="false"
-                                           aria-controls="desc-{{ $product['id'] }}">
-                                            <span class="show-more">... See More</span>
-                                            <span class="show-less d-none">... See Less</span>
-                                        </a>
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="product-specs mb-4">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Protein:</span>
-                                    <span class="fw-bold text-primary">{{ $product['specs']['protein'] }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <span>Target Weight:</span>
-                                    <span class="fw-bold">{{ $product['specs']['weight'] }}</span>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mt-auto">
-                                <div>
-                                    <span class="price-tag">Ksh {{ number_format($product['price']) }}</span>
-                                    <small class="text-muted d-block">per 50kg bag</small>
-                                </div>
-                                
-                                @auth
-                                <form action="{{ route('cart.add') }}" method="POST" class="mb-0">
-                                    @csrf
-                                    <input type="hidden" name="id" value="{{ $product['id'] }}">
-                                    <input type="hidden" name="name" value="{{ $product['name'] }}">
-                                    <input type="hidden" name="price" value="{{ $product['price'] }}">
-                                    <input type="hidden" name="image" value="{{ $product['image'] }}">
-                                    <button type="submit" class="btn btn-premium">
-                                        <i class="bi bi-cart-plus me-2"></i> Add
-                                    </button>
-                                </form>
-                                @else
-                                <!-- Sign Up Button for Guests -->
-                                <button type="button" class="btn btn-premium" data-bs-toggle="modal" data-bs-target="#signupModal">
-                                    <i class="bi bi-cart-plus me-2"></i> Add
-                                </button>
-                                @endauth
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
+<!-- Flash Messages -->
+@if(session('success'))
+    <div class="container mt-4">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-    </section>
+    </div>
+@endif
 
-    <!-- POULTRY FEEDS Section -->
-    <section id="poultry-feeds" class="section">
-        <div class="container">
-            <div class="section-title animate-on-scroll">
-                <h2>🐔 Poultry Feeds</h2>
-                <p>Optimal nutrition for growth and egg production</p>
-            </div>
+@if(session('error'))
+    <div class="container mt-4">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+@endif
 
-            <div class="row g-4">
-                @php
-                $poultryFeeds = [
-                    ['id'=>301,'name'=>'Chick Starter','price'=>2500,'image'=>'images/chick start.jpeg','desc'=>'High protein starter feed for maximum early chick growth and immunity. Contains essential nutrients for digestive system development and disease resistance.','specs'=>['protein'=>'18-22%','type'=>'Starter','age'=>'0-8 weeks']],
-                    ['id'=>302,'name'=>'Broiler Starter','price'=>2800,'image'=>'images/chickmash.jpeg','desc'=>'Very high protein for fast muscle growth in meat birds. Optimized for rapid weight gain with balanced amino acids and energy.','specs'=>['protein'=>'22-24%','type'=>'Broiler','age'=>'0-4 weeks']],
-                    ['id'=>303,'name'=>'Growers Mash','price'=>2300,'image'=>'images/growers.jpeg','desc'=>'Balanced grower formula for steady weight gain and feathering. Supports skeletal development and prepares birds for laying phase.','specs'=>['protein'=>'14-18%','type'=>'Grower','age'=>'8-18 weeks']],
-                    ['id'=>304,'name'=>'Layers Mash','price'=>2400,'image'=>'images/layers.jpeg','desc'=>'Calcium-rich formula for superior egg production and shell quality. Contains optimal levels of vitamins and minerals for egg formation.','specs'=>['protein'=>'~16%','type'=>'Layer','age'=>'18+ weeks']],
-                    ['id'=>305,'name'=>'Super Layers','price'=>2600,'image'=>'images/slayers.jpeg','desc'=>'Premium layers feed for maximum egg production and bird health. Enhanced with probiotics and omega-3 for better egg quality.','specs'=>['protein'=>'16-18%','type'=>'Premium','age'=>'Peak lay']]
-                ];
-                @endphp
+<!-- Products Section -->
+<div class="container my-5" id="products">
+    <h2 class="mb-4 text-center section-title">Our Products</h2>
 
-                @foreach($poultryFeeds as $product)
-                <div class="col-lg-3 col-md-6">
-                    <div class="product-card premium-card animate-on-scroll">
-                        <div class="product-image-container">
-                            <img src="{{ asset($product['image']) }}" alt="{{ $product['name'] }}" class="product-image-full">
-                            <span class="product-badge poultry">{{ $product['specs']['type'] }}</span>
-                            
-                            @guest
-                            <div class="signup-overlay">
-                                <div class="overlay-content">
-                                    <i class="bi bi-lock fs-1 mb-3"></i>
-                                    <h6 class="mb-2">Sign Up Required</h6>
-                                    <p class="small mb-3">Create an account to add to cart</p>
-                                    <a href="{{ route('register') }}" class="btn btn-sm btn-light">Sign Up Free</a>
-                                </div>
-                            </div>
-                            @endguest
+    @if($products->isNotEmpty())
+        <div class="row">
+            @foreach($products as $product)
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="card h-100 shadow-sm product-card">
+                        <!-- Product Image -->
+                        <div class="card-img-top-container">
+                            <img 
+                                class="card-img-top" 
+                                src="{{ $product['image'] ?? asset('images/no-image.png') }}" 
+                                alt="{{ $product['name'] ?? 'Product' }}" 
+                            >
                         </div>
-                        <div class="product-content">
-                            <h4 class="fw-bold mb-2">{{ $product['name'] }}</h4>
-                            <p class="text-muted mb-2">
-                                <small><i class="bi bi-clock me-2"></i>{{ $product['specs']['age'] }}</small>
+
+                        <!-- Card Body -->
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold">{{ $product['name'] ?? 'No Name' }}</h5>
+                            <p class="card-text text-success fw-bold price-tag">
+                                KES {{ number_format((float) ($product['unit_price'] ?? 0), 2) }}
                             </p>
-                            <div class="product-description-container mb-3">
-                                <p class="product-description mb-0">
-                                    {{ Str::limit($product['desc'], 80) }}
-                                    @if(strlen($product['desc']) > 80)
-                                        <span class="collapse" id="desc-{{ $product['id'] }}">
-                                            {{ substr($product['desc'], 80) }}
-                                        </span>
-                                        <a href="#desc-{{ $product['id'] }}" 
-                                           class="read-more-link" 
-                                           data-bs-toggle="collapse"
-                                           data-bs-target="#desc-{{ $product['id'] }}"
-                                           aria-expanded="false"
-                                           aria-controls="desc-{{ $product['id'] }}">
-                                            <span class="show-more">... See More</span>
-                                            <span class="show-less d-none">... See Less</span>
-                                        </a>
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="product-specs mb-4">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Protein:</span>
-                                    <span class="fw-bold text-primary">{{ $product['specs']['protein'] }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <span>Type:</span>
-                                    <span class="fw-bold">{{ $product['specs']['type'] }}</span>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mt-auto">
-                                <div>
-                                    <span class="price-tag">Ksh {{ number_format($product['price']) }}</span>
-                                    <small class="text-muted d-block">per 50kg bag</small>
-                                </div>
-                                
-                                @auth
-                                <form action="{{ route('cart.add') }}" method="POST" class="mb-0">
-                                    @csrf
-                                    <input type="hidden" name="id" value="{{ $product['id'] }}">
-                                    <input type="hidden" name="name" value="{{ $product['name'] }}">
-                                    <input type="hidden" name="price" value="{{ $product['price'] }}">
-                                    <input type="hidden" name="image" value="{{ $product['image'] }}">
-                                    <button type="submit" class="btn btn-premium">
-                                        <i class="bi bi-cart-plus me-2"></i> Add
+
+                            @if(!empty($product['sku']))
+                                <small class="text-muted mb-2">SKU: {{ $product['sku'] }}</small>
+                            @endif
+
+                            <div class="mt-auto">
+                                @if(request()->hasCookie('access_token'))
+                                    <!-- User is authenticated via cookie -->
+                                    <form method="POST" action="{{ route('cart.add') }}" class="add-to-cart-form">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $product['id'] }}">
+                                        <input type="hidden" name="quantity" value="1">
+
+                                        <button type="submit" class="btn btn-success w-100">
+                                            <i class="bi bi-cart-plus me-2"></i> Add to Cart
+                                        </button>
+                                    </form>
+                                @else
+                                    <!-- User is not authenticated -->
+                                    <button 
+                                        class="btn btn-outline-success w-100 login-prompt-btn"
+                                        data-product-id="{{ $product['id'] }}"
+                                        data-product-name="{{ $product['name'] }}"
+                                    >
+                                        <i class="bi bi-cart-plus me-2"></i> Add to Cart
                                     </button>
-                                </form>
-                                @else
-                                <button type="button" class="btn btn-premium" data-bs-toggle="modal" data-bs-target="#signupModal">
-                                    <i class="bi bi-cart-plus me-2"></i> Add
-                                </button>
-                                @endauth
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    <!-- PET FEEDS Section -->
-    <section id="pet-feeds" class="section bg-light">
-        <div class="container">
-            <div class="section-title animate-on-scroll">
-                <h2>🐶 Pet Feeds</h2>
-                <p>Complete nutrition for your beloved pets</p>
-            </div>
-
-            <div class="row g-4">
-                @php
-                $petFeeds = [
-                    ['id'=>201,'name'=>'Dog Meal','price'=>2800,'image'=>'images/dogm.jpeg','desc'=>'Complete balanced nutrition with essential vitamins for all dog breeds. Supports healthy skin, coat, and digestive system with natural ingredients.','specs'=>['protein'=>'Balanced','type'=>'Dogs','size'=>'All sizes']],
-                    ['id'=>202,'name'=>'Rabbit Pellets','price'=>2200,'image'=>'images/rabit1.jpeg','desc'=>'High fiber pellets for optimal digestion and healthy rabbit growth. Contains timothy hay base with added vitamins for dental health.','specs'=>['protein'=>'Moderate','type'=>'Rabbits','size'=>'All ages']],
-                    ['id'=>203,'name'=>'Calf Pellets','price'=>3500,'image'=>'images/cpellets.jpeg','desc'=>'High-protein formula for healthy growth and strong immunity in calves. Supports rumen development and early weaning success.','specs'=>['protein'=>'High','type'=>'Calves','age'=>'0-6 months']]
-                ];
-                @endphp
-
-                @foreach($petFeeds as $product)
-                <div class="col-lg-4 col-md-6">
-                    <div class="product-card premium-card animate-on-scroll">
-                        <div class="product-image-container">
-                            <img src="{{ asset($product['image']) }}" alt="{{ $product['name'] }}" class="product-image-full">
-                            <span class="product-badge pet">{{ $product['specs']['type'] }}</span>
-                            
-                            @guest
-                            <div class="signup-overlay">
-                                <div class="overlay-content">
-                                    <i class="bi bi-lock fs-1 mb-3"></i>
-                                    <h6 class="mb-2">Sign Up Required</h6>
-                                    <p class="small mb-3">Create an account to add to cart</p>
-                                    <a href="{{ route('register') }}" class="btn btn-sm btn-light">Sign Up Free</a>
-                                </div>
-                            </div>
-                            @endguest
-                        </div>
-                        <div class="product-content">
-                            <h4 class="fw-bold mb-2">{{ $product['name'] }}</h4>
-                            <p class="text-muted mb-2">
-                                <small><i class="bi bi-tag me-2"></i>{{ $product['specs']['type'] }}</small>
-                            </p>
-                            <div class="product-description-container mb-3">
-                                <p class="product-description mb-0">
-                                    {{ Str::limit($product['desc'], 80) }}
-                                    @if(strlen($product['desc']) > 80)
-                                        <span class="collapse" id="desc-{{ $product['id'] }}">
-                                            {{ substr($product['desc'], 80) }}
-                                        </span>
-                                        <a href="#desc-{{ $product['id'] }}" 
-                                           class="read-more-link" 
-                                           data-bs-toggle="collapse"
-                                           data-bs-target="#desc-{{ $product['id'] }}"
-                                           aria-expanded="false"
-                                           aria-controls="desc-{{ $product['id'] }}">
-                                            <span class="show-more">... See More</span>
-                                            <span class="show-less d-none">... See Less</span>
-                                        </a>
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="product-specs mb-4">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Protein:</span>
-                                    <span class="fw-bold text-primary">{{ $product['specs']['protein'] }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <span>For:</span>
-                                    <span class="fw-bold">{{ $product['specs']['type'] }}</span>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mt-auto">
-                                <div>
-                                    <span class="price-tag">Ksh {{ number_format($product['price']) }}</span>
-                                    <small class="text-muted d-block">per bag</small>
-                                </div>
-                                
-                                @auth
-                                <form action="{{ route('cart.add') }}" method="POST" class="mb-0">
-                                    @csrf
-                                    <input type="hidden" name="id" value="{{ $product['id'] }}">
-                                    <input type="hidden" name="name" value="{{ $product['name'] }}">
-                                    <input type="hidden" name="price" value="{{ $product['price'] }}">
-                                    <input type="hidden" name="image" value="{{ $product['image'] }}">
-                                    <button type="submit" class="btn btn-premium">
-                                        <i class="bi bi-cart-plus me-2"></i> Add
-                                    </button>
-                                </form>
-                                @else
-                                <button type="button" class="btn btn-premium" data-bs-toggle="modal" data-bs-target="#signupModal">
-                                    <i class="bi bi-cart-plus me-2"></i> Add
-                                </button>
-                                @endauth
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    <!-- BY-PRODUCTS Section -->
-    <section id="by-products" class="section">
-        <div class="container">
-            <div class="section-title animate-on-scroll">
-                <h2>🌾 By-Products</h2>
-                <p>High-quality supplements for complete livestock nutrition</p>
-            </div>
-
-            <div class="row g-4">
-                @php
-                $byProducts = [
-                    ['id'=>401,'name'=>'Wheat Bran','price'=>1300,'image'=>'images/bran.jpg','desc'=>'High fiber bulk feed supplement for ruminants and poultry. Excellent for digestive health and rumen function in cattle and goats.','specs'=>['protein'=>'15-17%','type'=>'Fiber','use'=>'Ruminants']],
-                    ['id'=>402,'name'=>'Wheat Pollard','price'=>1500,'image'=>'images/pollard.jpg','desc'=>'Energy and protein-rich supplement for all livestock. Ideal for mixing with other feeds to improve nutritional value.','specs'=>['protein'=>'16-18%','type'=>'Energy','use'=>'All livestock']],
-                    ['id'=>403,'name'=>'Maize Germ','price'=>1400,'image'=>'images/maize.jpeg','desc'=>'High-energy maize by-product for cost-effective feeding. Rich in oils and proteins for improved weight gain.','specs'=>['protein'=>'18-22%','type'=>'Energy','use'=>'Poultry/Swine']]
-                ];
-                @endphp
-
-                @foreach($byProducts as $product)
-                <div class="col-lg-4 col-md-6">
-                    <div class="product-card premium-card animate-on-scroll">
-                        <div class="product-image-container">
-                            <img src="{{ asset($product['image']) }}" alt="{{ $product['name'] }}" class="product-image-full">
-                            <span class="product-badge byproduct">{{ $product['specs']['type'] }}</span>
-                            
-                            @guest
-                            <div class="signup-overlay">
-                                <div class="overlay-content">
-                                    <i class="bi bi-lock fs-1 mb-3"></i>
-                                    <h6 class="mb-2">Sign Up Required</h6>
-                                    <p class="small mb-3">Create an account to add to cart</p>
-                                    <a href="{{ route('register') }}" class="btn btn-sm btn-light">Sign Up Free</a>
-                                </div>
-                            </div>
-                            @endguest
-                        </div>
-                        <div class="product-content">
-                            <h4 class="fw-bold mb-2">{{ $product['name'] }}</h4>
-                            <p class="text-muted mb-2">
-                                <small><i class="bi bi-arrow-right-circle me-2"></i>{{ $product['specs']['use'] }}</small>
-                            </p>
-                            <div class="product-description-container mb-3">
-                                <p class="product-description mb-0">
-                                    {{ Str::limit($product['desc'], 80) }}
-                                    @if(strlen($product['desc']) > 80)
-                                        <span class="collapse" id="desc-{{ $product['id'] }}">
-                                            {{ substr($product['desc'], 80) }}
-                                        </span>
-                                        <a href="#desc-{{ $product['id'] }}" 
-                                           class="read-more-link" 
-                                           data-bs-toggle="collapse"
-                                           data-bs-target="#desc-{{ $product['id'] }}"
-                                           aria-expanded="false"
-                                           aria-controls="desc-{{ $product['id'] }}">
-                                            <span class="show-more">... See More</span>
-                                            <span class="show-less d-none">... See Less</span>
-                                        </a>
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="product-specs mb-4">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Protein:</span>
-                                    <span class="fw-bold text-primary">{{ $product['specs']['protein'] }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <span>Type:</span>
-                                    <span class="fw-bold">{{ $product['specs']['type'] }}</span>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mt-auto">
-                                <div>
-                                    <span class="price-tag">Ksh {{ number_format($product['price']) }}</span>
-                                    <small class="text-muted d-block">per 50kg bag</small>
-                                </div>
-                                
-                                @auth
-                                <form action="{{ route('cart.add') }}" method="POST" class="mb-0">
-                                    @csrf
-                                    <input type="hidden" name="id" value="{{ $product['id'] }}">
-                                    <input type="hidden" name="name" value="{{ $product['name'] }}">
-                                    <input type="hidden" name="price" value="{{ $product['price'] }}">
-                                    <input type="hidden" name="image" value="{{ $product['image'] }}">
-                                    <button type="submit" class="btn btn-premium">
-                                        <i class="bi bi-cart-plus me-2"></i> Add
-                                    </button>
-                                </form>
-                                @else
-                                <button type="button" class="btn btn-premium" data-bs-toggle="modal" data-bs-target="#signupModal">
-                                    <i class="bi bi-cart-plus me-2"></i> Add
-                                </button>
-                                @endauth
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="container">
-            <div class="cta-content animate-on-scroll text-center">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <h2 class="cta-title mb-4">Get Your Premium Feeds Today!</h2>
-                        <p class="cta-text mb-5 fs-5">
-                            Select your products, proceed to secure checkout, and enjoy fast delivery to your farm.
-                        </p>
-                        
-                        <div class="d-grid gap-3 d-md-flex justify-content-center">
-                            @auth
-                                @php
-                                    $cartItems = session('cart', []);
-                                    $cartCount = count($cartItems);
-                                @endphp
-                                
-                                @if($cartCount > 0)
-                                    <a href="{{ route('checkout') }}" class="btn btn-success btn-lg px-5 py-3 fw-bold me-md-3">
-                                        <i class="bi bi-lock-fill me-2"></i>
-                                        Secure Checkout ({{ $cartCount }} items)
-                                    </a>
-                                    <a href="{{ route('cart.view') }}" class="btn btn-outline-light btn-lg px-5 py-3 fw-bold">
-                                        <i class="bi bi-cart me-2"></i>
-                                        View Cart
-                                    </a>
-                                @else
-                                    <a href="#pig-feeds" class="btn btn-success btn-lg px-5 py-3 fw-bold me-md-3">
-                                        <i class="bi bi-cart-plus me-2"></i>
-                                        Browse Products
-                                    </a>
                                 @endif
-                            @else
-                                <!-- For guests -->
-                                <a href="{{ route('register') }}" class="btn btn-success btn-lg px-5 py-3 fw-bold me-md-3">
-                                    <i class="bi bi-person-plus me-2"></i>
-                                    Sign Up to Shop
-                                </a>
-                                <a href="{{ route('login') }}" class="btn btn-outline-light btn-lg px-5 py-3 fw-bold">
-                                    <i class="bi bi-box-arrow-in-right me-2"></i>
-                                    Log In
-                                </a>
-                            @endauth
-                        </div>
-                        
-                        <!-- Trust indicators -->
-                        <div class="mt-5 pt-4">
-                            <div class="row justify-content-center g-4">
-                                <div class="col-auto">
-                                    <div class="d-flex align-items-center text-light">
-                                        <i class="bi bi-shield-check fs-4 me-2"></i>
-                                        <span>Secure Payment</span>
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <div class="d-flex align-items-center text-light">
-                                        <i class="bi bi-truck fs-4 me-2"></i>
-                                        <span>Farm Delivery</span>
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <div class="d-flex align-items-center text-light">
-                                        <i class="bi bi-headset fs-4 me-2"></i>
-                                        <span>Expert Support</span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @endforeach
         </div>
-    </section>
+    @else
+        <div class="text-center py-5">
+            <i class="bi bi-box-seam display-1 text-muted mb-3"></i>
+            <h4 class="text-muted">No products available</h4>
+            <p class="text-muted">Check back soon for our latest products</p>
+        </div>
+    @endif
 </div>
 
-<!-- Sign Up Modal -->
-<div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+<!-- Login/Signup Modal -->
+<div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-premium text-white">
-                <h5 class="modal-title" id="signupModalLabel">
-                    <i class="bi bi-lock me-2"></i>Sign Up Required
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="authModalLabel">
+                    <i class="bi bi-lock-fill me-2 text-success"></i>Login Required
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="text-center mb-4">
-                    <i class="bi bi-cart-plus display-1 text-premium mb-3"></i>
-                    <h4>Create Your Account</h4>
-                    <p class="text-muted">You need to sign up to add items to your cart and make purchases</p>
-                </div>
-                
-                <div class="benefits mb-4">
-                    <h6 class="mb-3">Benefits of signing up:</h6>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Add products to cart</li>
-                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Save favorite products</li>
-                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Track your orders</li>
-                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Faster checkout</li>
-                        <li><i class="bi bi-check-circle text-success me-2"></i> Exclusive offers</li>
-                    </ul>
-                </div>
+            <div class="modal-body text-center py-4">
+                <i class="bi bi-cart-x display-1 text-muted mb-3"></i>
+                <h5 class="mb-3">Please log in to add items to your cart</h5>
+                <p class="text-muted mb-4" id="productMessage"></p>
                 
                 <div class="d-grid gap-2">
-                    <a href="{{ route('register') }}" class="btn btn-premium btn-lg">
-                        <i class="bi bi-person-plus me-2"></i> Sign Up Now
+                    <a href="{{ route('login') }}" class="btn btn-success btn-lg">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Login
                     </a>
-                    <a href="{{ route('login') }}" class="btn btn-outline-secondary">
-                        Already have an account? Log In
+                    <a href="{{ route('register') }}" class="btn btn-outline-success btn-lg">
+                        <i class="bi bi-person-plus me-2"></i> Create Account
                     </a>
                 </div>
+                
+                <p class="text-muted mt-3 mb-0 small">
+                    Create an account to enjoy a seamless shopping experience
+                </p>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-    /* Add to existing styles */
-    .hero-section {
-        min-height: 70vh;
-        background: linear-gradient(rgba(42, 110, 63, 0.9), rgba(30, 82, 46, 0.9)),
-                    url('https://images.unsplash.com/photo-1500382017468-9049fed747ef') center/cover;
-        background-size: cover;
-        background-position: center;
+    /* Hero Section with Video */
+    .hero-section-products {
+        position: relative;
+        min-height: 60vh;
         display: flex;
         align-items: center;
-        position: relative;
         overflow: hidden;
         color: white;
+        margin-top: 76px;
     }
-    
-    /* Sign Up Overlay Styles */
-    .signup-overlay {
+
+    .hero-video {
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: auto;
+        min-height: 100%;
+        z-index: 0;
+        transform: translate(-50%, -50%);
+        object-fit: contain;
+        max-width: none;
+        filter: brightness(0.5);
+    }
+
+    .hero-overlay {
+        position: relative;
         z-index: 1;
+        width: 100%;
+        padding: 80px 0;
     }
-    
-    .product-image-container:hover .signup-overlay {
-        opacity: 1;
-    }
-    
-    .overlay-content {
-        text-align: center;
-        color: white;
-        padding: 20px;
-    }
-    
-    .overlay-content i {
-        font-size: 2.5rem;
-        color: #fff;
-        margin-bottom: 10px;
-    }
-    
-    .overlay-content h6 {
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
-    
-    .overlay-content .btn {
-        font-size: 0.8rem;
-        padding: 5px 15px;
-    }
-    
-    /* Disabled button style for guests */
-    .btn-premium:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
-    
-    /* Modal styles */
-    .modal-header.bg-premium {
-        background: linear-gradient(135deg, #2a6e3f 0%, #1e522e 100%);
-    }
-    
-    .benefits {
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 10px;
-        border-left: 4px solid #2a6e3f;
-    }
-    
-    /* Existing styles remain the same */
+
     .hero-title {
-        font-size: 3.5rem;
-        font-weight: 700;
-        margin-bottom: 1.5rem;
+        font-size: 2.8rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
     }
-    
+
     .hero-subtitle {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         opacity: 0.9;
-        max-width: 700px;
-        margin: 0 auto 2.5rem;
-        font-weight: 300;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
     }
-    
+
+    /* Product Card Improvements */
     .product-card {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        border-radius: 20px;
-        overflow: hidden;
-        background: white;
-        box-shadow: var(--shadow-soft);
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        position: relative;
+        border: none;
+        border-radius: 15px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    
+
     .product-card:hover {
-        transform: translateY(-10px);
-        box-shadow: var(--shadow-medium);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
     }
-    
-    .product-image-container {
-        position: relative;
-        height: 300px;
-        width: 100%;
+
+    .card-img-top-container {
+        height: 200px;
         overflow: hidden;
-        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        border-radius: 15px 15px 0 0;
+        background: #f8f9fa;
     }
-    
-    .product-image-full {
+
+    .card-img-top {
         width: 100%;
         height: 100%;
-        object-fit: contain !important;
-        object-position: center center;
-        padding: 25px;
-        transition: all 0.5s ease;
+        object-fit: cover;
+        transition: transform 0.5s ease;
     }
-    
-    .product-card:hover .product-image-full {
+
+    .product-card:hover .card-img-top {
         transform: scale(1.05);
-        padding: 20px;
     }
-    
-    /* Responsive adjustments */
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .price-tag {
+        font-size: 1.3rem;
+        margin: 0.5rem 0;
+    }
+
+    .section-title {
+        color: #2a6e3f;
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+    .section-title:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(to right, #2a6e3f, #4caf50);
+        border-radius: 2px;
+    }
+
+    /* Button Improvements */
+    .btn-success {
+        background: linear-gradient(135deg, #2a6e3f, #3a8e5c);
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-shadow: none;
+    }
+
+    .btn-success:hover {
+        background: linear-gradient(135deg, #1e5a2f, #2a6e3f);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(42, 110, 63, 0.3);
+    }
+
+    .btn-outline-success {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 600;
+        border-width: 2px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-success:hover {
+        background: #2a6e3f;
+        transform: translateY(-2px);
+    }
+
+    /* Loading state for forms */
+    .add-to-cart-form.loading button {
+        position: relative;
+        color: transparent;
+    }
+
+    .add-to-cart-form.loading button:after {
+        content: "";
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        top: 50%;
+        left: 50%;
+        margin-left: -8px;
+        margin-top: -8px;
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spinner 0.6s linear infinite;
+    }
+
+    @keyframes spinner {
+        to {transform: rotate(360deg);}
+    }
+
+    /* Responsive */
     @media (max-width: 768px) {
-        .signup-overlay .overlay-content {
-            padding: 10px;
+        .hero-section-products {
+            min-height: 50vh;
+            margin-top: 56px;
         }
-        
-        .overlay-content i {
-            font-size: 1.5rem;
+
+        .hero-overlay {
+            padding: 60px 0;
         }
-        
-        .overlay-content h6 {
-            font-size: 0.9rem;
+
+        .hero-title {
+            font-size: 2.2rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+
+        .card-img-top-container {
+            height: 180px;
+        }
+
+        .col-md-3 {
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .hero-title {
+            font-size: 1.8rem;
+        }
+
+        .hero-section-products {
+            min-height: 40vh;
+        }
+
+        .hero-overlay {
+            padding: 50px 0;
         }
     }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle Add to Cart button clicks for guests
-    const guestAddButtons = document.querySelectorAll('.btn-premium[data-bs-toggle="modal"]');
+    // Handle login prompt buttons
+    const loginPromptButtons = document.querySelectorAll('.login-prompt-btn');
+    const authModal = new bootstrap.Modal(document.getElementById('authModal'));
+    const productMessage = document.getElementById('productMessage');
     
-    guestAddButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Get product name from the nearest product card
-            const productCard = this.closest('.product-card');
-            const productName = productCard.querySelector('h4').textContent;
-            
-            // Update modal content with product info
-            const modalBody = document.querySelector('#signupModal .modal-body');
-            const originalContent = modalBody.innerHTML;
-            
-            modalBody.innerHTML = `
-                <div class="text-center mb-4">
-                    <i class="bi bi-cart-plus display-1 text-premium mb-3"></i>
-                    <h4>Sign Up to Add "${productName}"</h4>
-                    <p class="text-muted">Create an account to add this item to your cart</p>
-                </div>
-                
-                <div class="benefits mb-4">
-                    <h6 class="mb-3">Get started in seconds:</h6>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Add products to cart</li>
-                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Save favorite products</li>
-                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Track your orders</li>
-                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Faster checkout</li>
-                        <li><i class="bi bi-check-circle text-success me-2"></i> Exclusive offers</li>
-                    </ul>
-                </div>
-                
-                <div class="d-grid gap-2">
-                    <a href="{{ route('register') }}" class="btn btn-premium btn-lg">
-                        <i class="bi bi-person-plus me-2"></i> Sign Up Free
-                    </a>
-                    <a href="{{ route('login') }}" class="btn btn-outline-secondary">
-                        Already have an account? Log In
-                    </a>
-                </div>
-            `;
+    loginPromptButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const productName = this.getAttribute('data-product-name');
+            productMessage.textContent = `You're trying to add "${productName}" to your cart.`;
+            authModal.show();
         });
     });
+
+    // Handle add to cart forms with loading state
+    const addToCartForms = document.querySelectorAll('.add-to-cart-form');
     
-    // Reset modal content when modal is hidden
-    document.getElementById('signupModal').addEventListener('hidden.bs.modal', function () {
-        const modalBody = document.querySelector('#signupModal .modal-body');
-        modalBody.innerHTML = `
-            <div class="text-center mb-4">
-                <i class="bi bi-cart-plus display-1 text-premium mb-3"></i>
-                <h4>Create Your Account</h4>
-                <p class="text-muted">You need to sign up to add items to your cart and make purchases</p>
-            </div>
-            
-            <div class="benefits mb-4">
-                <h6 class="mb-3">Benefits of signing up:</h6>
-                <ul class="list-unstyled">
-                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Add products to cart</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Save favorite products</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Track your orders</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i> Faster checkout</li>
-                    <li><i class="bi bi-check-circle text-success me-2"></i> Exclusive offers</li>
-                </ul>
-            </div>
-            
-            <div class="d-grid gap-2">
-                <a href="{{ route('register') }}" class="btn btn-premium btn-lg">
-                    <i class="bi bi-person-plus me-2"></i> Sign Up Now
-                </a>
-                <a href="{{ route('login') }}" class="btn btn-outline-secondary">
-                    Already have an account? Log In
-                </a>
-            </div>
-        `;
+    addToCartForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const button = this.querySelector('button[type="submit"]');
+            button.disabled = true;
+            this.classList.add('loading');
+        });
     });
+
+    // Auto-dismiss alerts after 5 seconds
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
 });
 </script>
 

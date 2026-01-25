@@ -215,7 +215,7 @@
                                                 <div class="col-md-6 mb-3">
                                                     <div class="alert alert-info">
                                                         <h6><i class="fas fa-info-circle me-2"></i>Important</h6>
-                                                        <p class="mb-0 small">Please make cheque payable to: <strong>AGROVET SUPPLIES LTD</strong></p>
+                                                        <p class="mb-0 small">Please make cheque payable to: <strong>PREMIUM FARMING FEEDS</strong></p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -431,6 +431,7 @@
                         <ul class="small mb-0">
                             <li>Order confirmation with receipt number</li>
                             <li>Payment instructions for your chosen method</li>
+                            <li>Wats up to confirm delivery charges</li>
                             <li>WhatsApp contact for payment confirmation</li>
                         </ul>
                     </div>
@@ -445,14 +446,14 @@
                     
                     <div class="row g-2">
                         <div class="col-12">
-                            <a href="https://wa.me/2547XXXXXXXXX?text=Hello!%20I%20need%20help%20with%20checkout" 
+                            <a href="https://web.whatsapp.com/" 
                                class="btn btn-success w-100" 
                                target="_blank">
                                 <i class="fab fa-whatsapp me-2"></i>Chat on WhatsApp
                             </a>
                         </div>
                         <div class="col-12">
-                            <a href="tel:+254700000000" class="btn btn-outline-primary w-100">
+                            <a href="tel:+254790641428" class="btn btn-outline-primary w-100">
                                 <i class="fas fa-phone me-2"></i>Call Us
                             </a>
                         </div>

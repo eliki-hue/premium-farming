@@ -7,7 +7,13 @@
 <div class="min-h-screen pt-24">
     <!-- Hero Section -->
     <section class="hero-section">
-        <div class="container">
+        <!-- Video Background -->
+        <video autoplay muted loop playsinline class="hero-video">
+            <source src="{{ asset('videos/kkk.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <div class="container hero-overlay">
             <div class="row align-items-center">
                 <div class="col-lg-12 text-center">
                     <h1 class="hero-title mb-4 animate__animated animate__fadeInDown">
@@ -255,7 +261,7 @@
                 <p class="cta-text">
                     Get premium feeds for faster growth and better returns.
                 </p>
-                <a href="{{ route('shop.products') }}" class="btn btn-light btn-lg px-5 py-3 fw-bold me-3">
+                <a href="{{ route('products') }}" class="btn btn-light btn-lg px-5 py-3 fw-bold me-3">
                     <i class="bi bi-cart-check me-2"></i>
                     Order Swine Feeds
                 </a>
@@ -270,18 +276,34 @@
 
 <style>
     .hero-section {
+        position: relative;
         min-height: 60vh;
-        background: linear-gradient(rgba(42, 110, 63, 0.9), rgba(30, 82, 46, 0.9)),
-                    url('https://images.unsplash.com/photo-1562569638-7e65e194c8b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
-        background-size: cover;
-        background-position: center;
         display: flex;
         align-items: center;
-        position: relative;
         overflow: hidden;
         color: white;
     }
-    
+
+   .hero-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+    z-index: 0;
+    transform: translate(-50%, -50%);
+    object-fit: contain; /* changed from cover */
+    max-width: none;
+    filter: brightness(0.5); /* keeps text readable */
+}
+
+
+    .hero-overlay {
+        position: relative;
+        z-index: 1;
+    }
+
     /* Product Card Styles */
     .product-card {
         height: 100%;
@@ -293,12 +315,12 @@
         box-shadow: var(--shadow-soft);
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    
+
     .product-card:hover {
         transform: translateY(-10px);
         box-shadow: var(--shadow-medium);
     }
-    
+
     .product-image-container {
         position: relative;
         height: 280px;
@@ -306,7 +328,7 @@
         overflow: hidden;
         background: linear-gradient(135deg, #fdf4f4, #fee2e2);
     }
-    
+
     .product-image-full {
         width: 100%;
         height: 100%;
@@ -315,12 +337,12 @@
         padding: 25px;
         transition: all 0.5s ease;
     }
-    
+
     .product-card:hover .product-image-full {
         transform: scale(1.05);
         padding: 20px;
     }
-    
+
     .product-badge {
         position: absolute;
         top: 15px;
@@ -335,48 +357,48 @@
         color: white;
         z-index: 2;
     }
-    
+
     .product-badge.pig {
         background: linear-gradient(135deg, #8b4513, #dc2626);
     }
-    
+
     .product-badge.pig.premium {
         background: linear-gradient(135deg, #f59e0b, #d97706);
     }
-    
+
     .product-content {
         padding: 1.5rem;
         flex-grow: 1;
         display: flex;
         flex-direction: column;
     }
-    
+
     .product-description {
         flex-grow: 1;
         margin-bottom: 1.5rem;
         line-height: 1.6;
     }
-    
+
     .price-tag {
         font-size: 1.75rem;
         font-weight: 800;
         color: var(--primary-color);
         margin-bottom: 0.5rem;
     }
-    
+
     .product-specs {
         background: rgba(42, 110, 63, 0.05);
         padding: 1.25rem;
         border-radius: 12px;
         margin-bottom: 1.5rem;
     }
-    
+
     /* Responsive */
     @media (max-width: 768px) {
         .product-image-container {
             height: 240px;
         }
-        
+
         .product-image-full {
             padding: 20px;
         }

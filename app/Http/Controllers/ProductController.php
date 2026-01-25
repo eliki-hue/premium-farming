@@ -2,41 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use Illuminate\Http\Request; 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
-public function index()
-{
-    $products = Product::orderBy('created_at', 'desc')->paginate(10);
-
-    return view('products.index', compact('products'));
-}
-
-
-
-    public function show(Product $product)
+    public function index()
     {
-        return view('products.show', compact('product'));
-    }
+        $djangoUrl = config('services.django.url');
+        $endpoint = $djangoUrl . '/api/public/products/';
 
-     public function create()
-    {
-        return view('products.create');
-    }
+        try {
+            // Make the request to Django API
+            $response = Http::withOptions([
+                'verify' => false, // skip SSL verification for ngrok HTTPS
+                'timeout' => 15,   // set timeout
+            ])->get($endpoint);
 
-public function stores()
-    {
-        $products = Product::with('category')->orderBy('stock_quantity', 'asc')->get();
-        $lowStock = $products->where('stock_quantity', '<=', 20)->count();
-        
-        return view('pos.stores', compact('products', 'lowStock'));
-    }
-    
-    public function sell()
-    {
-        // Your POS sell logic
-        return view('pos.sell');
+            if ($response->successful()) {
+                $products = collect($response->json());
+            } else {
+                $products = collect([]);
+                Log::warning('Failed to fetch products from Django API', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+            }
+        } catch (\Throwable $e) {
+            $products = collect([]);
+            Log::error('Error fetching products from Django API', [
+                'message' => $e->getMessage(),
+            ]);
+        }
+
+        // Debug: uncomment if needed
+        // dd($products);
+
+        return view('shop.products', [
+            'products' => $products,
+        ]);
     }
 }
