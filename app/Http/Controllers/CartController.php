@@ -22,20 +22,19 @@ class CartController extends Controller
     }
 
     // Add item
-    public function add(Request $request)
+  public function add(Request $request, DjangoCartService $cart)
     {
         $request->validate([
             'product_id' => 'required|integer',
-            'quantity' => 'required|integer|min:1'
+            'quantity'   => 'required|integer|min:1',
         ]);
 
-        $result = $this->service->addItem($request->product_id, $request->quantity);
+        $response = $cart->add(
+            $request->product_id,
+            $request->quantity
+        );
 
-        if ($result) {
-            return redirect()->back()->with('success', 'Item added to cart!');
-        }
-
-        return redirect()->back()->with('error', 'Failed to add item.');
+        return response()->json($response);
     }
 
     // Update item

@@ -34,14 +34,305 @@
         </div>
     </section>
 
-    <!-- Reviews Content -->
+    <!-- Featured Video Section -->
+    <section class="py-5 bg-white">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2 class="fw-bold text-center mb-3" style="font-family: 'Cormorant Garamond', serif; color: var(--navy-green);">
+                        <i class="bi bi-play-circle me-2"></i>Featured Video Testimonial
+                    </h2>
+                    <p class="text-center text-muted mb-0">
+                        Watch how proper dairy cow rationing increases milk production
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Featured Video -->
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden; border: 1px solid rgba(42, 110, 63, 0.1);">
+                        <div class="card-body p-0">
+                            <div class="ratio ratio-16x9">
+                                <iframe 
+                                    src="https://www.youtube.com/embed/UQ91D2o1OU0" 
+                                    title="Proper dairy cow rationing for more milk production"
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    referrerpolicy="strict-origin-when-cross-origin" 
+                                    allowfullscreen
+                                    loading="lazy"
+                                    class="rounded-top"
+                                ></iframe>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="fw-bold mb-2" style="color: var(--navy-green);">
+                                    <i class="bi bi-play-btn-fill me-2"></i>Proper dairy cow rationing for more milk production
+                                </h3>
+                                <p class="text-muted mb-3">
+                                    Learn how our specialized dairy feeds and proper rationing techniques can significantly increase your milk production. This video demonstrates real results from farmers using Premium Farming Feeds.
+                                </p>
+                                <div class="d-flex flex-wrap gap-3">
+                                    <span class="badge" style="
+                                        background: rgba(56, 161, 105, 0.1);
+                                        color: var(--primary-green);
+                                        border: 1px solid rgba(56, 161, 105, 0.2);
+                                    ">
+                                        <i class="bi bi-droplet me-1"></i>Dairy Farming
+                                    </span>
+                                    <span class="badge" style="
+                                        background: rgba(247, 127, 0, 0.1);
+                                        color: #f77f00;
+                                        border: 1px solid rgba(247, 127, 0, 0.2);
+                                    ">
+                                        <i class="bi bi-cup-straw me-1"></i>Milk Production
+                                    </span>
+                                    <span class="badge" style="
+                                        background: rgba(156, 163, 175, 0.1);
+                                        color: #6b7280;
+                                        border: 1px solid rgba(156, 163, 175, 0.2);
+                                    ">
+                                        <i class="bi bi-calendar3 me-1"></i>Updated Recently
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Reviews Section -->
     <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2 class="fw-bold text-center mb-3" style="font-family: 'Cormorant Garamond', serif; color: var(--navy-green);">
+                        <i class="bi bi-collection-play me-2"></i>More Video Testimonials
+                    </h2>
+                    <p class="text-center text-muted mb-0">
+                        Watch real farmers share their experiences with our products
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Video Cards Grid -->
+            <div class="row g-4" id="videoReviewsContainer">
+                @php
+                    $youtubeVideos = [
+                        [
+                            'id' => 'dairy1',
+                            'title' => 'Dairy Farmer Success Story',
+                            'description' => 'Mwalimu Lawrence from Kiambu shares how our dairy feeds increased milk production by 50%',
+                            'channel' => 'Premium Feeds Customer',
+                            'views' => '1.2K',
+                            'date' => '2 months ago',
+                            'duration' => '4:20',
+                            'thumbnail' => 'https://img.youtube.com/vi/UQ91D2o1OU0/maxresdefault.jpg',
+                            'embedId' => 'UQ91D2o1OU0',
+                            'category' => 'Dairy'
+                        ],
+                        [
+                            'id' => 'poultry1',
+                            'title' => 'Poultry Farming Transformation',
+                            'description' => 'Mary shows her broiler growth results after switching to our feeds',
+                            'channel' => 'Happy Farmer TV',
+                            'views' => '850',
+                            'date' => '1 month ago',
+                            'duration' => '3:45',
+                            'thumbnail' => 'https://img.youtube.com/vi/9bZkp7q19f0/maxresdefault.jpg',
+                            'embedId' => '9bZkp7q19f0',
+                            'category' => 'Poultry'
+                        ],
+                        [
+                            'id' => 'pig1',
+                            'title' => 'Pig Farming Results',
+                            'description' => 'Peter demonstrates weight gain in his pigs using our specialized feeds',
+                            'channel' => 'Farm Success Stories',
+                            'views' => '2.1K',
+                            'date' => '3 months ago',
+                            'duration' => '5:15',
+                            'thumbnail' => 'https://img.youtube.com/vi/JGwWNGJdvx8/maxresdefault.jpg',
+                            'embedId' => 'JGwWNGJdvx8',
+                            'category' => 'Pig'
+                        ],
+                        [
+                            'id' => 'mixed1',
+                            'title' => 'Mixed Farming Success',
+                            'description' => 'Kamau shares his experience with our complete farming solution',
+                            'channel' => 'Kenya Farmers Hub',
+                            'views' => '3.4K',
+                            'date' => '4 months ago',
+                            'duration' => '6:30',
+                            'thumbnail' => 'https://img.youtube.com/vi/60ItHLz5WEA/maxresdefault.jpg',
+                            'embedId' => '60ItHLz5WEA',
+                            'category' => 'Mixed'
+                        ],
+                        [
+                            'id' => 'service1',
+                            'title' => 'Customer Service Review',
+                            'description' => 'Sarah praises our delivery and technical support team',
+                            'channel' => 'Agri Business Reviews',
+                            'views' => '950',
+                            'date' => '2 weeks ago',
+                            'duration' => '4:10',
+                            'thumbnail' => 'https://img.youtube.com/vi/mWRsgZuwf_8/maxresdefault.jpg',
+                            'embedId' => 'mWRsgZuwf_8',
+                            'category' => 'Service'
+                        ],
+                        [
+                            'id' => 'farmvisit1',
+                            'title' => 'Farm Visit & Review',
+                            'description' => 'See our products in action at a real farm in Nakuru',
+                            'channel' => 'Premium Farming Feeds',
+                            'views' => '5.2K',
+                            'date' => '6 months ago',
+                            'duration' => '7:45',
+                            'thumbnail' => 'https://img.youtube.com/vi/LDU_Txk06tM/maxresdefault.jpg',
+                            'embedId' => 'LDU_Txk06tM',
+                            'category' => 'Farm Visit'
+                        ]
+                    ];
+                @endphp
+                
+                @foreach($youtubeVideos as $video)
+                <div class="col-lg-4 col-md-6">
+                    <div class="video-card card border-0 shadow-sm h-100" style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(42, 110, 63, 0.1);">
+                        <!-- Video Thumbnail with Play Button -->
+                        <div class="video-thumbnail position-relative" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="{{ $video['embedId'] }}" data-video-title="{{ $video['title'] }}">
+                            <img src="{{ $video['thumbnail'] }}" alt="{{ $video['title'] }}" class="img-fluid w-100 lazy-load" 
+                                 data-src="{{ $video['thumbnail'] }}" 
+                                 style="height: 200px; object-fit: cover;"
+                                 onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070&auto=format&fit=crop'">
+                            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,0.3);">
+                                <div class="play-button rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: rgba(56, 161, 105, 0.9);">
+                                    <i class="bi bi-play-fill text-white fs-3"></i>
+                                </div>
+                            </div>
+                            <div class="position-absolute bottom-0 end-0 m-2">
+                                <span class="badge bg-dark bg-opacity-75 py-1 px-2" style="font-size: 0.7rem;">
+                                    <i class="bi bi-clock me-1"></i>{{ $video['duration'] }}
+                                </span>
+                            </div>
+                            @if($video['category'] == 'Dairy')
+                            <div class="position-absolute top-0 start-0 m-2">
+                                <span class="badge py-1 px-2" style="
+                                    background: var(--gradient-green);
+                                    color: white;
+                                    font-size: 0.7rem;
+                                ">
+                                    <i class="bi bi-star-fill me-1"></i>Featured
+                                </span>
+                            </div>
+                            @endif
+                        </div>
+                        
+                        <!-- Video Details -->
+                        <div class="card-body p-3">
+                            <h6 class="card-title fw-bold mb-2 text-dark" style="font-size: 0.95rem; line-height: 1.3;">
+                                {{ $video['title'] }}
+                            </h6>
+                            <p class="card-text text-muted small mb-2" style="font-size: 0.85rem;">
+                                {{ $video['description'] }}
+                            </p>
+                            
+                            <div class="video-meta d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="badge" style="
+                                        background: rgba(56, 161, 105, 0.1);
+                                        color: var(--primary-green);
+                                        border: 1px solid rgba(56, 161, 105, 0.2);
+                                        font-size: 0.75rem;
+                                    ">
+                                        <i class="bi bi-person-circle me-1"></i>{{ $video['channel'] }}
+                                    </span>
+                                </div>
+                                <div class="text-muted small">
+                                    <i class="bi bi-eye me-1"></i>{{ $video['views'] }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Video Footer -->
+                        <div class="card-footer bg-white border-0 pt-0 pb-3 px-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar3 me-1"></i>{{ $video['date'] }}
+                                </small>
+                                <button class="btn btn-sm watch-btn" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="{{ $video['embedId'] }}" data-video-title="{{ $video['title'] }}" style="
+                                    background: var(--gradient-green);
+                                    color: white;
+                                    padding: 0.25rem 0.75rem;
+                                    font-size: 0.8rem;
+                                ">
+                                    <i class="bi bi-play-circle me-1"></i>Watch
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            
+            <!-- Load More Button (Optional) -->
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <button id="loadMoreVideos" class="btn" style="
+                        border: 1px solid var(--primary-green);
+                        color: var(--primary-green);
+                    ">
+                        <i class="bi bi-plus-circle me-2"></i>Load More Videos
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Modal -->
+    <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0" style="border-radius: 8px; overflow: hidden;">
+                <div class="modal-header border-0 bg-dark">
+                    <h5 class="modal-title text-white" id="videoModalLabel">Customer Review</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0 bg-dark">
+                    <div class="ratio ratio-16x9">
+                        <iframe id="youtubePlayer" src="" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen
+                            loading="lazy">
+                        </iframe>
+                    </div>
+                </div>
+                <div class="modal-footer bg-dark border-0">
+                    <button type="button" class="btn btn-sm" data-bs-dismiss="modal" style="
+                        border: 1px solid white;
+                        color: white;
+                    ">
+                        Close
+                    </button>
+                    <a href="https://www.youtube.com/watch?v=UQ91D2o1OU0" target="_blank" class="btn btn-sm" style="
+                        background: #ff0000;
+                        color: white;
+                    ">
+                        <i class="bi bi-youtube me-1"></i>Watch on YouTube
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews Content -->
+    <section class="py-5 bg-white">
         <div class="container">
             <div class="row">
                 <!-- Reviews List -->
                 <div class="col-lg-8">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 class="fw-bold mb-0" style="font-family: 'Cormorant Garamond', serif; color: var(--navy-green);">All Reviews</h2>
+                        <h2 class="fw-bold mb-0" style="font-family: 'Cormorant Garamond', serif; color: var(--navy-green);">Written Reviews</h2>
                         <div class="d-flex gap-2">
                             <button class="btn btn-sm active" id="filterAll" style="border: 1px solid var(--primary-green); color: var(--primary-green);">All</button>
                             <button class="btn btn-sm" id="filter5" style="border: 1px solid var(--primary-green); color: var(--primary-green);">5 Stars</button>
@@ -274,7 +565,7 @@
     </section>
 
     <!-- Stats Section - Classic Design -->
-    <section class="py-5 bg-white border-top border-bottom" style="border-color: #e5e7eb !important;">
+    <section class="py-5 bg-light border-top border-bottom" style="border-color: #e5e7eb !important;">
         <div class="container">
             <div class="text-center mb-5">
                 <h2 class="h2 fw-bold mb-3" style="font-family: 'Cormorant Garamond', serif; color: var(--navy-green);">
@@ -416,7 +707,7 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="py-5 bg-light">
+    <section class="py-5 bg-white">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-8 mb-4 mb-lg-0">
@@ -444,6 +735,29 @@
     .reviews-hero {
         position: relative;
         overflow: hidden;
+    }
+    
+    .video-card {
+        transition: all 0.3s ease;
+    }
+    
+    .video-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 20px rgba(42, 110, 63, 0.15) !important;
+    }
+    
+    .play-button {
+        transition: all 0.3s ease;
+    }
+    
+    .video-thumbnail:hover .play-button {
+        transform: scale(1.1);
+        background: rgba(56, 161, 105, 1) !important;
+    }
+    
+    .watch-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(56, 161, 105, 0.3);
     }
     
     .card {
@@ -496,6 +810,41 @@
         background-color: #f9fafb !important;
     }
     
+    /* Lazy loading for images */
+    .video-thumbnail img {
+        transition: opacity 0.3s ease;
+        opacity: 1;
+    }
+    
+    .video-thumbnail img.loading {
+        opacity: 0.7;
+    }
+    
+    .lazy-load {
+        background-color: #f3f4f6;
+        background-image: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 100%);
+    }
+    
+    /* Featured video styling */
+    .featured-video {
+        position: relative;
+    }
+    
+    .featured-video:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--gradient-green);
+    }
+    
+    /* Modal styling */
+    .modal-content {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    
     /* Form validation styles */
     .needs-validation .form-control:invalid,
     .needs-validation .form-control.is-invalid {
@@ -532,6 +881,22 @@
         
         .h4 {
             font-size: 1.2rem;
+        }
+        
+        .video-card .card-title {
+            font-size: 0.9rem;
+        }
+        
+        .ratio-16x9 {
+            --bs-aspect-ratio: 56.25%;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .featured-video {
+            margin-left: -15px;
+            margin-right: -15px;
+            border-radius: 0 !important;
         }
     }
 </style>
@@ -674,6 +1039,213 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
+    // Video Modal Functionality
+    const videoModal = document.getElementById('videoModal');
+    if (videoModal) {
+        const youtubePlayer = document.getElementById('youtubePlayer');
+        const videoModalLabel = document.getElementById('videoModalLabel');
+        
+        videoModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const videoId = button.getAttribute('data-video-id');
+            const videoTitle = button.getAttribute('data-video-title');
+            
+            // Set the YouTube embed URL with autoplay
+            youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+            
+            // Update modal title
+            if (videoTitle) {
+                videoModalLabel.textContent = videoTitle;
+            }
+        });
+        
+        videoModal.addEventListener('hidden.bs.modal', function() {
+            // Stop the video when modal is closed
+            youtubePlayer.src = '';
+        });
+    }
+    
+    // Load More Videos Functionality
+    const loadMoreBtn = document.getElementById('loadMoreVideos');
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', function() {
+            const container = document.getElementById('videoReviewsContainer');
+            const loadingText = this.innerHTML;
+            
+            // Show loading state
+            this.disabled = true;
+            this.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Loading...';
+            
+            // Simulate loading more videos (in real app, this would be an AJAX call)
+            setTimeout(() => {
+                // Example additional videos (in real app, fetch from server)
+                const additionalVideos = [
+                    {
+                        'id': 'sample7',
+                        'title': 'Quality Assurance Process',
+                        'description' => 'See how we ensure quality in every batch of our feeds',
+                        'channel' => 'Premium Farming Feeds',
+                        'views' => '3.8K',
+                        'date' => '5 months ago',
+                        'duration': '5:45',
+                        'thumbnail': 'https://img.youtube.com/vi/L_jWHffIx5E/maxresdefault.jpg',
+                        'embedId': 'L_jWHffIx5E',
+                        'category': 'Quality'
+                    },
+                    {
+                        'id': 'sample8',
+                        'title': 'Farmers Training Session',
+                        'description' => 'Our nutritionist training farmers on proper feeding techniques',
+                        'channel' => 'Agri Education',
+                        'views' => '2.7K',
+                        'date' => '7 months ago',
+                        'duration': '8:20',
+                        'thumbnail': 'https://img.youtube.com/vi/CduA0TULnow/maxresdefault.jpg',
+                        'embedId': 'CduA0TULnow',
+                        'category': 'Training'
+                    }
+                ];
+                
+                // Add new videos to container
+                additionalVideos.forEach(video => {
+                    const videoCard = document.createElement('div');
+                    videoCard.className = 'col-lg-4 col-md-6';
+                    videoCard.innerHTML = `
+                        <div class="video-card card border-0 shadow-sm h-100" style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(42, 110, 63, 0.1);">
+                            <div class="video-thumbnail position-relative" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="${video.embedId}" data-video-title="${video.title}">
+                                <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070&auto=format&fit=crop" alt="${video.title}" class="img-fluid w-100 lazy-load" 
+                                     data-src="${video.thumbnail}" 
+                                     style="height: 200px; object-fit: cover;"
+                                     onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070&auto=format&fit=crop'">
+                                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,0.3);">
+                                    <div class="play-button rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: rgba(56, 161, 105, 0.9);">
+                                        <i class="bi bi-play-fill text-white fs-3"></i>
+                                    </div>
+                                </div>
+                                <div class="position-absolute bottom-0 end-0 m-2">
+                                    <span class="badge bg-dark bg-opacity-75 py-1 px-2" style="font-size: 0.7rem;">
+                                        <i class="bi bi-clock me-1"></i>${video.duration}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="card-body p-3">
+                                <h6 class="card-title fw-bold mb-2 text-dark" style="font-size: 0.95rem; line-height: 1.3;">
+                                    ${video.title}
+                                </h6>
+                                <p class="card-text text-muted small mb-2" style="font-size: 0.85rem;">
+                                    ${video.description}
+                                </p>
+                                
+                                <div class="video-meta d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge" style="
+                                            background: rgba(56, 161, 105, 0.1);
+                                            color: var(--primary-green);
+                                            border: 1px solid rgba(56, 161, 105, 0.2);
+                                            font-size: 0.75rem;
+                                        ">
+                                            <i class="bi bi-person-circle me-1"></i>${video.channel}
+                                        </span>
+                                    </div>
+                                    <div class="text-muted small">
+                                        <i class="bi bi-eye me-1"></i>${video.views}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card-footer bg-white border-0 pt-0 pb-3 px-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar3 me-1"></i>${video.date}
+                                    </small>
+                                    <button class="btn btn-sm watch-btn" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="${video.embedId}" data-video-title="${video.title}" style="
+                                        background: var(--gradient-green);
+                                        color: white;
+                                        padding: 0.25rem 0.75rem;
+                                        font-size: 0.8rem;
+                                    ">
+                                        <i class="bi bi-play-circle me-1"></i>Watch
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(videoCard);
+                    
+                    // Initialize lazy loading for the new image
+                    const img = videoCard.querySelector('img.lazy-load');
+                    if (img) {
+                        img.src = img.dataset.src;
+                    }
+                });
+                
+                // Hide load more button if we have enough videos
+                if (container.children.length >= 8) {
+                    loadMoreBtn.style.display = 'none';
+                } else {
+                    // Reset button state
+                    this.disabled = false;
+                    this.innerHTML = loadingText;
+                }
+            }, 1000);
+        });
+    }
+    
+    // Lazy loading for video thumbnails
+    const lazyLoadImages = document.querySelectorAll('img.lazy-load');
+    
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    const src = img.dataset.src;
+                    if (src) {
+                        img.src = src;
+                        img.classList.remove('lazy-load');
+                    }
+                    observer.unobserve(img);
+                }
+            });
+        }, {
+            rootMargin: '50px'
+        });
+        
+        lazyLoadImages.forEach(img => {
+            imageObserver.observe(img);
+        });
+    } else {
+        // Fallback for browsers without IntersectionObserver
+        lazyLoadImages.forEach(img => {
+            const src = img.dataset.src;
+            if (src) {
+                img.src = src;
+            }
+        });
+    }
+    
+    // Play featured video in modal when clicking on card
+    const videoThumbnails = document.querySelectorAll('.video-thumbnail');
+    videoThumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', function() {
+            const videoId = this.getAttribute('data-video-id');
+            const videoTitle = this.getAttribute('data-video-title');
+            
+            // Special handling for the featured video (UQ91D2o1OU0)
+            if (videoId === 'UQ91D2o1OU0') {
+                // Open in modal
+                const modal = new bootstrap.Modal(document.getElementById('videoModal'));
+                const youtubePlayer = document.getElementById('youtubePlayer');
+                const videoModalLabel = document.getElementById('videoModalLabel');
+                
+                youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+                videoModalLabel.textContent = videoTitle || 'Proper dairy cow rationing for more milk production';
+                modal.show();
+            }
+        });
+    });
 });
 </script>
 @endsection

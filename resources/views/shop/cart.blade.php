@@ -1,60 +1,110 @@
 @extends('layouts.app')
 
+@section('title', 'Shopping Cart')
+
 @section('content')
-<div class="container py-5">
-    <h1>Shopping Cart</h1>
+<section class="cart-section py-5">
+    <div class="container">
 
-    @if(empty($cartData['items']))
-        <p>Your cart is empty</p>
-    @else
-        <div class="row">
-            <div class="col-md-8">
-                @foreach($cartData['items'] as $item)
-                    <div class="card mb-3">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div>
-                                <h5>{{ $item['product']['name'] }}</h5>
-                                <p>KES {{ number_format($item['product']['price']) }}</p>
-                            </div>
+        <h1 class="mb-4">Shopping Cart</h1>
 
-                            <div class="d-flex align-items-center gap-2">
-                                <button onclick="updateQty({{ $item['id'] }}, {{ $item['quantity'] - 1 }})">−</button>
+        @if(empty($cartData['items']))
+            <div class="alert alert-info text-center">
+                Your cart is empty
+                <br>
+                <a href="{{ route('products.index') }}" class="btn btn-success mt-3">
+                    Continue Shopping
+                </a>
+            </div>
+        @else
+            <div class="row">
 
-                                <strong>{{ $item['quantity'] }}</strong>
+                <!-- CART ITEMS -->
+                <div class="col-lg-8">
+                    @foreach($cartData['items'] as $item)
+                        <div class="card mb-3">
+                            <div class="card-body d-flex align-items-center">
 
-                                <button onclick="updateQty({{ $item['id'] }}, {{ $item['quantity'] + 1 }})">+</button>
+                                <img
+                                    src="{{ $item['product']['image'] ?? 'https://via.placeholder.com/120' }}"
+                                    width="120"
+                                    class="me-3 rounded"
+                                >
+
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-1">{{ $item['product']['name'] }}</h5>
+                                    <p class="mb-1 text-muted">
+                                        KES {{ number_format($item['product']['unit_price']) }}
+                                    </p>
+
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        value="{{ $item['quantity'] }}"
+                                        class="form-control w-25 update-qty"
+                                        data-id="{{ $item['id'] }}"
+                                    >
+                                </div>
+
+                                <div class="fw-bold text-success">
+                                    KES {{ number_format($item['total_price']) }}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
-            </div>
-
-            <div class="col-md-4">
-                <div class="card p-3">
-                    <h4>Total</h4>
-                    <h2>KES {{ number_format($cartData['total']) }}</h2>
-
-                    <a href="/checkout" class="btn btn-success w-100 mt-3">
-                        Proceed to Checkout
-                    </a>
+                    @endforeach
                 </div>
+
+                <!-- SUMMARY -->
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Summary</h5>
+                            <hr>
+
+                            <p class="d-flex justify-content-between">
+                                <span>Subtotal</span>
+                                <strong>KES {{ number_format($cartData['subtotal']) }}</strong>
+                            </p>
+
+                            <p class="d-flex justify-content-between">
+                                <span>Total</span>
+                                <strong class="text-success">
+                                    KES {{ number_format($cartData['total']) }}
+                                </strong>
+                            </p>
+
+                            <a href="{{ route('checkout.index') }}"
+                               class="btn btn-success w-100">
+                                Proceed to Checkout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-        </div>
-    @endif
-</div>
+        @endif
 
-<script>
-function updateQty(itemId, qty) {
-    if (qty < 1) return;
-
-    fetch(`/cart/update/${itemId}`, {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({ quantity: qty })
-    }).then(() => location.reload());
-}
-</script>
+    </div>
+</section>
 @endsection
+
+@push('scripts')
+<script>
+document.querySelectorAll('.update-qty').forEach(input => {
+    input.addEventListener('change', function () {
+
+        fetch("{{ route('cart.update') }}", {
+            method: "PATCH",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                item_id: this.dataset.id,
+                quantity: this.value
+            })
+        }).then(() => location.reload());
+    });
+});
+</script>
+@endpush
