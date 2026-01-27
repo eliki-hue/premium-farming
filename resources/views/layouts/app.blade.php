@@ -1241,7 +1241,9 @@
                         <a href="https://www.twitter.com/"><i class="bi bi-twitter"></i></a>
                         <a href="https://www.instagram.com/"><i class="bi bi-instagram"></i></a>
                         <a href="https://www.linkedin.com/"><i class="bi bi-linkedin"></i></a>
-                        <a href="https://web.whatsapp.com/"><i class="bi bi-whatsapp"></i></a>
+                        <a href="https://wa.me/254700680017" target="_blank">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
                     </div>
                 </div>
                 
