@@ -23,8 +23,6 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ConversionController;
-use App\Http\Controllers\PosProductController;
-use App\Http\Controllers\PosSellController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CheckoutController;
@@ -32,15 +30,14 @@ use App\Http\Controllers\ReviewController;
 
 /*
 |--------------------------------------------------------------------------
-| LANDING PAGE (HOME FIRST)
+| LANDING PAGE
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/home', [HomeController::class, 'index'])->name('home.page');
 
 /*
 |--------------------------------------------------------------------------
-| PUBLIC ROUTES
+| PUBLIC PAGES
 |--------------------------------------------------------------------------
 */
 Route::get('/about', fn () => view('about'))->name('about');
@@ -53,70 +50,68 @@ Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store
 
 /*
 |--------------------------------------------------------------------------
-| AUTH PAGES
+| AUTH (PUBLIC)
 |--------------------------------------------------------------------------
 */
-Route::get('/login', fn () => view('auth.login'))->name('login');
+Route::get('/login', [AuthenticatedSessionController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthenticatedSessionController::class, 'login'])->name('auth.login');
+
 Route::get('/register', fn () => view('auth.register'))->name('register');
+Route::post('/register', [AuthenticatedSessionController::class, 'register'])->name('auth.register');
+
 Route::get('/forgot-password', fn () => view('auth.forgot-password'))->name('password.request');
 
 /*
 |--------------------------------------------------------------------------
-| PRODUCTS & SHOP (PUBLIC)
+| SHOP & PRODUCTS (PUBLIC)
 |--------------------------------------------------------------------------
 */
+Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/products', [ProductController::class, 'index'])->name('products');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
-
-Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/shop/product/{id}', [ShopController::class, 'show'])->name('shop.show');
 
 /*
 |--------------------------------------------------------------------------
-| CATEGORIES
+| CATEGORIES (PUBLIC)
 |--------------------------------------------------------------------------
 */
-Route::prefix('categories')->name('categories.')->group(function () {
-    Route::view('/poultry', 'categories.poultry')->name('poultry');
-    Route::view('/dairy', 'categories.dairy')->name('dairy');
-    Route::view('/swine', 'categories.swine')->name('swine');
-    Route::view('/pet-feeds', 'categories.pet-feeds')->name('pet-feeds');
-    Route::view('/by-products', 'categories.by-products')->name('by-products');
-    Route::view('/goat-feeds', 'categories.goat-feeds')->name('goat-feeds');
-});
-
-// Route::view('/categorie/cattle', 'categories.cattle');
-// Route::view('/category/concentrates', 'categories.concentrates');
-
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
-// 
+
+Route::view('/category/poultry', 'categories.poultry')->name('category.poultry');
+Route::view('/category/dairy', 'categories.dairy')->name('category.dairy');
+Route::view('/category/swine', 'categories.swine')->name('category.swine');
+Route::view('/category/pet-feeds', 'categories.pet-feeds')->name('category.pet-feeds');
+Route::view('/category/by-products', 'categories.by-products')->name('category.by-products');
+Route::view('/category/goat-feeds', 'categories.goat-feeds')->name('category.goat-feeds');
+
 /*
 |--------------------------------------------------------------------------
-| CART (PUBLIC)
+| CART (COOKIE AUTH)
 |--------------------------------------------------------------------------
 */
-Route::prefix('cart')->group(function () {
-    Route::get('/', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/add', [CartController::class, 'add'])->name('cart.add');
-    Route::post('/update', [CartController::class, 'update'])->name('cart.update');
-    Route::post('/remove', [CartController::class, 'remove'])->name('cart.remove');
+Route::middleware('auth.cookie')->prefix('cart')->name('cart.')->group(function () {
+    Route::get('/', [CartController::class, 'view'])->name('view');
+    Route::post('/add', [CartController::class, 'add'])->name('add');
+    Route::patch('/update/{itemId}', [CartController::class, 'update'])->name('update');
+    Route::delete('/remove/{itemId}', [CartController::class, 'remove'])->name('remove');
 });
 
 /*
 |--------------------------------------------------------------------------
-| CHECKOUT (PUBLIC)
+| CHECKOUT (COOKIE AUTH)
 |--------------------------------------------------------------------------
 */
-Route::prefix('checkout')->group(function () {
-    Route::get('/', [CheckoutController::class, 'index'])->name('checkout');
-    Route::post('/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.place.order');
-    Route::get('/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
+Route::middleware('auth.cookie')->prefix('checkout')->name('checkout.')->group(function () {
+    Route::get('/', [CheckoutController::class, 'index'])->name('index');
+    Route::post('/place-order', [CheckoutController::class, 'placeOrder'])->name('place.order');
+    Route::get('/success/{order}', [CheckoutController::class, 'success'])->name('success');
 });
 
 /*
 |--------------------------------------------------------------------------
-| AUTHENTICATED ROUTES
+| AUTHENTICATED USERS
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
@@ -133,10 +128,11 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| AUTH HANDLERS
+| DEBUG ROUTES (REMOVE IN PRODUCTION)
 |--------------------------------------------------------------------------
 */
-Route::post('/login', [AuthenticatedSessionController::class, 'login'])->name('auth.login');
-Route::post('/logout', [AuthenticatedSessionController::class, 'logout'])->name('auth.logout');
+Route::get('/debug-django-real', function() {
+    return "Debug route active";
+});
 
 require __DIR__.'/auth.php';

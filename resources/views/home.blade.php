@@ -670,7 +670,7 @@
                 </p>
                 
                 <div class="hero-buttons animate__animated animate__fadeInUp animate__delay-3s">
-                    <a href="{{ route('products') }}" class="btn btn-premium btn-lg">
+                        <a href="{{ route('products') }}" class="btn btn-premium btn-lg">
                         <i class="bi bi-cart-plus me-2"></i>
                         Browse Products
                     </a>
@@ -689,12 +689,12 @@
             
             <div class="row g-4">
                 @foreach([
-                    ['name' => 'Poultry Feeds', 'route' => 'categories.poultry', 'icon' => '🐔', 'desc' => 'Broiler, layers & kienyeji feeds for optimal growth'],
-                    ['name' => 'Dairy Feeds', 'route' => 'categories.dairy', 'icon' => '🐄', 'desc' => 'Specialized feeds for higher milk production'],
-                    ['name' => 'Swine Feeds', 'route' => 'categories.swine', 'icon' => '🐖', 'desc' => 'Complete nutrition for pigs at all growth stages'],
-                    ['name' => 'Pet Feeds', 'route' => 'categories.pet-feeds', 'icon' => '🐶', 'desc' => 'Premium nutrition for dogs, cats & rabbits'],
-                    ['name' => 'By-products', 'route' => 'categories.by-products', 'icon' => '🌾', 'desc' => 'Maize germ, wheat bran & supplements'],
-                    ['name' => 'Goat Feeds', 'route' => 'categories.goat-feeds', 'icon' => '🐐', 'desc' => 'Specialized feeds for dairy & meat goats'],
+                    ['name' => 'Poultry Feeds', 'route' => 'category.poultry', 'icon' => '🐔', 'desc' => 'Broiler, layers & kienyeji feeds for optimal growth'],
+                    ['name' => 'Dairy Feeds', 'route' => 'category.dairy', 'icon' => '🐄', 'desc' => 'Specialized feeds for higher milk production'],
+                    ['name' => 'Swine Feeds', 'route' => 'category.swine', 'icon' => '🐖', 'desc' => 'Complete nutrition for pigs at all growth stages'],
+                    ['name' => 'Pet Feeds', 'route' => 'category.pet-feeds', 'icon' => '🐶', 'desc' => 'Premium nutrition for dogs, cats & rabbits'],
+                    ['name' => 'By-products', 'route' => 'category.by-products', 'icon' => '🌾', 'desc' => 'Maize germ, wheat bran & supplements'],
+                    ['name' => 'Goat Feeds', 'route' => 'category.goat-feeds', 'icon' => '🐐', 'desc' => 'Specialized feeds for dairy & meat goats'],
                 ] as $cat)
                 <div class="col-lg-4 col-md-6">
                     <a href="{{ route($cat['route']) }}" class="text-decoration-none">

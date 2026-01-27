@@ -1136,12 +1136,12 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ route('products') }}">All Products</a></li>
-                            <li><a class="dropdown-item" href="{{ route('categories.poultry') }}">Poultry Feeds</a></li>
-                            <li><a class="dropdown-item" href="{{ route('categories.dairy') }}">Dairy Feeds</a></li>
-                            <li><a class="dropdown-item" href="{{ route('categories.swine') }}">Swine Feeds</a></li>
+                            <li><a class="dropdown-item" href="{{ route('category.poultry') }}">Poultry Feeds</a></li>
+                            <li><a class="dropdown-item" href="{{ route('category.dairy') }}">Dairy Feeds</a></li>
+                            <li><a class="dropdown-item" href="{{ route('category.swine') }}">Swine Feeds</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ route('categories.pet-feeds') }}">Pet Feeds</a></li>
-                            <li><a class="dropdown-item" href="{{ route('categories.by-products') }}">Raw materials</a></li>
+                            <li><a class="dropdown-item" href="{{ route('category.pet-feeds') }}">Pet Feeds</a></li>
+                            <li><a class="dropdown-item" href="{{ route('category.by-products') }}">Raw materials</a></li>
                         </ul>
                     </li>
                     
@@ -1260,11 +1260,11 @@
                 <div class="col-lg-3 col-md-6">
                     <h5 class="mb-4">Categories</h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="{{ route('categories.poultry') }}">Poultry Feeds</a></li>
-                        <li class="mb-2"><a href="{{ route('categories.dairy') }}">Dairy Feeds</a></li>
-                        <li class="mb-2"><a href="{{ route('categories.swine') }}">Swine Feeds</a></li>
-                        <li class="mb-2"><a href="{{ route('categories.pet-feeds') }}">Pet Feeds</a></li>
-                        <li class="mb-2"><a href="{{ route('categories.by-products') }}">Raw materials</a></li>
+                        <li class="mb-2"><a href="{{ route('category.poultry') }}">Poultry Feeds</a></li>
+                        <li class="mb-2"><a href="{{ route('category.dairy') }}">Dairy Feeds</a></li>
+                        <li class="mb-2"><a href="{{ route('category.swine') }}">Swine Feeds</a></li>
+                        <li class="mb-2"><a href="{{ route('category.pet-feeds') }}">Pet Feeds</a></li>
+                        <li class="mb-2"><a href="{{ route('category.by-products') }}">Raw materials</a></li>
                     </ul>
                 </div>
                 

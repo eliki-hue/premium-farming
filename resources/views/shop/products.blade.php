@@ -1,3 +1,4 @@
+{{-- product.blade --}}
 @extends('layouts.app')
 
 @section('title', 'Our Products | Premium Farming Feeds')
@@ -27,7 +28,26 @@
     </div>
 </section>
 
-<!-- ================= PRODUCTS ================= -->
+<!-- Flash Messages -->
+@if(session('success'))
+    <div class="container mt-4">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="container mt-4">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+@endif
+
+<!-- Products Section -->
 <div class="container my-5" id="products">
     <h2 class="mb-4 text-center section-title">Our Products</h2>
 
@@ -58,22 +78,27 @@
                             @endif
 
                             <div class="mt-auto">
-                                @auth
-                                    <button
-                                        class="btn btn-success w-100 add-to-cart"
-                                        data-id="{{ $product['id'] }}">
-                                        <i class="bi bi-cart-plus me-2"></i>
-                                        Add to Cart
-                                    </button>
+                                @if(request()->hasCookie('access_token'))
+                                    <!-- User is authenticated via cookie -->
+                                    <form method="POST" action="{{ route('cart.add') }}" class="add-to-cart-form">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $product['id'] }}">
+                                        <input type="hidden" name="quantity" value="1">
+
+                                        <button type="submit" class="btn btn-success w-100">
+                                            <i class="bi bi-cart-plus me-2"></i> Add to Cart
+                                        </button>
+                                    </form>
                                 @else
-                                    <button
-                                        class="btn btn-outline-success w-100"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#signupModal">
-                                        <i class="bi bi-cart-plus me-2"></i>
-                                        Add to Cart
+                                    <!-- User is not authenticated -->
+                                    <button 
+                                        class="btn btn-outline-success w-100 login-prompt-btn"
+                                        data-product-id="{{ $product['id'] }}"
+                                        data-product-name="{{ $product['name'] }}"
+                                    >
+                                        <i class="bi bi-cart-plus me-2"></i> Add to Cart
                                     </button>
-                                @endauth
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -88,57 +113,49 @@
     @endif
 </div>
 
-@endsection
+<!-- Login/Signup Modal -->
+<div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="authModalLabel">
+                    <i class="bi bi-lock-fill me-2 text-success"></i>Login Required
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="bi bi-cart-x display-1 text-muted mb-3"></i>
+                <h5 class="mb-3">Please log in to add items to your cart</h5>
+                <p class="text-muted mb-4" id="productMessage"></p>
+                
+                <div class="d-grid gap-2">
+                    <a href="{{ route('login') }}" class="btn btn-success btn-lg">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                    </a>
+                    <a href="{{ route('register') }}" class="btn btn-outline-success btn-lg">
+                        <i class="bi bi-person-plus me-2"></i> Create Account
+                    </a>
+                </div>
+                
+                <p class="text-muted mt-3 mb-0 small">
+                    Create an account to enjoy a seamless shopping experience
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
 
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.add-to-cart').forEach(button => {
-
-        button.addEventListener('click', async () => {
-            button.disabled = true;
-            button.innerHTML = 'Adding…';
-
-            try {
-                const response = await fetch("{{ route('cart.add') }}", {
-                    method: 'POST',
-                    credentials: 'same-origin',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        product_id: button.dataset.id,
-                        quantity: 1
-                    })
-                });
-
-                if (!response.ok) throw new Error();
-
-                button.innerHTML = '✔ Added';
-            } catch (e) {
-                button.disabled = false;
-                button.innerHTML = 'Add to Cart';
-                alert('Add to cart failed');
-            }
-        });
-
-    });
-});
-</script>
-@endpush
-
-
-<!-- ================= STYLES ================= -->
 <style>
-.hero-section-products {
-    position: relative;
-    min-height: 60vh;
-    margin-top: 76px;
-    overflow: hidden;
-    color: #fff;
-}
+    /* Hero Section with Video */
+    .hero-section-products {
+        position: relative;
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        color: white;
+        margin-top: 76px;
+    }
 
 .hero-video {
     position: absolute;
@@ -192,8 +209,163 @@ document.addEventListener('DOMContentLoaded', () => {
     color: #2a6e3f;
 }
 
-.btn-success {
-    background: linear-gradient(135deg, #2a6e3f, #3a8e5c);
-    border: none;
-}
+    .price-tag {
+        font-size: 1.3rem;
+        margin: 0.5rem 0;
+    }
+
+    .section-title {
+        color: #2a6e3f;
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+    .section-title:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(to right, #2a6e3f, #4caf50);
+        border-radius: 2px;
+    }
+
+    /* Button Improvements */
+    .btn-success {
+        background: linear-gradient(135deg, #2a6e3f, #3a8e5c);
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-shadow: none;
+    }
+
+    .btn-success:hover {
+        background: linear-gradient(135deg, #1e5a2f, #2a6e3f);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(42, 110, 63, 0.3);
+    }
+
+    .btn-outline-success {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 600;
+        border-width: 2px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-success:hover {
+        background: #2a6e3f;
+        transform: translateY(-2px);
+    }
+
+    /* Loading state for forms */
+    .add-to-cart-form.loading button {
+        position: relative;
+        color: transparent;
+    }
+
+    .add-to-cart-form.loading button:after {
+        content: "";
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        top: 50%;
+        left: 50%;
+        margin-left: -8px;
+        margin-top: -8px;
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spinner 0.6s linear infinite;
+    }
+
+    @keyframes spinner {
+        to {transform: rotate(360deg);}
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-section-products {
+            min-height: 50vh;
+            margin-top: 56px;
+        }
+
+        .hero-overlay {
+            padding: 60px 0;
+        }
+
+        .hero-title {
+            font-size: 2.2rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+
+        .card-img-top-container {
+            height: 180px;
+        }
+
+        .col-md-3 {
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .hero-title {
+            font-size: 1.8rem;
+        }
+
+        .hero-section-products {
+            min-height: 40vh;
+        }
+
+        .hero-overlay {
+            padding: 50px 0;
+        }
+    }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle login prompt buttons
+    const loginPromptButtons = document.querySelectorAll('.login-prompt-btn');
+    const authModal = new bootstrap.Modal(document.getElementById('authModal'));
+    const productMessage = document.getElementById('productMessage');
+    
+    loginPromptButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const productName = this.getAttribute('data-product-name');
+            productMessage.textContent = `You're trying to add "${productName}" to your cart.`;
+            authModal.show();
+        });
+    });
+
+    // Handle add to cart forms with loading state
+    const addToCartForms = document.querySelectorAll('.add-to-cart-form');
+    
+    addToCartForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const button = this.querySelector('button[type="submit"]');
+            button.disabled = true;
+            this.classList.add('loading');
+        });
+    });
+
+    // Auto-dismiss alerts after 5 seconds
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+});
+</script>
+
+@endsection
