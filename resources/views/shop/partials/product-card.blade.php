@@ -20,20 +20,7 @@
             class="w-full h-48 object-cover rounded"
         >
 
-        @guest
-        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-center text-white rounded">
-            <div>
-                <i class="bi bi-lock text-2xl mb-2"></i>
-                <p class="text-sm mb-2">Login required</p>
-                <button
-                    class="btn btn-light btn-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#signupModal">
-                    Sign up to buy
-                </button>
-            </div>
-        </div>
-        @endguest
+        
     </div>
 
     {{-- BODY --}}

@@ -3,138 +3,256 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\DjangoEcommerceService;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cookie;
 
 class CartController extends Controller
 {
-    protected $service;
-
-    public function __construct(DjangoEcommerceService $service)
+   
+    private function getDjangoConfig()
     {
-        $this->service = $service;
+        return [
+            'url' => config('services.django.url'),
+            'domain' => config('services.django.domain', parse_url(config('services.django.url'), PHP_URL_HOST)),
+        ];
     }
 
-    /**
-     * View cart
-     */
-    public function view()
+
+    private function attachDjangoCookies($djangoResponse, $laravelResponse)
     {
-        $cartData = $this->service->getCart();
-        return view('shop.cart', compact('cartData'));
+        $cookies = $djangoResponse->cookies();
+        
+        foreach ($cookies as $cookie) {
+            $laravelResponse->withCookie(cookie(
+                $cookie->getName(),
+                $cookie->getValue(),
+                $cookie->getExpiresTime() ? ($cookie->getExpiresTime() - time()) / 60 : 60, 
+                $cookie->getPath(),
+                $cookie->getDomain(),
+                $cookie->getSecure(),
+                $cookie->getHttpOnly(),
+                false, 
+                $cookie->getSameSite()
+            ));
+        }
+        
+        return $laravelResponse;
     }
 
-    /**
-     * Add item to cart
-     */
+   
+    public function index(Request $request)
+    {
+        $config = $this->getDjangoConfig();
+
+        try {
+            $response = Http::withOptions([
+                'verify' => false,
+                'timeout' => 15,
+            ])->withCookies(
+                $request->cookies->all(),
+                $config['domain']
+            )->get($config['url'] . '/api/ecommerce/cart/');
+
+            if ($response->successful()) {
+                $cart = $response->json();
+            } else {
+                $cart = [
+                    'items' => [],
+                    'total' => 0,
+                    'subtotal' => 0,
+                    'item_count' => 0,
+                ];
+                Log::warning('Failed to fetch cart from Django', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+            }
+            
+            $viewResponse = response()->view('shop.cart', ['cart' => $cart]);
+
+            return $this->attachDjangoCookies($response, $viewResponse);
+
+        } catch (\Throwable $e) {
+            Log::error('Error fetching cart from Django', [
+                'message' => $e->getMessage(),
+            ]);
+            
+            return view('shop.cart', ['cart' => [
+                'items' => [], 'total' => 0, 'subtotal' => 0, 'item_count' => 0
+            ]]);
+        }
+    }
+
+   
+    public function getCart(Request $request)
+    {
+        $config = $this->getDjangoConfig();
+
+        try {
+            $response = Http::withOptions([
+                'verify' => false,
+                'timeout' => 15,
+            ])->withCookies(
+                $request->cookies->all(),
+                $config['domain']
+            )->get($config['url'] . '/api/ecommerce/cart/');
+
+            $jsonData = $response->successful() ? $response->json() : [
+                'items' => [], 'total' => 0, 'subtotal' => 0, 'item_count' => 0,
+            ];
+
+            $jsonResponse = response()->json($jsonData);
+
+            return $this->attachDjangoCookies($response, $jsonResponse);
+
+        } catch (\Throwable $e) {
+            Log::error('Error fetching cart', ['message' => $e->getMessage()]);
+            return response()->json([
+                'items' => [], 'total' => 0, 'subtotal' => 0, 'item_count' => 0,
+            ]);
+        }
+    }
+
+   
     public function add(Request $request)
     {
         $request->validate([
             'product_id' => 'required|integer',
-            'quantity'   => 'required|integer|min:1',
+            'quantity' => 'required|integer|min:1',
         ]);
 
-        $response = $cart->add(
-            $request->product_id,
-            $request->quantity
-        );
+        $config = $this->getDjangoConfig();
 
-        if ($result) {
-            return redirect()->route('cart.view')->with('success', 'Item added to cart successfully!');
-        }
+        $csrfToken = $request->cookie('csrftoken'); 
 
-        return redirect()->back()->with('error', 'Failed to add item to cart. Please try again.');
-    }
+        try {
+            $response = Http::withOptions([
+                'verify' => false,
+                'timeout' => 15,
+            ])
+            ->withCookies($request->cookies->all(), $config['domain']) 
+            ->withHeaders([
+                'X-CSRFToken' => $csrfToken, 
+                'Referer' => $config['url']
+            ])
+            ->post($config['url'] . '/api/ecommerce/cart/items/', [
+                'product_id' => $request->product_id,
+                'quantity' => $request->quantity,
+            ]);
 
-    /**
-     * Update cart item quantity
-     */
-    public function update(Request $request, $itemId)
-    {
-        $request->validate([
-            'quantity' => 'required|integer|min:0'
-        ]);
+            if ($response->successful()) {
+                $jsonResponse = response()->json([
+                    'success' => true,
+                    'message' => 'Item added to cart',
+                    'cart' => $response->json(),
+                    'redirect' => route('cart.view'),
+                ]);
+                
+                return $this->attachDjangoCookies($response, $jsonResponse);
 
-        // If quantity is 0, remove the item
-        if ($request->quantity == 0) {
-            $removed = $this->service->removeItem($itemId);
-            
-            if ($removed) {
-                if ($request->expectsJson()) {
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Item removed from cart'
-                    ]);
-                }
-                return redirect()->back()->with('success', 'Item removed from cart.');
-            }
-            
-            if ($request->expectsJson()) {
+            } else {
+                $errorData = $response->json();
+                $errorMessage = $errorData['message'] ?? $errorData['detail'] ?? 'Failed to add item to cart';
+
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to remove item'
-                ], 400);
+                    'message' => $errorMessage,
+                    'debug_status' => $response->status() 
+                ], $response->status());
             }
-            return redirect()->back()->with('error', 'Failed to remove item.');
-        }
+        } catch (\Throwable $e) {
+            Log::error('Error adding to cart', [
+                'message' => $e->getMessage(),
+                'product_id' => $request->product_id,
+            ]);
 
-        // Update quantity
-        $result = $this->service->updateItem($itemId, $request->quantity);
-
-        if ($result) {
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Cart updated successfully'
-                ]);
-            }
-            return redirect()->back()->with('success', 'Cart updated successfully!');
-        }
-
-        if ($request->expectsJson()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update cart'
-            ], 400);
+                'message' => 'Error adding item to cart. Please try again.',
+            ], 500);
         }
-        return redirect()->back()->with('error', 'Failed to update cart.');
     }
 
-    /**
-     * Remove item from cart
-     */
-    public function remove($itemId)
+   
+    public function update(Request $request)
     {
-        $removed = $this->service->removeItem($itemId);
+        $request->validate([
+            'product_id' => 'required|integer',
+            'quantity' => 'required|integer|min:1',
+        ]);
 
-        if ($removed) {
-            return redirect()->back()->with('success', 'Item removed from cart.');
+        $config = $this->getDjangoConfig();
+        $csrfToken = $request->cookie('csrftoken');
+
+        try {
+            $response = Http::withOptions([
+                'verify' => false,
+                'timeout' => 15,
+            ])
+            ->withCookies($request->cookies->all(), $config['domain'])
+            ->withHeaders([
+                'X-CSRFToken' => $csrfToken, 
+                'Referer' => $config['url']
+            ])
+            ->patch($config['url'] . '/api/ecommerce/cart/items/', [
+                'product_id' => $request->product_id,
+                'quantity' => $request->quantity,
+            ]);
+
+            if ($response->successful()) {
+                $jsonResponse = response()->json([
+                    'success' => true,
+                    'message' => 'Cart updated',
+                    'cart' => $response->json(),
+                ]);
+                return $this->attachDjangoCookies($response, $jsonResponse);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => $response->json()['message'] ?? 'Failed to update cart',
+                ], $response->status());
+            }
+        } catch (\Throwable $e) {
+            Log::error('Error updating cart', ['message' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Error updating cart'], 500);
         }
-
-        return redirect()->back()->with('error', 'Failed to remove item.');
     }
 
-    /**
-     * Get cart count (for navbar badge)
-     */
-    public function count()
+    
+    public function remove(Request $request, $productId)
     {
-        $cartData = $this->service->getCart();
-        $count = isset($cartData['items']) ? count($cartData['items']) : 0;
-        
-        return response()->json(['count' => $count]);
-    }
+        $config = $this->getDjangoConfig();
+        $csrfToken = $request->cookie('csrftoken');
 
-    /**
-     * Clear cart
-     */
-    public function clear()
-    {
-        $cleared = $this->service->clearCart();
-        
-        if ($cleared) {
-            return redirect()->route('products')->with('success', 'Cart cleared successfully.');
+        try {
+            $response = Http::withOptions([
+                'verify' => false,
+                'timeout' => 15,
+            ])
+            ->withCookies($request->cookies->all(), $config['domain'])
+            ->withHeaders([
+                'X-CSRFToken' => $csrfToken, 
+                'Referer' => $config['url']
+            ])
+            ->delete($config['url'] . "/api/ecommerce/cart/items/{$productId}/");
+
+            if ($response->successful()) {
+                $jsonResponse = response()->json([
+                    'success' => true,
+                    'message' => 'Item removed from cart',
+                    'cart' => $response->json(),
+                ]);
+                return $this->attachDjangoCookies($response, $jsonResponse);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => $response->json()['message'] ?? 'Failed to remove item',
+                ], $response->status());
+            }
+        } catch (\Throwable $e) {
+            Log::error('Error removing from cart', ['message' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Error removing item from cart'], 500);
         }
-        
-        return redirect()->back()->with('error', 'Failed to clear cart.');
     }
 }

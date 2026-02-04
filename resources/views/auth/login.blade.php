@@ -118,9 +118,7 @@
                                         Remember me
                                     </label>
                                 </div>
-                                <a href="{{ route('password.request') }}" class="text-decoration-none" style="color: #2d6e4f; font-size: 14px; font-weight: 500;">
-                                    Forgot Password?
-                                </a>
+                                
                             </div>
                             
                             <!-- Sign In Button -->
