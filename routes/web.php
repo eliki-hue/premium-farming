@@ -68,8 +68,7 @@ Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
     
-    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
-        ->name('password.request');
+    
 });
 
 Route::middleware('auth')->group(function () {
@@ -114,7 +113,6 @@ Route::middleware('auth')->group(function () {
 
         Route::middleware('auth')->group(function () {
     // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     // Products
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -259,7 +257,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-    Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
 
 });
 

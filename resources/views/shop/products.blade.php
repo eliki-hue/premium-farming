@@ -1,11 +1,9 @@
-{{-- product.blade --}}
 @extends('layouts.app')
 
 @section('title', 'Our Products | Premium Farming Feeds')
 
 @section('content')
 
-<!-- ================= HERO SECTION ================= -->
 <section class="hero-section-products">
     <video autoplay muted loop playsinline class="hero-video">
         <source src="{{ asset('videos/kkk.mp4') }}" type="video/mp4">
@@ -78,27 +76,22 @@
                             @endif
 
                             <div class="mt-auto">
-                                @if(request()->hasCookie('access_token'))
-                                    <!-- User is authenticated via cookie -->
-                                    <form method="POST" action="{{ route('cart.add') }}" class="add-to-cart-form">
-                                        @csrf
-                                        <input type="hidden" name="product_id" value="{{ $product['id'] }}">
-                                        <input type="hidden" name="quantity" value="1">
-
-                                        <button type="submit" class="btn btn-success w-100">
-                                            <i class="bi bi-cart-plus me-2"></i> Add to Cart
-                                        </button>
-                                    </form>
-                                @else
-                                    <!-- User is not authenticated -->
-                                    <button 
-                                        class="btn btn-outline-success w-100 login-prompt-btn"
-                                        data-product-id="{{ $product['id'] }}"
-                                        data-product-name="{{ $product['name'] }}"
-                                    >
-                                        <i class="bi bi-cart-plus me-2"></i> Add to Cart
+                                @auth
+                                    {{--  Authenticated users can add to cart --}}
+                                    <button class="btn btn-success w-100 add-to-cart-btn" 
+                                            data-product-id="{{ $product['id'] }}"
+                                            data-product-name="{{ $product['name'] }}">
+                                        <i class="bi bi-cart-plus me-2"></i>
+                                        Add to Cart
                                     </button>
-                                @endif
+                                @else
+                                    {{-- Guests must login --}}
+                                    <a href="{{ route('login') }}?redirect={{ urlencode(request()->fullUrl()) }}" 
+                                       class="btn btn-outline-success w-100">
+                                        <i class="bi bi-lock me-2"></i>
+                                        Login to Purchase
+                                    </a>
+                                @endauth
                             </div>
                         </div>
                     </div>
@@ -113,38 +106,6 @@
     @endif
 </div>
 
-<!-- Login/Signup Modal -->
-<div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0">
-                <h5 class="modal-title fw-bold" id="authModalLabel">
-                    <i class="bi bi-lock-fill me-2 text-success"></i>Login Required
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center py-4">
-                <i class="bi bi-cart-x display-1 text-muted mb-3"></i>
-                <h5 class="mb-3">Please log in to add items to your cart</h5>
-                <p class="text-muted mb-4" id="productMessage"></p>
-                
-                <div class="d-grid gap-2">
-                    <a href="{{ route('login') }}" class="btn btn-success btn-lg">
-                        <i class="bi bi-box-arrow-in-right me-2"></i> Login
-                    </a>
-                    <a href="{{ route('register') }}" class="btn btn-outline-success btn-lg">
-                        <i class="bi bi-person-plus me-2"></i> Create Account
-                    </a>
-                </div>
-                
-                <p class="text-muted mt-3 mb-0 small">
-                    Create an account to enjoy a seamless shopping experience
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
-
 <style>
     /* Hero Section with Video */
     .hero-section-products {
@@ -157,57 +118,48 @@
         margin-top: 76px;
     }
 
-.hero-video {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: brightness(0.45);
-}
+    .hero-video {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.45);
+    }
 
-.hero-overlay {
-    position: relative;
-    z-index: 2;
-    padding: 90px 0;
-}
+    .hero-overlay {
+        position: relative;
+        z-index: 2;
+        padding: 90px 0;
+    }
 
-.hero-title {
-    font-size: 2.8rem;
-    font-weight: 800;
-}
+    .hero-title {
+        font-size: 2.8rem;
+        font-weight: 800;
+    }
 
-.hero-subtitle {
-    font-size: 1.2rem;
-}
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
 
-.product-card {
-    border-radius: 15px;
-    transition: 0.3s ease;
-}
+    .product-card {
+        border-radius: 15px;
+        transition: 0.3s ease;
+    }
 
-.product-card:hover {
-    transform: translateY(-5px);
-}
+    .product-card:hover {
+        transform: translateY(-5px);
+    }
 
-.card-img-top-container {
-    height: 200px;
-    overflow: hidden;
-}
+    .card-img-top-container {
+        height: 200px;
+        overflow: hidden;
+    }
 
-.card-img-top {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.price-tag {
-    font-size: 1.2rem;
-}
-
-.section-title {
-    font-weight: 700;
-    color: #2a6e3f;
-}
+    .card-img-top {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
     .price-tag {
         font-size: 1.3rem;
@@ -260,32 +212,8 @@
 
     .btn-outline-success:hover {
         background: #2a6e3f;
+        color: white;
         transform: translateY(-2px);
-    }
-
-    /* Loading state for forms */
-    .add-to-cart-form.loading button {
-        position: relative;
-        color: transparent;
-    }
-
-    .add-to-cart-form.loading button:after {
-        content: "";
-        position: absolute;
-        width: 16px;
-        height: 16px;
-        top: 50%;
-        left: 50%;
-        margin-left: -8px;
-        margin-top: -8px;
-        border: 2px solid #ffffff;
-        border-radius: 50%;
-        border-top-color: transparent;
-        animation: spinner 0.6s linear infinite;
-    }
-
-    @keyframes spinner {
-        to {transform: rotate(360deg);}
     }
 
     /* Responsive */
@@ -331,33 +259,87 @@
     }
 </style>
 
+@endsection
+
+@push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Handle login prompt buttons
-    const loginPromptButtons = document.querySelectorAll('.login-prompt-btn');
-    const authModal = new bootstrap.Modal(document.getElementById('authModal'));
-    const productMessage = document.getElementById('productMessage');
+(function() {
+    'use strict';
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
     
-    loginPromptButtons.forEach(button => {
-        button.addEventListener('click', function() {
+    document.querySelectorAll('.add-to-cart-btn').forEach(function(btn) {
+        btn.addEventListener('click', async function() {
+            const productId = this.getAttribute('data-product-id');
             const productName = this.getAttribute('data-product-name');
-            productMessage.textContent = `You're trying to add "${productName}" to your cart.`;
-            authModal.show();
+            
+            // Show loading state
+            const originalHTML = this.innerHTML;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Adding...';
+            this.disabled = true;
+
+            try {
+                const response = await fetch('/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        product_id: productId,
+                        quantity: 1
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    this.innerHTML = '<i class="bi bi-check me-2"></i>Added!';
+                    this.classList.remove('btn-success');
+                    this.classList.add('btn-outline-success');
+                    
+                    if (window.showCartNotification) {
+                        window.showCartNotification(`${productName} added to cart!`, 'success');
+                    }
+                    
+                    if (window.refreshCart) {
+                        window.refreshCart();
+                    }
+                    
+                    setTimeout(() => {
+                        window.location.href = data.redirect || '{{ route("cart.view") }}';
+                    }, 1000);
+                    
+                } else if (response.status === 401) {
+                    const currentUrl = encodeURIComponent(window.location.href);
+                    window.location.href = `/login?redirect=${currentUrl}`;
+                } else {
+                    showError(data.message || 'Failed to add to cart');
+                    this.innerHTML = originalHTML;
+                    this.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error adding to cart:', error);
+                showError('Error adding to cart. Please try again.');
+                this.innerHTML = originalHTML;
+                this.disabled = false;
+            }
         });
     });
 
-    // Handle add to cart forms with loading state
-    const addToCartForms = document.querySelectorAll('.add-to-cart-form');
-    
-    addToCartForms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            const button = this.querySelector('button[type="submit"]');
-            button.disabled = true;
-            this.classList.add('loading');
-        });
-    });
+    function showError(message) {
+        const toast = document.createElement('div');
+        toast.className = 'alert alert-danger position-fixed top-0 end-0 m-3 shadow-lg';
+        toast.style.zIndex = '9999';
+        toast.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>' + message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
 
-    // Auto-dismiss alerts after 5 seconds
     setTimeout(function() {
         const alerts = document.querySelectorAll('.alert');
         alerts.forEach(alert => {
@@ -365,7 +347,6 @@ document.addEventListener('DOMContentLoaded', function() {
             bsAlert.close();
         });
     }, 5000);
-});
+})();
 </script>
-
-@endsection
+@endpush
