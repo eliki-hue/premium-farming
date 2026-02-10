@@ -165,7 +165,7 @@
                 <!-- Login Link -->
                 <div class="auth-footer">
                     <p>Already have an account? 
-                        <a href="{{ route('login') }}" class="login-link">
+                    <a href="/login" class="login-link">
                             <i class="bi bi-box-arrow-in-right me-1"></i>
                             Sign in here
                         </a>

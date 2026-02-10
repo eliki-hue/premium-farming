@@ -3,13 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
@@ -23,28 +19,36 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
+     * Handle registration using Django ONLY
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $request->validate([
-            'username' => ['required', 'string', 'max:255', 'unique:users,name'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'username' => 'required|string',
+            'email'    => 'required|email',
+            'password' => 'required|confirmed',
         ]);
 
-        $user = User::create([
-            'name' => $request->username,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        $response = Http::post(
+            config('services.django_api.url') . '/api/auth/customer/signup/',
+            [
+                'username' => $request->username,
+                'email'    => $request->email,
+                'password' => $request->password,
+            ]
+        );
 
-        event(new Registered($user));
+        if ($response->failed()) {
+            Log::error('Django signup failed', [
+                'status' => $response->status(),
+                'body'   => $response->body(),
+            ]);
 
-        Auth::login($user);
+            return back()->withErrors([
+                'api' => $response->body(), // 👈 show real Django error
+            ]);
+        }
 
-        return redirect(route('products', absolute: false));
+        return redirect()->route('login');
     }
 }

@@ -37,6 +37,8 @@ class Kernel extends HttpKernel
                     \App\Http\Middleware\SyncDjangoAuth::class,
              \App\Http\Middleware\DjangoEcommerceService::class,
 
+                     \App\Http\Middleware\CheckDjangoAuth::class, // Add this line
+
 
         ],
 

@@ -62,7 +62,27 @@
                         <!-- Login Form -->
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
-                            
+                            <!-- Username Field -->
+<div class="mb-3">
+    <label for="username" class="form-label fw-semibold" style="color: #1a1a1a; font-size: 14px;">
+        <i class="bi bi-person me-1"></i> Username
+    </label>
+    <input 
+        type="text" 
+        id="username"
+        name="username" 
+        class="form-control @error('username') is-invalid @enderror" 
+        placeholder="Enter your username"
+        value="{{ old('username') }}"
+        required
+        style="padding: 12px 16px; border-radius: 8px; border: 1px solid #e0e0e0; background-color: #fafafa;">
+    @error('username')
+        <div class="invalid-feedback">
+            {{ $message }}
+        </div>
+    @enderror
+</div>
+
                             <!-- Email Field -->
                             <div class="mb-3">
                                 <label for="email" class="form-label fw-semibold" style="color: #1a1a1a; font-size: 14px;">
@@ -144,9 +164,11 @@
                             <p class="mb-2" style="color: #6b6b6b; font-size: 14px;">
                                 New to Premium Farming Feeds?
                             </p>
-                            <a href="{{ route('register') }}" class="btn btn-outline-success w-100" style="border-radius: 8px; border-color: #2d6e4f; color: #2d6e4f; font-weight: 500;">
+                           <a href="{{ env('DJANGO_API_URL') }}/api/auth/customer/signup/" 
+                            class="btn btn-outline-success w-100">
                                 Create Account
                             </a>
+
                         </div>
 
                         <!-- Company Footer -->

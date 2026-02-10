@@ -21,7 +21,6 @@
         >
 
         
-    </div>
 
     {{-- BODY --}}
     <h5 class="font-bold text-lg mb-1">{{ $name }}</h5>

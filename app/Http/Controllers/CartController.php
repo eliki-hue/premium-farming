@@ -4,255 +4,183 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class CartController extends Controller
 {
-   
-    private function getDjangoConfig()
+    protected $apiUrl;
+
+    public function __construct()
     {
-        return [
-            'url' => config('services.django.url'),
-            'domain' => config('services.django.domain', parse_url(config('services.django.url'), PHP_URL_HOST)),
-        ];
+        $this->apiUrl = config('services.django_api.url', 'http://127.0.0.1:8000');
     }
 
-
-    private function attachDjangoCookies($djangoResponse, $laravelResponse)
+    // Show cart
+    public function view(Request $request)
     {
-        $cookies = $djangoResponse->cookies();
+        $token = $this->getToken();
         
-        foreach ($cookies as $cookie) {
-            $laravelResponse->withCookie(cookie(
-                $cookie->getName(),
-                $cookie->getValue(),
-                $cookie->getExpiresTime() ? ($cookie->getExpiresTime() - time()) / 60 : 60, 
-                $cookie->getPath(),
-                $cookie->getDomain(),
-                $cookie->getSecure(),
-                $cookie->getHttpOnly(),
-                false, 
-                $cookie->getSameSite()
-            ));
+        if (!$token) {
+            return redirect('/login')->with('error', 'Please login to view your cart.');
         }
-        
-        return $laravelResponse;
-    }
-
-   
-    public function index(Request $request)
-    {
-        $config = $this->getDjangoConfig();
 
         try {
-            $response = Http::withOptions([
-                'verify' => false,
-                'timeout' => 15,
-            ])->withCookies(
-                $request->cookies->all(),
-                $config['domain']
-            )->get($config['url'] . '/api/ecommerce/cart/');
+            // Verify token with Django
+            $userResponse = Http::withToken($token)->get($this->apiUrl . '/api/auth/me/');
+            
+            if ($userResponse->status() === 401) {
+                // Token expired or invalid
+                $this->clearToken();
+                return redirect('/login')->with('error', 'Session expired. Please login again.');
+            }
 
-            if ($response->successful()) {
-                $cart = $response->json();
-            } else {
-                $cart = [
-                    'items' => [],
-                    'total' => 0,
-                    'subtotal' => 0,
-                    'item_count' => 0,
-                ];
-                Log::warning('Failed to fetch cart from Django', [
-                    'status' => $response->status(),
-                    'body' => $response->body(),
+            // Get cart items
+            $cartResponse = Http::withToken($token)->get($this->apiUrl . '/cart/');
+            
+            if (!$cartResponse->successful()) {
+                return view('shop.cart', [
+                    'cart' => [],
+                    'error' => 'Unable to fetch cart items.'
                 ]);
             }
-            
-            $viewResponse = response()->view('shop.cart', ['cart' => $cart]);
 
-            return $this->attachDjangoCookies($response, $viewResponse);
+            $cart = $cartResponse->json();
+            return view('shop.cart', compact('cart'));
 
-        } catch (\Throwable $e) {
-            Log::error('Error fetching cart from Django', [
-                'message' => $e->getMessage(),
-            ]);
-            
-            return view('shop.cart', ['cart' => [
-                'items' => [], 'total' => 0, 'subtotal' => 0, 'item_count' => 0
-            ]]);
-        }
-    }
-
-   
-    public function getCart(Request $request)
-    {
-        $config = $this->getDjangoConfig();
-
-        try {
-            $response = Http::withOptions([
-                'verify' => false,
-                'timeout' => 15,
-            ])->withCookies(
-                $request->cookies->all(),
-                $config['domain']
-            )->get($config['url'] . '/api/ecommerce/cart/');
-
-            $jsonData = $response->successful() ? $response->json() : [
-                'items' => [], 'total' => 0, 'subtotal' => 0, 'item_count' => 0,
-            ];
-
-            $jsonResponse = response()->json($jsonData);
-
-            return $this->attachDjangoCookies($response, $jsonResponse);
-
-        } catch (\Throwable $e) {
-            Log::error('Error fetching cart', ['message' => $e->getMessage()]);
-            return response()->json([
-                'items' => [], 'total' => 0, 'subtotal' => 0, 'item_count' => 0,
+        } catch (\Exception $e) {
+            return view('shop.cart', [
+                'cart' => [],
+                'error' => 'Unable to connect to server. Please try again.'
             ]);
         }
     }
 
-   
+    // Add item to cart
     public function add(Request $request)
     {
+        $token = $this->getToken();
+        
+        if (!$token) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please login to add items to cart.',
+                'redirect' => url('/login')
+            ], 401);
+        }
+
         $request->validate([
-            'product_id' => 'required|integer',
-            'quantity' => 'required|integer|min:1',
+            'id' => 'required|integer',
+            'name' => 'required|string',
+            'price' => 'required|numeric',
+            'quantity' => 'nullable|integer|min:1',
         ]);
 
-        $config = $this->getDjangoConfig();
-
-        $csrfToken = $request->cookie('csrftoken'); 
-
         try {
-            $response = Http::withOptions([
-                'verify' => false,
-                'timeout' => 15,
-            ])
-            ->withCookies($request->cookies->all(), $config['domain']) 
-            ->withHeaders([
-                'X-CSRFToken' => $csrfToken, 
-                'Referer' => $config['url']
-            ])
-            ->post($config['url'] . '/api/ecommerce/cart/items/', [
-                'product_id' => $request->product_id,
-                'quantity' => $request->quantity,
+            // First verify the token is still valid
+            $verifyResponse = Http::withToken($token)->get($this->apiUrl . '/api/auth/me/');
+            
+            if ($verifyResponse->status() === 401) {
+                $this->clearToken();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Session expired. Please login again.',
+                    'redirect' => url('/login')
+                ], 401);
+            }
+
+            // Add item to cart via Django API
+            $response = Http::withToken($token)->post($this->apiUrl . '/cart/items/', [
+                'product_id' => $request->id,
+                'quantity' => $request->quantity ?? 1,
             ]);
 
             if ($response->successful()) {
-                $jsonResponse = response()->json([
-                    'success' => true,
-                    'message' => 'Item added to cart',
-                    'cart' => $response->json(),
-                    'redirect' => route('cart.view'),
-                ]);
-                
-                return $this->attachDjangoCookies($response, $jsonResponse);
-
-            } else {
-                $errorData = $response->json();
-                $errorMessage = $errorData['message'] ?? $errorData['detail'] ?? 'Failed to add item to cart';
-
                 return response()->json([
-                    'success' => false,
-                    'message' => $errorMessage,
-                    'debug_status' => $response->status() 
-                ], $response->status());
+                    'success' => true,
+                    'message' => 'Product added to cart successfully!',
+                    'cart_count' => $this->getCartCount($token)
+                ]);
             }
-        } catch (\Throwable $e) {
-            Log::error('Error adding to cart', [
-                'message' => $e->getMessage(),
-                'product_id' => $request->product_id,
-            ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Error adding item to cart. Please try again.',
+                'message' => 'Failed to add product to cart.'
+            ], 400);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unable to connect to server.'
             ], 500);
         }
     }
 
-   
-    public function update(Request $request)
+    // Get cart count for badge
+    public function count(Request $request)
     {
-        $request->validate([
-            'product_id' => 'required|integer',
-            'quantity' => 'required|integer|min:1',
-        ]);
-
-        $config = $this->getDjangoConfig();
-        $csrfToken = $request->cookie('csrftoken');
+        $token = $this->getToken();
+        
+        if (!$token) {
+            return response()->json([
+                'success' => true,
+                'count' => 0,
+                'total' => 0
+            ]);
+        }
 
         try {
-            $response = Http::withOptions([
-                'verify' => false,
-                'timeout' => 15,
-            ])
-            ->withCookies($request->cookies->all(), $config['domain'])
-            ->withHeaders([
-                'X-CSRFToken' => $csrfToken, 
-                'Referer' => $config['url']
-            ])
-            ->patch($config['url'] . '/api/ecommerce/cart/items/', [
-                'product_id' => $request->product_id,
-                'quantity' => $request->quantity,
-            ]);
-
-            if ($response->successful()) {
-                $jsonResponse = response()->json([
-                    'success' => true,
-                    'message' => 'Cart updated',
-                    'cart' => $response->json(),
-                ]);
-                return $this->attachDjangoCookies($response, $jsonResponse);
-            } else {
+            $cartResponse = Http::withToken($token)->get($this->apiUrl . '/cart/');
+            
+            if ($cartResponse->successful()) {
+                $cart = $cartResponse->json();
+                $count = count($cart['items'] ?? []);
+                $total = $cart['subtotal'] ?? 0;
+                
                 return response()->json([
-                    'success' => false,
-                    'message' => $response->json()['message'] ?? 'Failed to update cart',
-                ], $response->status());
+                    'success' => true,
+                    'count' => $count,
+                    'total' => $total
+                ]);
             }
-        } catch (\Throwable $e) {
-            Log::error('Error updating cart', ['message' => $e->getMessage()]);
-            return response()->json(['success' => false, 'message' => 'Error updating cart'], 500);
+        } catch (\Exception $e) {
+            // Silently fail
         }
+
+        return response()->json([
+            'success' => true,
+            'count' => 0,
+            'total' => 0
+        ]);
     }
 
-    
-    public function remove(Request $request, $productId)
+    // Helper: Get token from session or cookie
+    private function getToken()
     {
-        $config = $this->getDjangoConfig();
-        $csrfToken = $request->cookie('csrftoken');
+        return session('django_token') ?? Cookie::get('django_token');
+    }
 
+    // Helper: Clear token
+    private function clearToken()
+    {
+        Session::forget('django_token');
+        Cookie::queue(Cookie::forget('django_token'));
+    }
+
+    // Helper: Get cart count
+    private function getCartCount($token)
+    {
         try {
-            $response = Http::withOptions([
-                'verify' => false,
-                'timeout' => 15,
-            ])
-            ->withCookies($request->cookies->all(), $config['domain'])
-            ->withHeaders([
-                'X-CSRFToken' => $csrfToken, 
-                'Referer' => $config['url']
-            ])
-            ->delete($config['url'] . "/api/ecommerce/cart/items/{$productId}/");
-
-            if ($response->successful()) {
-                $jsonResponse = response()->json([
-                    'success' => true,
-                    'message' => 'Item removed from cart',
-                    'cart' => $response->json(),
-                ]);
-                return $this->attachDjangoCookies($response, $jsonResponse);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => $response->json()['message'] ?? 'Failed to remove item',
-                ], $response->status());
+            $cartResponse = Http::withToken($token)->get($this->apiUrl . '/cart/');
+            if ($cartResponse->successful()) {
+                $cart = $cartResponse->json();
+                return count($cart['items'] ?? []);
             }
-        } catch (\Throwable $e) {
-            Log::error('Error removing from cart', ['message' => $e->getMessage()]);
-            return response()->json(['success' => false, 'message' => 'Error removing item from cart'], 500);
+        } catch (\Exception $e) {
+            // Ignore
         }
+        return 0;
     }
 }

@@ -73,7 +73,7 @@
                                     <i class="bi bi-telephone me-2"></i>Phone Numbers
                                 </h5>
                                 @foreach([
-                                    ['number' => '0786 571 173', 'label' => 'Customer Service'],
+                                    ['number' => '0700 680 017', 'label' => 'Customer Service'],
                                     ['number' => '0708 488 688', 'label' => 'Sales & Orders'],
                                     ['number' => '0711 633 900', 'label' => 'Technical Support']
                                 ] as $contact)
