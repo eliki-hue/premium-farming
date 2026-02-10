@@ -63,25 +63,25 @@
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
                             <!-- Username Field -->
-<div class="mb-3">
-    <label for="username" class="form-label fw-semibold" style="color: #1a1a1a; font-size: 14px;">
-        <i class="bi bi-person me-1"></i> Username
-    </label>
-    <input 
-        type="text" 
-        id="username"
-        name="username" 
-        class="form-control @error('username') is-invalid @enderror" 
-        placeholder="Enter your username"
-        value="{{ old('username') }}"
-        required
-        style="padding: 12px 16px; border-radius: 8px; border: 1px solid #e0e0e0; background-color: #fafafa;">
-    @error('username')
-        <div class="invalid-feedback">
-            {{ $message }}
-        </div>
-    @enderror
-</div>
+                            <div class="mb-3">
+                                <label for="username" class="form-label fw-semibold" style="color: #1a1a1a; font-size: 14px;">
+                                    <i class="bi bi-person me-1"></i> Username
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="username"
+                                    name="username" 
+                                    class="form-control @error('username') is-invalid @enderror" 
+                                    placeholder="Enter your username"
+                                    value="{{ old('username') }}"
+                                    required
+                                    style="padding: 12px 16px; border-radius: 8px; border: 1px solid #e0e0e0; background-color: #fafafa;">
+                                @error('username')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
 
                             <!-- Email Field -->
                             <div class="mb-3">

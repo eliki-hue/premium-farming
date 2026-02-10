@@ -81,6 +81,7 @@ Route::prefix('cart')->group(function () {
     Route::post('/increment', [CartController::class, 'increment'])->name('cart.increment');
     Route::post('/decrement', [CartController::class, 'decrement'])->name('cart.decrement');
     Route::post('/remove', [CartController::class, 'remove'])->name('cart.remove');
+    Route::get('/load', [CartController::class, 'load']);
     Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear');
     Route::get('/count', [CartController::class, 'count'])->name('cart.count');
     Route::get('/info', [CartController::class, 'info'])->name('cart.info');
@@ -89,6 +90,7 @@ Route::prefix('cart')->group(function () {
     Route::post('/quick-add', [CartController::class, 'quickAdd'])->name('cart.quick.add');
     Route::post('/add-multiple', [CartController::class, 'addMultiple'])->name('cart.add.multiple');
     Route::get('/receipt/{orderId}/print', [CartController::class, 'printReceipt'])->name('receipt.print');
+    Route::post('/checkout', [CartController::class, 'checkout']);
 });
 
 /*

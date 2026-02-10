@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
@@ -22,33 +22,27 @@ class RegisteredUserController extends Controller
      * Handle registration using Django ONLY
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'username' => 'required|string',
-            'email'    => 'required|email',
-            'password' => 'required|confirmed',
-        ]);
+{
+    $request->validate([
+        'username' => 'required|string',
+        'email' => 'required|email',
+        'password' => 'required|confirmed',
+    ]);
 
-        $response = Http::post(
-            config('services.django_api.url') . '/api/auth/customer/signup/',
-            [
-                'username' => $request->username,
-                'email'    => $request->email,
-                'password' => $request->password,
-            ]
-        );
+    $response = Http::post(
+        config('services.django_api.url') . '/api/auth/customer/signup/',
+        [
+            'username' => $request->username,
+            'email'    => $request->email,
+            'password' => $request->password,
+        ]
+    );
 
-        if ($response->failed()) {
-            Log::error('Django signup failed', [
-                'status' => $response->status(),
-                'body'   => $response->body(),
-            ]);
-
-            return back()->withErrors([
-                'api' => $response->body(), // 👈 show real Django error
-            ]);
-        }
-
-        return redirect()->route('login');
+    if ($response->failed()) {
+        return back()->withErrors(['email' => 'Registration failed']);
     }
+
+    return redirect()->route('/login');
+}
+
 }

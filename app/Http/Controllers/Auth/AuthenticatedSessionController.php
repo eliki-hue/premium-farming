@@ -4,10 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Http;
+use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -20,41 +19,34 @@ class AuthenticatedSessionController extends Controller
         return view('auth.login');
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'username' => 'required|string',
-            'email'    => 'required|email',
-            'password' => 'required',
-        ]);
+   public function store(Request $request)
+{
+    $request->validate([
+        'username' => 'required|string',
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
 
-        $response = Http::post(
-            config('services.django_api.url') . '/api/auth/customer/login/',
-            [
-                'username' => $request->username,
-                'email'    => $request->email,
-                'password' => $request->password,
-            ]
-        );
+    $response = Http::post(
+        config('services.django_api.url') . '/api/auth/customer/login/',
+        [
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => $request->password,
+        ]
+    );
 
-        if ($response->failed()) {
-            Log::error('Django login failed', [
-                'status' => $response->status(),
-                'body'   => $response->body(),
-            ]);
-
-            return back()->withErrors([
-                'api' => $response->body(), // 👈 show real Django error
-            ]);
-        }
-
-        $data = $response->json();
-
-        // Save token from Django
-        session(['django_token' => $data['access'] ?? $data['token'] ?? null]);
-
-        return redirect()->intended('/products');
+    if ($response->failed()) {
+        return back()->withErrors(['email' => 'Invalid credentials']);
     }
+
+    $data = $response->json();
+
+    // Save token from Django
+    session(['django_token' => $data['access'] ?? $data['token']]);
+
+    return redirect('/products');
+}
 
     public function destroy(Request $request): RedirectResponse
     {
