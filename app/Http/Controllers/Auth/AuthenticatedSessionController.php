@@ -45,7 +45,7 @@ class AuthenticatedSessionController extends Controller
     // Save token from Django
     session(['django_token' => $data['access'] ?? $data['token']]);
 
-    return redirect('/products');
+    return redirect('/cart');
 }
 
     public function destroy(Request $request): RedirectResponse

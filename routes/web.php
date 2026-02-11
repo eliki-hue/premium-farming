@@ -34,6 +34,13 @@ Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.
 Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews');
 Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 
+Route::get('/cart', [CartController::class, 'view']);
+Route::get('/cart/load', [CartController::class, 'load']);
+Route::post('/cart/add', [CartController::class, 'add']);     // 👈 important
+Route::patch('/cart/update', [CartController::class, 'update']);
+Route::delete('/cart/remove', [CartController::class, 'remove']);
+Route::post('/cart/checkout', [CartController::class, 'checkout']);
+
 // Authentication (Django login)
 // Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 // Route::post('/register', [RegisteredUserController::class, 'store']);
@@ -73,25 +80,25 @@ Route::get('/categories/{category}', [CategoryController::class, 'show'])->name(
 |--------------------------------------------------------------------------
 | CART ROUTES
 |--------------------------------------------------------------------------
-*/
-Route::prefix('cart')->group(function () {
-    Route::get('/', [CartController::class, 'view'])->name('cart.view');
-    Route::post('/add', [CartController::class, 'add'])->name('cart.add');
-    Route::post('/update', [CartController::class, 'update'])->name('cart.update');
-    Route::post('/increment', [CartController::class, 'increment'])->name('cart.increment');
-    Route::post('/decrement', [CartController::class, 'decrement'])->name('cart.decrement');
-    Route::post('/remove', [CartController::class, 'remove'])->name('cart.remove');
-    Route::get('/load', [CartController::class, 'load']);
-    Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear');
-    Route::get('/count', [CartController::class, 'count'])->name('cart.count');
-    Route::get('/info', [CartController::class, 'info'])->name('cart.info');
-    Route::patch('/update/{id}', [CartController::class, 'update'])->name('cart.update');
-    Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
-    Route::post('/quick-add', [CartController::class, 'quickAdd'])->name('cart.quick.add');
-    Route::post('/add-multiple', [CartController::class, 'addMultiple'])->name('cart.add.multiple');
-    Route::get('/receipt/{orderId}/print', [CartController::class, 'printReceipt'])->name('receipt.print');
-    Route::post('/checkout', [CartController::class, 'checkout']);
-});
+// */
+// Route::prefix('cart')->group(function () {
+//     Route::get('/', [CartController::class, 'view'])->name('cart.view');
+//     Route::post('/add', [CartController::class, 'add'])->name('cart.add');
+//     Route::post('/update', [CartController::class, 'update'])->name('cart.update');
+//     Route::post('/increment', [CartController::class, 'increment'])->name('cart.increment');
+//     Route::post('/decrement', [CartController::class, 'decrement'])->name('cart.decrement');
+//     Route::post('/remove', [CartController::class, 'remove'])->name('cart.remove');
+//     Route::get('/load', [CartController::class, 'load']);
+//     Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear');
+//     Route::get('/count', [CartController::class, 'count'])->name('cart.count');
+//     Route::get('/info', [CartController::class, 'info'])->name('cart.info');
+//     Route::patch('/update/{id}', [CartController::class, 'update'])->name('cart.update');
+//     Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+//     Route::post('/quick-add', [CartController::class, 'quickAdd'])->name('cart.quick.add');
+//     Route::post('/add-multiple', [CartController::class, 'addMultiple'])->name('cart.add.multiple');
+//     Route::get('/receipt/{orderId}/print', [CartController::class, 'printReceipt'])->name('receipt.print');
+//     Route::post('/checkout', [CartController::class, 'checkout']);
+// });
 
 /*
 |--------------------------------------------------------------------------
@@ -121,24 +128,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/my-profile', fn() => view('profile-page'))->name('my.profile');
 
     // Auth cart & checkout (logged-in users)
-    Route::prefix('cart')->group(function () {
-        Route::post('/hold', [CartController::class, 'hold'])->name('cart.hold');
-        Route::post('/complete', [CartController::class, 'complete'])->name('cart.complete');
-        Route::post('/mpesa', [CartController::class, 'mpesa'])->name('cart.mpesa');
-        Route::post('/apply-discount', [CartController::class, 'applyDiscount'])->name('cart.discount.apply');
-        Route::post('/remove-discount', [CartController::class, 'removeDiscount'])->name('cart.discount.remove');
-        Route::get('/my-cart', [CartController::class, 'getUserCart'])->name('cart.user');
-    });
+    // Route::prefix('cart')->group(function () {
+    //     Route::post('/hold', [CartController::class, 'hold'])->name('cart.hold');
+    //     Route::post('/complete', [CartController::class, 'complete'])->name('cart.complete');
+    //     Route::post('/mpesa', [CartController::class, 'mpesa'])->name('cart.mpesa');
+    //     Route::post('/apply-discount', [CartController::class, 'applyDiscount'])->name('cart.discount.apply');
+    //     Route::post('/remove-discount', [CartController::class, 'removeDiscount'])->name('cart.discount.remove');
+    //     Route::get('/my-cart', [CartController::class, 'getUserCart'])->name('cart.user');
+    // });
 
-    Route::prefix('checkout')->group(function () {
-        Route::get('/orders', [CheckoutController::class, 'orders'])->name('checkout.orders');
-        Route::get('/orders/{orderId}', [CheckoutController::class, 'viewOrder'])->name('checkout.order.view');
-        Route::get('/mpesa/{order}', [CheckoutController::class, 'showMpesaInstructions'])->name('checkout.mpesa');
-        Route::get('/cheque/{order}', [CheckoutController::class, 'showChequeInstructions'])->name('checkout.cheque');
-        Route::get('/bank-transfer/{order}', [CheckoutController::class, 'showBankTransferInstructions'])->name('checkout.bank-transfer');
-        Route::post('/confirm-payment/{orderId}', [CheckoutController::class, 'confirmPayment'])->name('checkout.confirm.payment');
-        Route::get('/generate-receipt/{orderId}', [CheckoutController::class, 'generateReceipt'])->name('checkout.generate.receipt');
-        Route::get('/addresses', fn() => view('checkout.addresses'))->name('checkout.addresses');
-        Route::post('/addresses', [CheckoutController::class, 'saveAddress'])->name('checkout.save.address');
-    });
+    // Route::prefix('checkout')->group(function () {
+    //     Route::get('/orders', [CheckoutController::class, 'orders'])->name('checkout.orders');
+    //     Route::get('/orders/{orderId}', [CheckoutController::class, 'viewOrder'])->name('checkout.order.view');
+    //     Route::get('/mpesa/{order}', [CheckoutController::class, 'showMpesaInstructions'])->name('checkout.mpesa');
+    //     Route::get('/cheque/{order}', [CheckoutController::class, 'showChequeInstructions'])->name('checkout.cheque');
+    //     Route::get('/bank-transfer/{order}', [CheckoutController::class, 'showBankTransferInstructions'])->name('checkout.bank-transfer');
+    //     Route::post('/confirm-payment/{orderId}', [CheckoutController::class, 'confirmPayment'])->name('checkout.confirm.payment');
+    //     Route::get('/generate-receipt/{orderId}', [CheckoutController::class, 'generateReceipt'])->name('checkout.generate.receipt');
+    //     Route::get('/addresses', fn() => view('checkout.addresses'))->name('checkout.addresses');
+    //     Route::post('/addresses', [CheckoutController::class, 'saveAddress'])->name('checkout.save.address');
+    // });
 });

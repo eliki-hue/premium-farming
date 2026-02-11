@@ -101,7 +101,8 @@
                                 </div>
                                 
                                 @if($django_user)
-                                <button type="button" class="btn btn-premium add-to-cart-btn" 
+                                <button onclick="addToCart({{ $product['id'] }})" 
+                                        class="btn btn-premium add-to-cart-btn"
                                         data-id="{{ $product['id'] }}"
                                         data-name="{{ $product['name'] }}"
                                         data-price="{{ $product['price'] }}"
@@ -201,7 +202,8 @@
                                 </div>
                                 
                                 @if($django_user)
-                                <button type="button" class="btn btn-premium add-to-cart-btn" 
+                                <button onclick="addToCart({{ $product['id'] }})" 
+                                        class="btn btn-premium add-to-cart-btn"
                                         data-id="{{ $product['id'] }}"
                                         data-name="{{ $product['name'] }}"
                                         data-price="{{ $product['price'] }}"
@@ -298,7 +300,8 @@
                                 </div>
                                 
                                 @if($django_user)
-                                <button type="button" class="btn btn-premium add-to-cart-btn" 
+                                <button onclick="addToCart({{ $product['id'] }})" 
+                                        class="btn btn-premium add-to-cart-btn"
                                         data-id="{{ $product['id'] }}"
                                         data-name="{{ $product['name'] }}"
                                         data-price="{{ $product['price'] }}"
@@ -395,7 +398,8 @@
                                 </div>
                                 
                                 @if($django_user)
-                                <button type="button" class="btn btn-premium add-to-cart-btn" 
+                                <button onclick="addToCart({{ $product['id'] }})" 
+                                        class="btn btn-premium add-to-cart-btn"
                                         data-id="{{ $product['id'] }}"
                                         data-name="{{ $product['name'] }}"
                                         data-price="{{ $product['price'] }}"
@@ -671,115 +675,108 @@ function hideAlert() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    // CSRF token for Laravel
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+// Global addToCart function
+async function addToCart(productId) {
     const djangoToken = "{{ $django_token ?? '' }}";
     const djangoApiUrl = "{{ config('services.django_api.url', 'http://127.0.0.1:8000') }}";
+    const isLoggedIn = djangoToken && djangoToken.length > 10;
     
-    // Check if user is logged in
-    const isLoggedIn = djangoToken && djangoToken.length > 10; // Token should be reasonably long
-    
-    console.log('User logged in:', isLoggedIn, 'Token length:', djangoToken?.length);
-    
-    // Handle Add to Cart button clicks for logged in users
-    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-        button.addEventListener('click', async function(e) {
-            e.preventDefault();
-            
-            if (!isLoggedIn) {
-                showAlert('Authentication Required', 'Please login to add items to cart.', 'warning');
-                // Redirect to login page
-                window.location.href = "{{ route('login') }}";
-                return;
-            }
-            
-            const productId = this.getAttribute('data-id');
-            const productName = this.getAttribute('data-name');
-            const productPrice = this.getAttribute('data-price');
-            const productImage = this.getAttribute('data-image');
-            
-            // Show loading
-            const originalHTML = this.innerHTML;
-            this.innerHTML = '<i class="bi bi-hourglass-split"></i>';
-            this.disabled = true;
-            
-            try {
-                // Direct API call to Django for cart
-                const response = await fetch(`${djangoApiUrl}/cart/items/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${djangoToken}`,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        product_id: parseInt(productId),
-                        quantity: 1
-                    })
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    showAlert('Success', `${productName} added to cart!`, 'success');
-                    updateCartBadge();
-                } else if (response.status === 401) {
-                    showAlert('Session Expired', 'Please login again.', 'warning');
-                    // Redirect to logout to clear session
-                    setTimeout(() => {
-                        window.location.href = '{{ route("logout") }}';
-                    }, 1500);
-                } else {
-                    const data = await response.json();
-                    showAlert('Error', data.detail || data.message || 'Failed to add to cart', 'error');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showAlert('Error', 'Network error. Please try again.', 'error');
-            } finally {
-                // Restore button
-                this.innerHTML = originalHTML;
-                this.disabled = false;
-            }
-        });
-    });
-    
-    // Update cart badge
-    async function updateCartBadge() {
-        const cartBadge = document.querySelector('.cart-badge');
-        if (!cartBadge || !isLoggedIn) {
-            if (cartBadge) cartBadge.style.display = 'none';
-            return;
-        }
-        
-        try {
-            const response = await fetch(`${djangoApiUrl}/cart/`, {
-                headers: {
-                    'Authorization': `Bearer ${djangoToken}`,
-                    'Accept': 'application/json'
-                }
-            });
-            
-            if (response.ok) {
-                const cart = await response.json();
-                const itemCount = cart.items ? cart.items.length : 0;
-                
-                if (itemCount > 0) {
-                    cartBadge.textContent = itemCount;
-                    cartBadge.style.display = 'flex';
-                } else {
-                    cartBadge.style.display = 'none';
-                }
-            } else if (response.status === 401) {
-                cartBadge.style.display = 'none';
-            }
-        } catch (error) {
-            console.error('Error updating cart badge:', error);
-            const cartBadge = document.querySelector('.cart-badge');
-            if (cartBadge) cartBadge.style.display = 'none';
-        }
+    if (!isLoggedIn) {
+        showAlert('Authentication Required', 'Please login to add items to cart.', 'warning');
+        window.location.href = "{{ route('login') }}";
+        return;
     }
     
+    // Find the clicked button to get product details
+    const clickedButton = event.currentTarget;
+    const productName = clickedButton.getAttribute('data-name');
+    const productPrice = clickedButton.getAttribute('data-price');
+    
+    // Show loading
+    const originalHTML = clickedButton.innerHTML;
+    clickedButton.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+    clickedButton.disabled = true;
+    
+    try {
+        // Direct API call to Django for cart
+        const response = await fetch(`${djangoApiUrl}/cart/items/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${djangoToken}`,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                product_id: parseInt(productId),
+                quantity: 1
+            })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            showAlert('Success', `${productName} added to cart!`, 'success');
+            updateCartBadge();
+        } else if (response.status === 401) {
+            showAlert('Session Expired', 'Please login again.', 'warning');
+            // Redirect to logout to clear session
+            setTimeout(() => {
+                window.location.href = '{{ route("logout") }}';
+            }, 1500);
+        } else {
+            const data = await response.json();
+            showAlert('Error', data.detail || data.message || 'Failed to add to cart', 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('Error', 'Network error. Please try again.', 'error');
+    } finally {
+        // Restore button
+        clickedButton.innerHTML = originalHTML;
+        clickedButton.disabled = false;
+    }
+}
+
+// Update cart badge
+async function updateCartBadge() {
+    const djangoToken = "{{ $django_token ?? '' }}";
+    const djangoApiUrl = "{{ config('services.django_api.url', 'http://127.0.0.1:8000') }}";
+    const cartBadge = document.querySelector('.cart-badge');
+    const isLoggedIn = djangoToken && djangoToken.length > 10;
+    
+    if (!cartBadge || !isLoggedIn) {
+        if (cartBadge) cartBadge.style.display = 'none';
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${djangoApiUrl}/cart/items`, {
+            headers: {
+                'Authorization': `Bearer ${djangoToken}`,
+                'Accept': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            const cart = await response.json();
+            const itemCount = cart.items ? cart.items.length : 0;
+            
+            if (itemCount > 0) {
+                cartBadge.textContent = itemCount;
+                cartBadge.style.display = 'flex';
+            } else {
+                cartBadge.style.display = 'none';
+            }
+        } else if (response.status === 401) {
+            cartBadge.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Error updating cart badge:', error);
+        const cartBadge = document.querySelector('.cart-badge');
+        if (cartBadge) cartBadge.style.display = 'none';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
     // Initial cart badge update
     updateCartBadge();
     
@@ -788,7 +785,7 @@ document.addEventListener('DOMContentLoaded', function() {
         hasToken: !!djangoToken,
         tokenLength: djangoToken?.length,
         apiUrl: djangoApiUrl,
-        isLoggedIn: isLoggedIn
+        isLoggedIn: djangoToken && djangoToken.length > 10
     });
 });
 </script>
