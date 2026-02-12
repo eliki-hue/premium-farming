@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'All Products | Premium Farming Feeds')
+@section('title', 'Our Products | Premium Farming Feeds')
 
 @php
     // Get user from session
@@ -10,784 +10,349 @@
 
 @section('content')
 
-<div class="min-h-screen pt-24">
-    <!-- Hero Section -->
-    <section class="hero-section">
+<section class="hero-section-products">
+    <video autoplay muted loop playsinline class="hero-video">
+        <source src="{{ asset('videos/kkk.mp4') }}" type="video/mp4">
+    </video>
+
+    <div class="hero-overlay">
         <div class="container">
-            <div class="row align-items-center">
+            <div class="row align-items-center min-vh-50">
                 <div class="col-lg-12 text-center">
-                    <h1 class="hero-title mb-4 animate__animated animate__fadeInDown">
-                        Our Premium Product Range
-                    </h1>
-                    <p class="hero-subtitle mb-5 animate__animated animate__fadeInUp animate__delay-1s">
-                        Discover our complete collection of scientifically formulated feeds for all livestock types
+                    <h1 class="hero-title mb-3">Premium Farming Products</h1>
+                    <p class="hero-subtitle mb-4">
+                        Quality feeds for all your livestock needs
                     </p>
+                    <a href="#products" class="btn btn-success btn-lg px-4">
+                        <i class="bi bi-arrow-down me-2"></i> Browse Products
+                    </a>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- PIG FEEDS -->
-    <section id="pig-feeds" class="section bg-light">
-        <div class="container">
-            <div class="section-title animate-on-scroll">
-                <h2>🐖 Pig Feeds</h2>
-                <p>Complete nutrition for profitable pig farming</p>
-            </div>
-
-            <div class="row g-4">
-                @php
-                $pigFeeds = [
-                    ['id'=>101,'name'=>'Pig Starter Pellets','price'=>3200,'image'=>'images/piggrower.jpeg','desc'=>'Supports early growth and strong immunity for piglets. High protein formula with essential vitamins, amino acids, and probiotics for optimal health and disease resistance.','specs'=>['protein'=>'18-22%','weight'=>'10-25kg','stage'=>'Starter']],
-                    ['id'=>102,'name'=>'Pig Grower Mash','price'=>2950,'image'=>'images/spig grower.jpeg','desc'=>'Balanced nutrition for rapid weight gain and muscle development. Contains optimal energy levels and digestible proteins for efficient feed conversion.','specs'=>['protein'=>'16-18%','weight'=>'25-60kg','stage'=>'Grower']],
-                    ['id'=>103,'name'=>'Sow & Weaner Feed','price'=>3100,'image'=>'images/sowwen.jpeg','desc'=>'Enhances sow fertility, milk production and healthy piglet development. Fortified with calcium, phosphorus, and vitamins for reproductive health.','specs'=>['protein'=>'16-18%','weight'=>'Breeding','stage'=>'Reproduction']],
-                    ['id'=>104,'name'=>'Pig Fattener','price'=>2850,'image'=>'images/pfter.jpeg','desc'=>'Maximum weight gain formula for premium meat quality and finish. Optimized for marbling and lean meat percentage with energy-rich ingredients.','specs'=>['protein'=>'14-16%','weight'=>'60kg+','stage'=>'Finisher']]
-                ];
-                @endphp
-
-                @foreach($pigFeeds as $product)
-                <div class="col-lg-3 col-md-6">
-                    <div class="product-card premium-card animate-on-scroll">
-                        <div class="product-image-container">
-                            <img src="{{ asset($product['image']) }}" alt="{{ $product['name'] }}" class="product-image-full">
-                            <span class="product-badge pig">{{ $product['specs']['stage'] }}</span>
-                            
-                            @if(!$django_user)
-                            <div class="signup-overlay">
-                                <div class="overlay-content">
-                                    <i class="bi bi-lock fs-1 mb-3"></i>
-                                    <h6 class="mb-2">Sign Up Required</h6>
-                                    <p class="small mb-3">Create an account to add to cart</p>
-                                    <a href="{{ route('register') }}" class="btn btn-sm btn-light">Sign Up Free</a>
-                                </div>
-                            </div>
-                            @endif
-                        </div>
-                        <div class="product-content">
-                            <h4 class="fw-bold mb-2">{{ $product['name'] }}</h4>
-                            <div class="product-description-container mb-3">
-                                <p class="product-description mb-0">
-                                    {{ Str::limit($product['desc'], 80) }}
-                                    @if(strlen($product['desc']) > 80)
-                                        <span class="collapse" id="desc-{{ $product['id'] }}">
-                                            {{ substr($product['desc'], 80) }}
-                                        </span>
-                                        <a href="#desc-{{ $product['id'] }}" 
-                                           class="read-more-link" 
-                                           data-bs-toggle="collapse"
-                                           data-bs-target="#desc-{{ $product['id'] }}"
-                                           aria-expanded="false"
-                                           aria-controls="desc-{{ $product['id'] }}">
-                                            <span class="show-more">... See More</span>
-                                            <span class="show-less d-none">... See Less</span>
-                                        </a>
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="product-specs mb-4">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Protein:</span>
-                                    <span class="fw-bold text-primary">{{ $product['specs']['protein'] }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <span>Target Weight:</span>
-                                    <span class="fw-bold">{{ $product['specs']['weight'] }}</span>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mt-auto">
-                                <div>
-                                    <span class="price-tag">Ksh {{ number_format($product['price']) }}</span>
-                                    <small class="text-muted d-block">per 50kg bag</small>
-                                </div>
-                                
-                                @if($django_user)
-                                <button onclick="addToCart({{ $product['id'] }})" 
-                                        class="btn btn-premium add-to-cart-btn"
-                                        data-id="{{ $product['id'] }}"
-                                        data-name="{{ $product['name'] }}"
-                                        data-price="{{ $product['price'] }}"
-                                        data-image="{{ $product['image'] }}">
-                                    <i class="bi bi-cart-plus me-2"></i> Add
-                                </button>
-                                @else
-                                <!-- Sign Up Button for Guests -->
-                                <a href="{{ route('register') }}" class="btn btn-premium">
-                                    <i class="bi bi-cart-plus me-2"></i> Add
-                                </a>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    <!-- POULTRY FEEDS Section -->
-    <section id="poultry-feeds" class="section">
-        <div class="container">
-            <div class="section-title animate-on-scroll">
-                <h2>🐔 Poultry Feeds</h2>
-                <p>Optimal nutrition for growth and egg production</p>
-            </div>
-
-            <div class="row g-4">
-                @php
-                $poultryFeeds = [
-                    ['id'=>301,'name'=>'Chick Starter','price'=>2500,'image'=>'images/chick start.jpeg','desc'=>'High protein starter feed for maximum early chick growth and immunity. Contains essential nutrients for digestive system development and disease resistance.','specs'=>['protein'=>'18-22%','type'=>'Starter','age'=>'0-8 weeks']],
-                    ['id'=>302,'name'=>'Broiler Starter','price'=>2800,'image'=>'images/chickmash.jpeg','desc'=>'Very high protein for fast muscle growth in meat birds. Optimized for rapid weight gain with balanced amino acids and energy.','specs'=>['protein'=>'22-24%','type'=>'Broiler','age'=>'0-4 weeks']],
-                    ['id'=>303,'name'=>'Growers Mash','price'=>2300,'image'=>'images/growers.jpeg','desc'=>'Balanced grower formula for steady weight gain and feathering. Supports skeletal development and prepares birds for laying phase.','specs'=>['protein'=>'14-18%','type'=>'Grower','age'=>'8-18 weeks']],
-                    ['id'=>304,'name'=>'Layers Mash','price'=>2400,'image'=>'images/layers.jpeg','desc'=>'Calcium-rich formula for superior egg production and shell quality. Contains optimal levels of vitamins and minerals for egg formation.','specs'=>['protein'=>'~16%','type'=>'Layer','age'=>'18+ weeks']],
-                    ['id'=>305,'name'=>'Super Layers','price'=>2600,'image'=>'images/slayers.jpeg','desc'=>'Premium layers feed for maximum egg production and bird health. Enhanced with probiotics and omega-3 for better egg quality.','specs'=>['protein'=>'16-18%','type'=>'Premium','age'=>'Peak lay']]
-                ];
-                @endphp
-
-                @foreach($poultryFeeds as $product)
-                <div class="col-lg-3 col-md-6">
-                    <div class="product-card premium-card animate-on-scroll">
-                        <div class="product-image-container">
-                            <img src="{{ asset($product['image']) }}" alt="{{ $product['name'] }}" class="product-image-full">
-                            <span class="product-badge poultry">{{ $product['specs']['type'] }}</span>
-                            
-                            @if(!$django_user)
-                            <div class="signup-overlay">
-                                <div class="overlay-content">
-                                    <i class="bi bi-lock fs-1 mb-3"></i>
-                                    <h6 class="mb-2">Sign Up Required</h6>
-                                    <p class="small mb-3">Create an account to add to cart</p>
-                                    <a href="{{ route('register') }}" class="btn btn-sm btn-light">Sign Up Free</a>
-                                </div>
-                            </div>
-                            @endif
-                        </div>
-                        <div class="product-content">
-                            <h4 class="fw-bold mb-2">{{ $product['name'] }}</h4>
-                            <p class="text-muted mb-2">
-                                <small><i class="bi bi-clock me-2"></i>{{ $product['specs']['age'] }}</small>
-                            </p>
-                            <div class="product-description-container mb-3">
-                                <p class="product-description mb-0">
-                                    {{ Str::limit($product['desc'], 80) }}
-                                    @if(strlen($product['desc']) > 80)
-                                        <span class="collapse" id="desc-{{ $product['id'] }}">
-                                            {{ substr($product['desc'], 80) }}
-                                        </span>
-                                        <a href="#desc-{{ $product['id'] }}" 
-                                           class="read-more-link" 
-                                           data-bs-toggle="collapse"
-                                           data-bs-target="#desc-{{ $product['id'] }}"
-                                           aria-expanded="false"
-                                           aria-controls="desc-{{ $product['id'] }}">
-                                            <span class="show-more">... See More</span>
-                                            <span class="show-less d-none">... See Less</span>
-                                        </a>
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="product-specs mb-4">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Protein:</span>
-                                    <span class="fw-bold text-primary">{{ $product['specs']['protein'] }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <span>Type:</span>
-                                    <span class="fw-bold">{{ $product['specs']['type'] }}</span>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mt-auto">
-                                <div>
-                                    <span class="price-tag">Ksh {{ number_format($product['price']) }}</span>
-                                    <small class="text-muted d-block">per 50kg bag</small>
-                                </div>
-                                
-                                @if($django_user)
-                                <button onclick="addToCart({{ $product['id'] }})" 
-                                        class="btn btn-premium add-to-cart-btn"
-                                        data-id="{{ $product['id'] }}"
-                                        data-name="{{ $product['name'] }}"
-                                        data-price="{{ $product['price'] }}"
-                                        data-image="{{ $product['image'] }}">
-                                    <i class="bi bi-cart-plus me-2"></i> Add
-                                </button>
-                                @else
-                                <a href="{{ route('register') }}" class="btn btn-premium">
-                                    <i class="bi bi-cart-plus me-2"></i> Add
-                                </a>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    <!-- PET FEEDS Section -->
-    <section id="pet-feeds" class="section bg-light">
-        <div class="container">
-            <div class="section-title animate-on-scroll">
-                <h2>🐶 Pet Feeds</h2>
-                <p>Complete nutrition for your beloved pets</p>
-            </div>
-
-            <div class="row g-4">
-                @php
-                $petFeeds = [
-                    ['id'=>201,'name'=>'Dog Meal','price'=>2800,'image'=>'images/dogm.jpeg','desc'=>'Complete balanced nutrition with essential vitamins for all dog breeds. Supports healthy skin, coat, and digestive system with natural ingredients.','specs'=>['protein'=>'Balanced','type'=>'Dogs','size'=>'All sizes']],
-                    ['id'=>202,'name'=>'Rabbit Pellets','price'=>2200,'image'=>'images/rabit1.jpeg','desc'=>'High fiber pellets for optimal digestion and healthy rabbit growth. Contains timothy hay base with added vitamins for dental health.','specs'=>['protein'=>'Moderate','type'=>'Rabbits','size'=>'All ages']],
-                    ['id'=>203,'name'=>'Calf Pellets','price'=>3500,'image'=>'images/cpellets.jpeg','desc'=>'High-protein formula for healthy growth and strong immunity in calves. Supports rumen development and early weaning success.','specs'=>['protein'=>'High','type'=>'Calves','age'=>'0-6 months']]
-                ];
-                @endphp
-
-                @foreach($petFeeds as $product)
-                <div class="col-lg-4 col-md-6">
-                    <div class="product-card premium-card animate-on-scroll">
-                        <div class="product-image-container">
-                            <img src="{{ asset($product['image']) }}" alt="{{ $product['name'] }}" class="product-image-full">
-                            <span class="product-badge pet">{{ $product['specs']['type'] }}</span>
-                            
-                            @if(!$django_user)
-                            <div class="signup-overlay">
-                                <div class="overlay-content">
-                                    <i class="bi bi-lock fs-1 mb-3"></i>
-                                    <h6 class="mb-2">Sign Up Required</h6>
-                                    <p class="small mb-3">Create an account to add to cart</p>
-                                    <a href="{{ route('register') }}" class="btn btn-sm btn-light">Sign Up Free</a>
-                                </div>
-                            </div>
-                            @endif
-                        </div>
-                        <div class="product-content">
-                            <h4 class="fw-bold mb-2">{{ $product['name'] }}</h4>
-                            <p class="text-muted mb-2">
-                                <small><i class="bi bi-tag me-2"></i>{{ $product['specs']['type'] }}</small>
-                            </p>
-                            <div class="product-description-container mb-3">
-                                <p class="product-description mb-0">
-                                    {{ Str::limit($product['desc'], 80) }}
-                                    @if(strlen($product['desc']) > 80)
-                                        <span class="collapse" id="desc-{{ $product['id'] }}">
-                                            {{ substr($product['desc'], 80) }}
-                                        </span>
-                                        <a href="#desc-{{ $product['id'] }}" 
-                                           class="read-more-link" 
-                                           data-bs-toggle="collapse"
-                                           data-bs-target="#desc-{{ $product['id'] }}"
-                                           aria-expanded="false"
-                                           aria-controls="desc-{{ $product['id'] }}">
-                                            <span class="show-more">... See More</span>
-                                            <span class="show-less d-none">... See Less</span>
-                                        </a>
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="product-specs mb-4">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Protein:</span>
-                                    <span class="fw-bold text-primary">{{ $product['specs']['protein'] }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <span>For:</span>
-                                    <span class="fw-bold">{{ $product['specs']['type'] }}</span>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mt-auto">
-                                <div>
-                                    <span class="price-tag">Ksh {{ number_format($product['price']) }}</span>
-                                    <small class="text-muted d-block">per bag</small>
-                                </div>
-                                
-                                @if($django_user)
-                                <button onclick="addToCart({{ $product['id'] }})" 
-                                        class="btn btn-premium add-to-cart-btn"
-                                        data-id="{{ $product['id'] }}"
-                                        data-name="{{ $product['name'] }}"
-                                        data-price="{{ $product['price'] }}"
-                                        data-image="{{ $product['image'] }}">
-                                    <i class="bi bi-cart-plus me-2"></i> Add
-                                </button>
-                                @else
-                                <a href="{{ route('register') }}" class="btn btn-premium">
-                                    <i class="bi bi-cart-plus me-2"></i> Add
-                                </a>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    <!-- BY-PRODUCTS Section -->
-    <section id="by-products" class="section">
-        <div class="container">
-            <div class="section-title animate-on-scroll">
-                <h2>🌾 By-Products</h2>
-                <p>High-quality supplements for complete livestock nutrition</p>
-            </div>
-
-            <div class="row g-4">
-                @php
-                $byProducts = [
-                    ['id'=>401,'name'=>'Wheat Bran','price'=>1300,'image'=>'images/bran.jpg','desc'=>'High fiber bulk feed supplement for ruminants and poultry. Excellent for digestive health and rumen function in cattle and goats.','specs'=>['protein'=>'15-17%','type'=>'Fiber','use'=>'Ruminants']],
-                    ['id'=>402,'name'=>'Wheat Pollard','price'=>1500,'image'=>'images/pollard.jpg','desc'=>'Energy and protein-rich supplement for all livestock. Ideal for mixing with other feeds to improve nutritional value.','specs'=>['protein'=>'16-18%','type'=>'Energy','use'=>'All livestock']],
-                    ['id'=>403,'name'=>'Maize Germ','price'=>1400,'image'=>'images/maize.jpeg','desc'=>'High-energy maize by-product for cost-effective feeding. Rich in oils and proteins for improved weight gain.','specs'=>['protein'=>'18-22%','type'=>'Energy','use'=>'Poultry/Swine']]
-                ];
-                @endphp
-
-                @foreach($byProducts as $product)
-                <div class="col-lg-4 col-md-6">
-                    <div class="product-card premium-card animate-on-scroll">
-                        <div class="product-image-container">
-                            <img src="{{ asset($product['image']) }}" alt="{{ $product['name'] }}" class="product-image-full">
-                            <span class="product-badge byproduct">{{ $product['specs']['type'] }}</span>
-                            
-                            @if(!$django_user)
-                            <div class="signup-overlay">
-                                <div class="overlay-content">
-                                    <i class="bi bi-lock fs-1 mb-3"></i>
-                                    <h6 class="mb-2">Sign Up Required</h6>
-                                    <p class="small mb-3">Create an account to add to cart</p>
-                                    <a href="{{ route('register') }}" class="btn btn-sm btn-light">Sign Up Free</a>
-                                </div>
-                            </div>
-                            @endif
-                        </div>
-                        <div class="product-content">
-                            <h4 class="fw-bold mb-2">{{ $product['name'] }}</h4>
-                            <p class="text-muted mb-2">
-                                <small><i class="bi bi-arrow-right-circle me-2"></i>{{ $product['specs']['use'] }}</small>
-                            </p>
-                            <div class="product-description-container mb-3">
-                                <p class="product-description mb-0">
-                                    {{ Str::limit($product['desc'], 80) }}
-                                    @if(strlen($product['desc']) > 80)
-                                        <span class="collapse" id="desc-{{ $product['id'] }}">
-                                            {{ substr($product['desc'], 80) }}
-                                        </span>
-                                        <a href="#desc-{{ $product['id'] }}" 
-                                           class="read-more-link" 
-                                           data-bs-toggle="collapse"
-                                           data-bs-target="#desc-{{ $product['id'] }}"
-                                           aria-expanded="false"
-                                           aria-controls="desc-{{ $product['id'] }}">
-                                            <span class="show-more">... See More</span>
-                                            <span class="show-less d-none">... See Less</span>
-                                        </a>
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="product-specs mb-4">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Protein:</span>
-                                    <span class="fw-bold text-primary">{{ $product['specs']['protein'] }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <span>Type:</span>
-                                    <span class="fw-bold">{{ $product['specs']['type'] }}</span>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mt-auto">
-                                <div>
-                                    <span class="price-tag">Ksh {{ number_format($product['price']) }}</span>
-                                    <small class="text-muted d-block">per 50kg bag</small>
-                                </div>
-                                
-                                @if($django_user)
-                                <button onclick="addToCart({{ $product['id'] }})" 
-                                        class="btn btn-premium add-to-cart-btn"
-                                        data-id="{{ $product['id'] }}"
-                                        data-name="{{ $product['name'] }}"
-                                        data-price="{{ $product['price'] }}"
-                                        data-image="{{ $product['image'] }}">
-                                    <i class="bi bi-cart-plus me-2"></i> Add
-                                </button>
-                                @else
-                                <a href="{{ route('register') }}" class="btn btn-premium">
-                                    <i class="bi bi-cart-plus me-2"></i> Add
-                                </a>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="container">
-            <div class="cta-content animate-on-scroll text-center">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <h2 class="cta-title mb-4">Get Your Premium Feeds Today!</h2>
-                        <p class="cta-text mb-5 fs-5">
-                            Select your products, proceed to secure checkout, and enjoy fast delivery to your farm.
-                        </p>
-                        
-                        <div class="d-grid gap-3 d-md-flex justify-content-center">
-                            @if($django_user)
-                                <a href="{{ route('cart.view') }}" class="btn btn-success btn-lg px-5 py-3 fw-bold me-md-3">
-                                    <i class="bi bi-cart me-2"></i>
-                                    View Cart
-                                </a>
-                                <a href="#pig-feeds" class="btn btn-outline-light btn-lg px-5 py-3 fw-bold">
-                                    <i class="bi bi-cart-plus me-2"></i>
-                                    Continue Shopping
-                                </a>
-                            @else
-                                <!-- For guests -->
-                                <a href="{{ route('register') }}" class="btn btn-premium btn-lg me-2">
-                                    <i class="bi bi-person-plus me-2"></i>
-                                    Sign Up to Shop
-                                </a>
-                                <a href="{{ route('login') }}" class="btn btn-outline-light btn-lg">
-                                    <i class="bi bi-box-arrow-in-right me-2"></i>
-                                    Log In
-                                </a>
-                            @endif
-                        </div>
-                        
-                        <!-- Trust indicators -->
-                        <div class="mt-5 pt-4">
-                            <div class="row justify-content-center g-4">
-                                <div class="col-auto">
-                                    <div class="d-flex align-items-center text-light">
-                                        <i class="bi bi-shield-check fs-4 me-2"></i>
-                                        <span>Secure Payment</span>
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <div class="d-flex align-items-center text-light">
-                                        <i class="bi bi-truck fs-4 me-2"></i>
-                                        <span>Farm Delivery</span>
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <div class="d-flex align-items-center text-light">
-                                        <i class="bi bi-headset fs-4 me-2"></i>
-                                        <span>Expert Support</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-</div>
-
-<!-- Alert div for notifications -->
-<div id="notificationAlert" class="alert alert-dismissible fade" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px; max-width: 400px; opacity: 0; transform: translateX(100%); transition: all 0.3s ease;">
-    <div class="d-flex">
-        <div id="alertIcon" class="me-2"></div>
-        <div>
-            <h6 class="alert-heading mb-1" id="alertTitle"></h6>
-            <p class="mb-0 small" id="alertMessage"></p>
-        </div>
-        <button type="button" class="btn-close ms-auto" onclick="hideAlert()"></button>
     </div>
+</section>
+
+<!-- Flash Messages -->
+@if(session('success'))
+    <div class="container mt-4">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="container mt-4">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>{{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+@endif
+
+<!-- Products Section -->
+<div class="container my-5" id="products">
+    <h2 class="mb-4 text-center section-title">Our Products</h2>
+
+    @if($products->isNotEmpty())
+        <div class="row">
+            @foreach($products as $product)
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="card h-100 shadow-sm product-card">
+
+                        <!-- Image -->
+                        <div class="card-img-top-container">
+                            <img
+                                class="card-img-top"
+                                src="{{ $product['image'] ?? asset('images/no-image.png') }}"
+                                alt="{{ $product['name'] }}">
+                        </div>
+
+                        <!-- Body -->
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="fw-bold">{{ $product['name'] }}</h5>
+
+                            <p class="price-tag text-success fw-bold">
+                                KES {{ number_format($product['unit_price'], 2) }}
+                            </p>
+
+                            @if(!empty($product['sku']))
+                                <small class="text-muted mb-2">SKU: {{ $product['sku'] }}</small>
+                            @endif
+
+                            <div class="mt-auto">
+                                @auth
+                                    {{--  Authenticated users can add to cart --}}
+                                    <button class="btn btn-success w-100 add-to-cart-btn" 
+                                            data-product-id="{{ $product['id'] }}"
+                                            data-product-name="{{ $product['name'] }}">
+                                        <i class="bi bi-cart-plus me-2"></i>
+                                        Add to Cart
+                                    </button>
+                                @else
+                                    {{-- Guests must login --}}
+                                    <a href="{{ route('login') }}?redirect={{ urlencode(request()->fullUrl()) }}" 
+                                       class="btn btn-outline-success w-100">
+                                        <i class="bi bi-lock me-2"></i>
+                                        Login to Purchase
+                                    </a>
+                                @endauth
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @else
+        <div class="text-center py-5">
+            <i class="bi bi-box-seam display-1 text-muted mb-3"></i>
+            <h4 class="text-muted">No products available</h4>
+        </div>
+    @endif
 </div>
 
 <style>
-    /* Add to existing styles */
-    .hero-section {
-        min-height: 70vh;
-        background: linear-gradient(rgba(42, 110, 63, 0.9), rgba(30, 82, 46, 0.9)),
-                    url('https://images.unsplash.com/photo-1500382017468-9049fed747ef') center/cover;
-        background-size: cover;
-        background-position: center;
+    /* Hero Section with Video */
+    .hero-section-products {
+        position: relative;
+        min-height: 60vh;
         display: flex;
         align-items: center;
-        position: relative;
         overflow: hidden;
         color: white;
+        margin-top: 76px;
     }
-    
-    /* Sign Up Overlay Styles */
-    .signup-overlay {
+
+    .hero-video {
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        z-index: 1;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.45);
     }
-    
-    .product-image-container:hover .signup-overlay {
-        opacity: 1;
+
+    .hero-overlay {
+        position: relative;
+        z-index: 2;
+        padding: 90px 0;
     }
-    
-    .overlay-content {
-        text-align: center;
-        color: white;
-        padding: 20px;
-    }
-    
-    .overlay-content i {
-        font-size: 2.5rem;
-        color: #fff;
-        margin-bottom: 10px;
-    }
-    
-    .overlay-content h6 {
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
-    
-    .overlay-content .btn {
-        font-size: 0.8rem;
-        padding: 5px 15px;
-    }
-    
-    /* Existing styles remain the same */
+
     .hero-title {
-        font-size: 3.5rem;
-        font-weight: 700;
-        margin-bottom: 1.5rem;
+        font-size: 2.8rem;
+        font-weight: 800;
     }
-    
+
     .hero-subtitle {
-        font-size: 1.3rem;
-        opacity: 0.9;
-        max-width: 700px;
-        margin: 0 auto 2.5rem;
-        font-weight: 300;
+        font-size: 1.2rem;
     }
-    
+
     .product-card {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        border-radius: 20px;
-        overflow: hidden;
-        background: white;
-        box-shadow: var(--shadow-soft);
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        position: relative;
+        border-radius: 15px;
+        transition: 0.3s ease;
     }
-    
+
     .product-card:hover {
-        transform: translateY(-10px);
-        box-shadow: var(--shadow-medium);
+        transform: translateY(-5px);
     }
-    
-    .product-image-container {
-        position: relative;
-        height: 300px;
-        width: 100%;
+
+    .card-img-top-container {
+        height: 200px;
         overflow: hidden;
-        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
     }
-    
-    .product-image-full {
+
+    .card-img-top {
         width: 100%;
         height: 100%;
-        object-fit: contain !important;
-        object-position: center center;
-        padding: 25px;
-        transition: all 0.5s ease;
+        object-fit: cover;
     }
-    
-    .product-card:hover .product-image-full {
-        transform: scale(1.05);
-        padding: 20px;
+
+    .price-tag {
+        font-size: 1.3rem;
+        margin: 0.5rem 0;
     }
-    
-    .alert.show {
-        opacity: 1;
-        transform: translateX(0);
+
+    .section-title {
+        color: #2a6e3f;
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 15px;
     }
-    
-    /* Responsive adjustments */
+
+    .section-title:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(to right, #2a6e3f, #4caf50);
+        border-radius: 2px;
+    }
+
+    /* Button Improvements */
+    .btn-success {
+        background: linear-gradient(135deg, #2a6e3f, #3a8e5c);
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-shadow: none;
+    }
+
+    .btn-success:hover {
+        background: linear-gradient(135deg, #1e5a2f, #2a6e3f);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(42, 110, 63, 0.3);
+    }
+
+    .btn-outline-success {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 600;
+        border-width: 2px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-success:hover {
+        background: #2a6e3f;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Responsive */
     @media (max-width: 768px) {
-        .signup-overlay .overlay-content {
-            padding: 10px;
+        .hero-section-products {
+            min-height: 50vh;
+            margin-top: 56px;
         }
-        
-        .overlay-content i {
-            font-size: 1.5rem;
+
+        .hero-overlay {
+            padding: 60px 0;
         }
-        
-        .overlay-content h6 {
-            font-size: 0.9rem;
+
+        .hero-title {
+            font-size: 2.2rem;
         }
-        
-        #notificationAlert {
-            left: 20px;
-            right: 20px;
-            max-width: calc(100% - 40px);
+
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+
+        .card-img-top-container {
+            height: 180px;
+        }
+
+        .col-md-3 {
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .hero-title {
+            font-size: 1.8rem;
+        }
+
+        .hero-section-products {
+            min-height: 40vh;
+        }
+
+        .hero-overlay {
+            padding: 50px 0;
         }
     }
 </style>
 
-<script>
-// Alert functions
-function showAlert(title, message, type = 'success') {
-    const alert = document.getElementById('notificationAlert');
-    const alertTitle = document.getElementById('alertTitle');
-    const alertMessage = document.getElementById('alertMessage');
-    const alertIcon = document.getElementById('alertIcon');
-    
-    if (!alert || !alertTitle || !alertMessage) return;
-    
-    alert.className = `alert alert-${type} alert-dismissible fade show`;
-    alertTitle.textContent = title;
-    alertMessage.textContent = message;
-    
-    // Set icon based on type
-    if (type === 'success') {
-        alertIcon.innerHTML = '<i class="bi bi-check-circle-fill text-success fs-5"></i>';
-    } else if (type === 'error') {
-        alertIcon.innerHTML = '<i class="bi bi-x-circle-fill text-danger fs-5"></i>';
-    } else if (type === 'warning') {
-        alertIcon.innerHTML = '<i class="bi bi-exclamation-triangle-fill text-warning fs-5"></i>';
-    } else {
-        alertIcon.innerHTML = '<i class="bi bi-info-circle-fill text-info fs-5"></i>';
-    }
-    
-    // Auto hide after 5 seconds
-    setTimeout(() => {
-        hideAlert();
-    }, 5000);
-}
-
-function hideAlert() {
-    const alert = document.getElementById('notificationAlert');
-    if (alert) {
-        alert.classList.remove('show');
-        setTimeout(() => {
-            alert.className = 'alert alert-dismissible fade';
-        }, 300);
-    }
-}
-
-// Global addToCart function
-async function addToCart(productId) {
-    const djangoToken = "{{ $django_token ?? '' }}";
-    const djangoApiUrl = "{{ config('services.django_api.url', 'http://127.0.0.1:8000') }}";
-    const isLoggedIn = djangoToken && djangoToken.length > 10;
-    
-    if (!isLoggedIn) {
-        showAlert('Authentication Required', 'Please login to add items to cart.', 'warning');
-        window.location.href = "{{ route('login') }}";
-        return;
-    }
-    
-    // Find the clicked button to get product details
-    const clickedButton = event.currentTarget;
-    const productName = clickedButton.getAttribute('data-name');
-    const productPrice = clickedButton.getAttribute('data-price');
-    
-    // Show loading
-    const originalHTML = clickedButton.innerHTML;
-    clickedButton.innerHTML = '<i class="bi bi-hourglass-split"></i>';
-    clickedButton.disabled = true;
-    
-    try {
-        // Direct API call to Django for cart
-        const response = await fetch(`${djangoApiUrl}/cart/items/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${djangoToken}`,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                product_id: parseInt(productId),
-                quantity: 1
-            })
-        });
-        
-        if (response.ok) {
-            const data = await response.json();
-            showAlert('Success', `${productName} added to cart!`, 'success');
-            updateCartBadge();
-        } else if (response.status === 401) {
-            showAlert('Session Expired', 'Please login again.', 'warning');
-            // Redirect to logout to clear session
-            setTimeout(() => {
-                window.location.href = '{{ route("logout") }}';
-            }, 1500);
-        } else {
-            const data = await response.json();
-            showAlert('Error', data.detail || data.message || 'Failed to add to cart', 'error');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        showAlert('Error', 'Network error. Please try again.', 'error');
-    } finally {
-        // Restore button
-        clickedButton.innerHTML = originalHTML;
-        clickedButton.disabled = false;
-    }
-}
-
-// Update cart badge
-async function updateCartBadge() {
-    const djangoToken = "{{ $django_token ?? '' }}";
-    const djangoApiUrl = "{{ config('services.django_api.url', 'http://127.0.0.1:8000') }}";
-    const cartBadge = document.querySelector('.cart-badge');
-    const isLoggedIn = djangoToken && djangoToken.length > 10;
-    
-    if (!cartBadge || !isLoggedIn) {
-        if (cartBadge) cartBadge.style.display = 'none';
-        return;
-    }
-    
-    try {
-        const response = await fetch(`${djangoApiUrl}/cart/items`, {
-            headers: {
-                'Authorization': `Bearer ${djangoToken}`,
-                'Accept': 'application/json'
-            }
-        });
-        
-        if (response.ok) {
-            const cart = await response.json();
-            const itemCount = cart.items ? cart.items.length : 0;
-            
-            if (itemCount > 0) {
-                cartBadge.textContent = itemCount;
-                cartBadge.style.display = 'flex';
-            } else {
-                cartBadge.style.display = 'none';
-            }
-        } else if (response.status === 401) {
-            cartBadge.style.display = 'none';
-        }
-    } catch (error) {
-        console.error('Error updating cart badge:', error);
-        const cartBadge = document.querySelector('.cart-badge');
-        if (cartBadge) cartBadge.style.display = 'none';
-    }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Initial cart badge update
-    updateCartBadge();
-    
-    // Debug: Check authentication state
-    console.log('Auth Debug:', {
-        hasToken: !!djangoToken,
-        tokenLength: djangoToken?.length,
-        apiUrl: djangoApiUrl,
-        isLoggedIn: djangoToken && djangoToken.length > 10
-    });
-});
-</script>
-
 @endsection
+
+@push('scripts')
+<script>
+(function() {
+    'use strict';
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+    
+    document.querySelectorAll('.add-to-cart-btn').forEach(function(btn) {
+        btn.addEventListener('click', async function() {
+            const productId = this.getAttribute('data-product-id');
+            const productName = this.getAttribute('data-product-name');
+            
+            // Show loading state
+            const originalHTML = this.innerHTML;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Adding...';
+            this.disabled = true;
+
+            try {
+                const response = await fetch('/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        product_id: productId,
+                        quantity: 1
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    this.innerHTML = '<i class="bi bi-check me-2"></i>Added!';
+                    this.classList.remove('btn-success');
+                    this.classList.add('btn-outline-success');
+                    
+                    if (window.showCartNotification) {
+                        window.showCartNotification(${productName} added to cart!, 'success');
+                    }
+                    
+                    if (window.refreshCart) {
+                        window.refreshCart();
+                    }
+                    
+                    setTimeout(() => {
+                        window.location.href = data.redirect || '{{ route("cart.view") }}';
+                    }, 1000);
+                    
+                } else if (response.status === 401) {
+                    const currentUrl = encodeURIComponent(window.location.href);
+                    window.location.href = /login?redirect=${currentUrl};
+                } else {
+                    showError(data.message || 'Failed to add to cart');
+                    this.innerHTML = originalHTML;
+                    this.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error adding to cart:', error);
+                showError('Error adding to cart. Please try again.');
+                this.innerHTML = originalHTML;
+                this.disabled = false;
+            }
+        });
+    });
+
+    function showError(message) {
+        const toast = document.createElement('div');
+        toast.className = 'alert alert-danger position-fixed top-0 end-0 m-3 shadow-lg';
+        toast.style.zIndex = '9999';
+        toast.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>' + message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+})();
+</script>
+@endpush

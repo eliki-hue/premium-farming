@@ -35,6 +35,7 @@ Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews');
 Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 
 Route::get('/cart', [CartController::class, 'view']);
+    Route::get('/cart', [CartController::class, 'view'])->name('cart.view');
 Route::get('/cart/load', [CartController::class, 'load']);
 Route::post('/cart/add', [CartController::class, 'add']);     // 👈 important
 Route::patch('/cart/update', [CartController::class, 'update']);

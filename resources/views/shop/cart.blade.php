@@ -88,10 +88,10 @@ async function addItem(productId, quantity = 1) {
     btn.disabled = true;
 
     try {
-        const res = await fetch('/cart/item', {
+        const res = await fetch('/cart/items', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: productId, quantity })
+            body: JSON.stringify({ productId, quantity })
         });
 
         let data = {};
