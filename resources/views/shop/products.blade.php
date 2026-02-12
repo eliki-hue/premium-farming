@@ -2,16 +2,11 @@
 
 @section('title', 'Our Products | Premium Farming Feeds')
 
-@php
-    // Get user from session
-    $django_user = session('django_user');
-    $django_token = session('django_token');
-@endphp
-
 @section('content')
 
+{{-- ─────────────────────────── HERO ─────────────────────────── --}}
 <section class="hero-section-products">
-    <video autoplay muted loop playsinline class="hero-video">
+    <video autoplay muted loop playsinline preload="metadata" class="hero-video">
         <source src="{{ asset('videos/kkk.mp4') }}" type="video/mp4">
     </video>
 
@@ -20,9 +15,7 @@
             <div class="row align-items-center min-vh-50">
                 <div class="col-lg-12 text-center">
                     <h1 class="hero-title mb-3">Premium Farming Products</h1>
-                    <p class="hero-subtitle mb-4">
-                        Quality feeds for all your livestock needs
-                    </p>
+                    <p class="hero-subtitle mb-4">Quality feeds for all your livestock needs</p>
                     <a href="#products" class="btn btn-success btn-lg px-4">
                         <i class="bi bi-arrow-down me-2"></i> Browse Products
                     </a>
@@ -32,7 +25,7 @@
     </div>
 </section>
 
-<!-- Flash Messages -->
+{{-- ─────────────────────────── FLASH MESSAGES ─────────────────────────── --}}
 @if(session('success'))
     <div class="container mt-4">
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -51,7 +44,7 @@
     </div>
 @endif
 
-<!-- Products Section -->
+{{-- ─────────────────────────── PRODUCTS ─────────────────────────── --}}
 <div class="container my-5" id="products">
     <h2 class="mb-4 text-center section-title">Our Products</h2>
 
@@ -61,15 +54,16 @@
                 <div class="col-md-3 col-sm-6 mb-4">
                     <div class="card h-100 shadow-sm product-card">
 
-                        <!-- Image -->
+                        {{-- Product image --}}
                         <div class="card-img-top-container">
                             <img
                                 class="card-img-top"
                                 src="{{ $product['image'] ?? asset('images/no-image.png') }}"
-                                alt="{{ $product['name'] }}">
+                                alt="{{ $product['name'] }}"
+                                loading="lazy">
                         </div>
 
-                        <!-- Body -->
+                        {{-- Card body --}}
                         <div class="card-body d-flex flex-column">
                             <h5 class="fw-bold">{{ $product['name'] }}</h5>
 
@@ -83,19 +77,16 @@
 
                             <div class="mt-auto">
                                 @auth
-                                    {{--  Authenticated users can add to cart --}}
-                                    <button class="btn btn-success w-100 add-to-cart-btn" 
-                                            data-product-id="{{ $product['id'] }}"
-                                            data-product-name="{{ $product['name'] }}">
-                                        <i class="bi bi-cart-plus me-2"></i>
-                                        Add to Cart
+                                    <button
+                                        class="btn btn-success w-100 add-to-cart-btn"
+                                        data-product-id="{{ $product['id'] }}"
+                                        data-product-name="{{ $product['name'] }}">
+                                        <i class="bi bi-cart-plus me-2"></i>Add to Cart
                                     </button>
                                 @else
-                                    {{-- Guests must login --}}
-                                    <a href="{{ route('login') }}?redirect={{ urlencode(request()->fullUrl()) }}" 
+                                    <a href="{{ route('login') }}?redirect={{ urlencode(request()->fullUrl()) }}"
                                        class="btn btn-outline-success w-100">
-                                        <i class="bi bi-lock me-2"></i>
-                                        Login to Purchase
+                                        <i class="bi bi-lock me-2"></i>Login to Purchase
                                     </a>
                                 @endauth
                             </div>
@@ -106,14 +97,15 @@
         </div>
     @else
         <div class="text-center py-5">
-            <i class="bi bi-box-seam display-1 text-muted mb-3"></i>
+            <i class="bi bi-box-seam display-1 text-muted mb-3 d-block"></i>
             <h4 class="text-muted">No products available</h4>
+            <p class="text-muted">Please check back later or contact us for assistance.</p>
         </div>
     @endif
 </div>
 
 <style>
-    /* Hero Section with Video */
+    /* ── Hero ── */
     .hero-section-products {
         position: relative;
         min-height: 60vh;
@@ -136,6 +128,7 @@
         position: relative;
         z-index: 2;
         padding: 90px 0;
+        width: 100%;
     }
 
     .hero-title {
@@ -149,22 +142,29 @@
 
     .product-card {
         border-radius: 15px;
-        transition: 0.3s ease;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .product-card:hover {
         transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
     }
 
     .card-img-top-container {
         height: 200px;
         overflow: hidden;
+        border-radius: 15px 15px 0 0;
     }
 
     .card-img-top {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .card-img-top {
+        transform: scale(1.05);
     }
 
     .price-tag {
@@ -179,7 +179,7 @@
         padding-bottom: 15px;
     }
 
-    .section-title:after {
+    .section-title::after {
         content: '';
         position: absolute;
         bottom: 0;
@@ -191,7 +191,6 @@
         border-radius: 2px;
     }
 
-    /* Button Improvements */
     .btn-success {
         background: linear-gradient(135deg, #2a6e3f, #3a8e5c);
         border: none;
@@ -222,46 +221,24 @@
         transform: translateY(-2px);
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
         .hero-section-products {
             min-height: 50vh;
             margin-top: 56px;
         }
 
-        .hero-overlay {
-            padding: 60px 0;
-        }
+        .hero-overlay { padding: 60px 0; }
+        .hero-title   { font-size: 2.2rem; }
+        .hero-subtitle { font-size: 1rem; }
 
-        .hero-title {
-            font-size: 2.2rem;
-        }
-
-        .hero-subtitle {
-            font-size: 1rem;
-        }
-
-        .card-img-top-container {
-            height: 180px;
-        }
-
-        .col-md-3 {
-            margin-bottom: 1.5rem;
-        }
+        .card-img-top-container { height: 180px; }
+        .col-md-3 { margin-bottom: 1.5rem; }
     }
 
     @media (max-width: 576px) {
-        .hero-title {
-            font-size: 1.8rem;
-        }
-
-        .hero-section-products {
-            min-height: 40vh;
-        }
-
-        .hero-overlay {
-            padding: 50px 0;
-        }
+        .hero-title { font-size: 1.8rem; }
+        .hero-section-products { min-height: 40vh; }
+        .hero-overlay { padding: 50px 0; }
     }
 </style>
 
@@ -269,18 +246,16 @@
 
 @push('scripts')
 <script>
-(function() {
+(function () {
     'use strict';
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-    
-    document.querySelectorAll('.add-to-cart-btn').forEach(function(btn) {
-        btn.addEventListener('click', async function() {
-            const productId = this.getAttribute('data-product-id');
+    document.querySelectorAll('.add-to-cart-btn').forEach(function (btn) {
+        btn.addEventListener('click', async function () {
+            const productId   = this.getAttribute('data-product-id');
             const productName = this.getAttribute('data-product-name');
-            
-            // Show loading state
+
             const originalHTML = this.innerHTML;
             this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Adding...';
             this.disabled = true;
@@ -289,50 +264,48 @@
                 const response = await fetch('/cart/add', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'Content-Type':     'application/json',
+                        'X-CSRF-TOKEN':     csrfToken,
+                        'Accept':           'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
                     },
                     credentials: 'include',
-                    body: JSON.stringify({
-                        product_id: productId,
-                        quantity: 1
-                    })
+                    body: JSON.stringify({ product_id: productId, quantity: 1 }),
                 });
 
                 const data = await response.json();
 
                 if (response.ok && data.success) {
                     this.innerHTML = '<i class="bi bi-check me-2"></i>Added!';
-                    this.classList.remove('btn-success');
-                    this.classList.add('btn-outline-success');
-                    
+                    this.classList.replace('btn-success', 'btn-outline-success');
+
+                    // Notify cart widget if available
                     if (window.showCartNotification) {
-                        window.showCartNotification(${productName} added to cart!, 'success');
+                        window.showCartNotification(`${productName} added to cart!`, 'success');
                     }
-                    
+
                     if (window.refreshCart) {
                         window.refreshCart();
                     }
-                    
+
                     setTimeout(() => {
                         window.location.href = data.redirect || '{{ route("cart.view") }}';
                     }, 1000);
-                    
+
                 } else if (response.status === 401) {
                     const currentUrl = encodeURIComponent(window.location.href);
-                    window.location.href = /login?redirect=${currentUrl};
+                    window.location.href = `/login?redirect=${currentUrl}`;
                 } else {
                     showError(data.message || 'Failed to add to cart');
                     this.innerHTML = originalHTML;
-                    this.disabled = false;
+                    this.disabled  = false;
                 }
+
             } catch (error) {
                 console.error('Error adding to cart:', error);
                 showError('Error adding to cart. Please try again.');
                 this.innerHTML = originalHTML;
-                this.disabled = false;
+                this.disabled  = false;
             }
         });
     });
@@ -341,18 +314,19 @@
         const toast = document.createElement('div');
         toast.className = 'alert alert-danger position-fixed top-0 end-0 m-3 shadow-lg';
         toast.style.zIndex = '9999';
-        toast.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>' + message;
+        toast.style.maxWidth = '320px';
+        toast.innerHTML = `<i class="bi bi-exclamation-triangle me-2"></i>${message}`;
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 3000);
     }
 
-    setTimeout(function() {
-        const alerts = document.querySelectorAll('.alert');
-        alerts.forEach(alert => {
-            const bsAlert = new bootstrap.Alert(alert);
+    setTimeout(function () {
+        document.querySelectorAll('.alert').forEach(function (alert) {
+            const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
             bsAlert.close();
         });
     }, 5000);
+
 })();
 </script>
 @endpush
