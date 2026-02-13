@@ -3,192 +3,298 @@
 @section('title', 'Cart')
 
 @section('content')
-{{-- <script>
-const TOKEN = "{{ session('django_token') }}";
-</script> --}}
 
 <div class="container my-4">
-    <h3>🛒 Cart</h3>
-    <div id="msg" class="fw-bold"></div>
-    <div id="cart"></div>
+    <h3>🛒 Your Cart</h3>
+
+    <div id="notificationAlert" class="alert d-none"></div>
+
+    <div id="cart" class="mt-3">
+        <p class="text-muted">Loading cart…</p>
+    </div>
 </div>
 
-<!-- Receipt Modal -->
-<div id="receiptModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:9999;">
-  <div class="card p-3" style="max-width:600px;margin:50px auto;">
-    <h4>🧾 Receipt</h4>
-    <div id="receiptBody"></div>
-    <button onclick="closeReceipt()" class="btn btn-danger">Close</button>
-    <button onclick="window.print()" class="btn btn-primary">Print</button>
-  </div>
+<!-- ================= RECEIPT MODAL ================= -->
+<div id="receiptModal"
+     style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:9999;">
+    <div class="card p-3" style="max-width:600px;margin:60px auto;">
+        <h4>🧾 Receipt</h4>
+        <div id="receiptBody" class="mt-2"></div>
+        <div class="d-flex justify-content-end gap-2 mt-3">
+            <button onclick="closeReceipt()" class="btn btn-danger">Close</button>
+            <button onclick="window.print()" class="btn btn-primary">Print</button>
+        </div>
+    </div>
 </div>
 
 <script>
-const TOKEN = "{{ session('django_token') }}";
+/* =====================================================
+   CONFIG
+===================================================== */
+const DJANGO_TOKEN = "{{ session('django_token') }}";
+const DJANGO_BASE = "{{ config('services.django_api.url') }}";
+
+const API = {
+    load:     `${DJANGO_BASE}/api/ecommerce/cart/`,
+    add:      `${DJANGO_BASE}/api/ecommerce/cart/items/`,
+    update:   `${DJANGO_BASE}/api/ecommerce/cart/items/update/`,
+    remove:   `${DJANGO_BASE}/api/ecommerce/cart/items/remove/`,
+    checkout: `${DJANGO_BASE}/api/ecommerce/cart/checkout/`,
+};
+
 
 let cart = { items: [], subtotal: 0 };
 
-// LOAD CART
-// async function loadCart() {
-//     try {
-//         const res = await fetch('/cart/load');
-//         let data = { items: [], subtotal: 0 };
-//         try {
-//             data = await res.json();
-//         } catch(err) {
-//             console.error('Invalid JSON from /cart/load', err);
-//         }
-//         cart = data;
-//         renderCart();
-//         updateCartBadge();
-//     } catch (err) {
-//         console.error('Failed to load cart:', err);
-//         document.getElementById('msg').innerText = '❌ Failed to load cart';
-//     }
-// }
+/* =====================================================
+   HELPERS
+===================================================== */
+function authHeaders() {
+    return {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${DJANGO_TOKEN}`
+    };
+}
 
-// RENDER CART
+function showAlert(title, message, type = 'success') {
+    const el = document.getElementById('notificationAlert');
+    el.className = `alert alert-${type}`;
+    el.textContent = `${title}: ${message}`;
+    el.classList.remove('d-none');
+    setTimeout(() => el.classList.add('d-none'), 4000);
+}
+
+
+/* =====================================================
+   LOAD CART
+===================================================== */
+async function loadCart() {
+    try {
+        const res = await fetch(API.load, {
+            headers: authHeaders()
+        });
+
+        if (!res.ok) throw new Error('Failed to load cart');
+
+        cart = await res.json();
+        renderCart();
+        updateCartBadge();
+
+    } catch (err) {
+        console.error(err);
+        showAlert('Error', err.message, 'danger');
+    }
+}
+
+/* =====================================================
+   RENDER CART
+===================================================== */
 function renderCart() {
-    const items = cart?.items || [];
     const container = document.getElementById('cart');
-    if (!items.length) {
-        container.innerHTML = '<p class="text-muted">No items in cart</p>';
+
+    if (!cart.items || cart.items.length === 0) {
+        container.innerHTML = '<p class="text-muted">Your cart is empty.</p>';
         return;
     }
 
-    let html = `<table class="table">
-        <thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Total</th><th></th></tr></thead><tbody>`;
+    let html = `
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th width="120">Qty</th>
+                    <th>Unit</th>
+                    <th>Total</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
 
-    items.forEach(i => {
-        html += `<tr>
-            <td>${i.product_name}</td>
-            <td><input type="number" min="1" value="${i.quantity}"
-                onchange="updateItem(${i.product},this.value)"
-                class="form-control"></td>
-            <td>KES ${i.unit_price}</td>
-            <td>KES ${(i.unit_price*i.quantity).toFixed(2)}</td>
-            <td><button onclick="removeItem(${i.product})" class="btn btn-danger btn-sm">Remove</button></td>
-        </tr>`;
+    cart.items.forEach(item => {
+        html += `
+            <tr>
+                <td>${item.product_name}</td>
+                <td>
+                    <input type="number"
+                           min="1"
+                           value="${item.quantity}"
+                           class="form-control"
+                           onchange="updateItem(${item.product}, this.value)">
+                </td>
+                <td>KES ${item.unit_price}</td>
+                <td>KES ${(item.unit_price * item.quantity).toFixed(2)}</td>
+                <td>
+                    <button class="btn btn-sm btn-danger"
+                            onclick="removeItem(${item.product})">
+                        Remove
+                    </button>
+                </td>
+            </tr>
+        `;
     });
 
-    html += `</tbody></table>
+    html += `
+            </tbody>
+        </table>
+
         <div class="d-flex justify-content-between">
-        <b>Subtotal: KES ${cart.subtotal}</b>
-        <button onclick="checkout()" class="btn btn-success">Checkout</button>
-    </div>`;
+            <strong>Subtotal: KES ${cart.subtotal}</strong>
+            <button class="btn btn-success" onclick="checkout()">
+                Checkout
+            </button>
+        </div>
+    `;
 
     container.innerHTML = html;
 }
 
-// ADD ITEM
-async function addItem(productId, quantity = 1) {
-    const btn = event.currentTarget;
-    const originalHTML = btn.innerHTML;
-    btn.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+/* =====================================================
+   ADD ITEM (DJANGO-COMPATIBLE)
+===================================================== */
+async function addItem(e, productId, quantity = 1) {
+    const btn = e.currentTarget;
+    const original = btn.innerHTML;
+
     btn.disabled = true;
+    btn.innerHTML = 'Adding…';
 
     try {
-        const res = await fetch('/cart/items', {
+        const res = await fetch(API.add, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ productId, quantity })
+            headers: authHeaders(),
+            body: JSON.stringify({
+                product: productId,   // 👈 MUST be "product"
+                quantity: Number(quantity)
+            })
         });
 
-        let data = {};
-        try { data = await res.json(); } catch(err) { console.error(err); }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Add failed');
 
-        if (res.ok) {
-            showAlert('Success', 'Item added to cart!', 'success');
-            loadCart();
-        } else {
-            showAlert('Error', data.error || 'Failed to add item', 'error');
-        }
+        showAlert('Success', 'Item added to cart');
+        loadCart();
+
     } catch (err) {
-        console.error('Add to cart failed:', err);
-        showAlert('Error', 'Network error. Try again.', 'error');
+        console.error(err);
+        showAlert('Error', err.message, 'danger');
     } finally {
-        btn.innerHTML = originalHTML;
         btn.disabled = false;
+        btn.innerHTML = original;
     }
 }
 
-// UPDATE ITEM
+/* =====================================================
+   UPDATE ITEM
+===================================================== */
 async function updateItem(product, quantity) {
     try {
-        await fetch('/cart/update', {
+        await fetch(API.update, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ product, quantity })
+            headers: authHeaders(),
+            body: JSON.stringify({
+                product,
+                quantity: Number(quantity)
+            })
         });
+
         loadCart();
-    } catch(err) { console.error(err); }
+    } catch (err) {
+        console.error(err);
+    }
 }
 
-// REMOVE ITEM
+/* =====================================================
+   REMOVE ITEM
+===================================================== */
 async function removeItem(product) {
     try {
-        await fetch('/cart/remove', {
+        await fetch(API.remove, {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
+            headers: authHeaders(),
             body: JSON.stringify({ product })
         });
+
         loadCart();
-    } catch(err) { console.error(err); }
+    } catch (err) {
+        console.error(err);
+    }
 }
 
-// CHECKOUT
+/* =====================================================
+   CHECKOUT
+===================================================== */
 async function checkout() {
     try {
-        const res = await fetch('/cart/checkout', { method: 'POST' });
-        let data = {};
-        try { data = await res.json(); } catch(err) { console.error(err); }
+        const res = await fetch(API.checkout, {
+            method: 'POST',
+            headers: authHeaders()
+        });
 
-        if (data.receipt) showReceipt(data.receipt);
+        const data = await res.json();
+
+        if (data.receipt) {
+            showReceipt(data.receipt);
+        }
+
         loadCart();
-    } catch(err) { console.error(err); }
+    } catch (err) {
+        console.error(err);
+    }
 }
 
-// CART BADGE
-async function updateCartBadge() {
-    const badge = document.querySelector('.cart-badge');
-    if (!badge) return;
-    badge.style.display = 'none';
-
-    if (!cart.items || !cart.items.length) return;
-
-    badge.textContent = cart.items.length;
-    badge.style.display = 'flex';
-}
-
-// RECEIPT MODAL
-function showReceipt(r){
-    let html = `<p><b>Date:</b> ${new Date(r.created_at).toLocaleString()}</p>
-        <table class="table"><tr><th>Item</th><th>Qty</th><th>Total</th></tr>`;
+/* =====================================================
+   RECEIPT
+===================================================== */
+function showReceipt(r) {
+    let html = `
+        <p><strong>Date:</strong> ${new Date(r.created_at).toLocaleString()}</p>
+        <table class="table">
+            <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Total</th>
+            </tr>
+    `;
 
     r.items.forEach(i => {
-        html += `<tr><td>${i.product_name}</td><td>${i.quantity}</td><td>KES ${i.subtotal}</td></tr>`;
+        html += `
+            <tr>
+                <td>${i.product_name}</td>
+                <td>${i.quantity}</td>
+                <td>KES ${i.subtotal}</td>
+            </tr>
+        `;
     });
 
-    html += `</table><h5>Total: KES ${r.total}</h5>`;
+    html += `
+        </table>
+        <h5>Total: KES ${r.total}</h5>
+    `;
+
     document.getElementById('receiptBody').innerHTML = html;
-    document.getElementById('receiptModal').style.display='block';
+    document.getElementById('receiptModal').style.display = 'block';
 }
 
-function closeReceipt(){
-    document.getElementById('receiptModal').style.display='none';
+function closeReceipt() {
+    document.getElementById('receiptModal').style.display = 'none';
 }
 
-// ALERT
-function showAlert(title, message, type='success') {
-    const alert = document.getElementById('notificationAlert');
-    if (!alert) return;
-    alert.textContent = `${title}: ${message}`;
-    alert.className = `alert alert-${type} alert-dismissible fade show`;
-    setTimeout(() => alert.className = 'alert alert-dismissible fade', 4000);
+/* =====================================================
+   CART BADGE
+===================================================== */
+function updateCartBadge() {
+    const badge = document.querySelector('.cart-badge');
+    if (!badge) return;
+
+    badge.textContent = cart.items.length;
+    badge.style.display = cart.items.length ? 'flex' : 'none';
 }
 
-// INIT
-document.addEventListener('DOMContentLoaded', () => { loadCart(); });
+/* =====================================================
+   INIT
+===================================================== */
+document.addEventListener('DOMContentLoaded', loadCart);
 </script>
 
 @endsection

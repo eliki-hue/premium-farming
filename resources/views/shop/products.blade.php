@@ -77,11 +77,9 @@
 
                             <div class="mt-auto">
                                 @auth
-                                    <button
-                                        class="btn btn-success w-100 add-to-cart-btn"
-                                        data-product-id="{{ $product['id'] }}"
-                                        data-product-name="{{ $product['name'] }}">
-                                        <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                                   <button class="btn btn-primary"
+                                            onclick="addItem(event, {{ $product->id }}, 1)">
+                                        Add to Cart
                                     </button>
                                 @else
                                     <a href="{{ route('login') }}?redirect={{ urlencode(request()->fullUrl()) }}"
@@ -261,7 +259,7 @@
             this.disabled = true;
 
             try {
-                const response = await fetch('/cart/add', {
+                const response = await fetch('api/ecommerce/cart/items/', {
                     method: 'POST',
                     headers: {
                         'Content-Type':     'application/json',

@@ -7,76 +7,90 @@ use Illuminate\Support\Facades\Http;
 
 class CartController extends Controller
 {
-    protected $apiUrl;
-
-    public function __construct()
+    private function djangoHeaders()
     {
-        $this->apiUrl = config('services.django_api.url');
+        $token = session('django_token');
+
+        return [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token,
+        ];
     }
 
-    private function token()
+    /* =========================
+       CART PAGE
+    ========================== */
+   public function view()
+{
+    return view('shop.cart');
+}
+
+
+    /* =========================
+       LOAD CART
+    ========================== */
+    public function load()
     {
-        return session('django_token');
+        $response = Http::withHeaders($this->djangoHeaders())
+            ->get(config('services.django_api.url') . '/api/ecommerce/cart/');
+
+        return response()->json($response->json(), $response->status());
     }
 
-    // VIEW CART
-    public function view()
-    {
-        $response = Http::withToken($this->token())
-            ->get($this->apiUrl . '/cart/items');
-
-        if ($response->failed()) {
-            return response()->json(['items'=>[], 'subtotal'=>0], 500);
-        }
-
-        return response()->json($response->json());
-    }
-
-    // ADD ITEM
+    /* =========================
+       ADD ITEM
+    ========================== */
     public function add(Request $request)
     {
-        $response = Http::withToken($this->token())
-            ->post($this->apiUrl . '/cart/items/', [
-                'product_id' => $request->product_id,
-                'quantity'   => $request->quantity ?? 1,
+        $response = Http::withHeaders($this->djangoHeaders())
+            ->post(config('services.django_api.url') . '/api/ecommerce/cart/items/', [
+                'product' => $request->product,
+                'quantity' => $request->quantity,
             ]);
 
-        if ($response->failed()) {
-            return response()->json(['error'=>'Failed to add item'],500);
-        }
-
-        return response()->json($response->json());
+        return response()->json($response->json(), $response->status());
     }
 
-    // UPDATE ITEM
+    /* =========================
+       UPDATE ITEM
+    ========================== */
     public function update(Request $request)
     {
-        $response = Http::withToken($this->token())
-            ->patch($this->apiUrl . '/cart/items/update/', [
-                'product'  => $request->product,
-                'quantity' => max(1,(int)$request->quantity),
+        $response = Http::withHeaders($this->djangoHeaders())
+            ->patch(config('services.django_api.url') . '/api/ecommerce/cart/items/update/', [
+                'product' => $request->product,
+                'quantity' => $request->quantity,
             ]);
 
-        return response()->json($response->json());
+        return response()->json($response->json(), $response->status());
     }
 
-    // REMOVE ITEM
+    /* =========================
+       REMOVE ITEM
+    ========================== */
     public function remove(Request $request)
     {
-        $response = Http::withToken($this->token())
-            ->delete($this->apiUrl . '/cart/items/remove/', [
-                'product' => $request->product
-            ]);
+        $response = Http::withHeaders($this->djangoHeaders())
+            ->send('DELETE',
+                config('services.django_api.url') . '/api/ecommerce/cart/items/remove/',
+                [
+                    'json' => [
+                        'product' => $request->product
+                    ]
+                ]
+            );
 
-        return response()->json($response->json());
+        return response()->json($response->json(), $response->status());
     }
 
-    // CHECKOUT
+    /* =========================
+       CHECKOUT
+    ========================== */
     public function checkout()
     {
-        $response = Http::withToken($this->token())
-            ->post($this->apiUrl . '/checkout/mpesa/');
+        $response = Http::withHeaders($this->djangoHeaders())
+            ->post(config('services.django_api.url') . '/api/ecommerce/cart/checkout/');
 
-        return response()->json($response->json());
+        return response()->json($response->json(), $response->status());
     }
 }

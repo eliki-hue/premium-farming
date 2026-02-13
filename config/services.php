@@ -32,9 +32,9 @@ return [
     'django_api' => [
         'url'      => env('DJANGO_API_URL'),           // e.g. https://xxx.ngrok-free.app
         // 'domain' => env('DJANGO_DOMAIN', '127.0.0.1'), // used for cookies if needed
-        'username' => env('DJANGO_API_USERNAME'),
-        'password' => env('DJANGO_API_PASSWORD'),
-        'use_mock' => env('DJANGO_API_USE_MOCK', false),
+    //     'username' => env('DJANGO_API_USERNAME'),
+    //     'password' => env('DJANGO_API_PASSWORD'),
+    //     'use_mock' => env('DJANGO_API_USE_MOCK', false),
     ],
 
     'resend' => [
