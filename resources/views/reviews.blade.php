@@ -7,8 +7,7 @@
 <div class="min-h-screen pt-24">
     <!-- Reviews Hero -->
     <section class="reviews-hero" style="
-        background: var(--gradient-dark-green),
-                    url('https://images.unsplash.com/photo-1560493676-04071c5f467b?q=80&w=2070') center/cover;
+        background: linear-gradient(135deg, var(--primary-blue), var(--navy-blue));
         padding: 6rem 0 4rem;
         color: white;
         position: relative;
@@ -39,11 +38,11 @@
         <div class="container">
             <div class="row mb-4">
                 <div class="col-12">
-                    <h2 class="fw-bold text-center mb-3" style="font-family: 'Cormorant Garamond', serif; color: var(--navy-green);">
+                    <h2 class="fw-bold text-center mb-3" style="font-family: 'Cormorant Garamond', serif; color: var(--navy-blue);">
                         <i class="bi bi-play-circle me-2"></i>Featured Video Testimonial
                     </h2>
                     <p class="text-center text-muted mb-0">
-                        Watch how proper dairy cow rationing increases milk production
+                        Watch how our premium feeds transform livestock farming
                     </p>
                 </div>
             </div>
@@ -51,12 +50,12 @@
             <!-- Featured Video -->
             <div class="row justify-content-center">
                 <div class="col-lg-10">
-                    <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden; border: 1px solid rgba(42, 110, 63, 0.1);">
+                    <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden; border: 1px solid rgba(30, 58, 138, 0.1);">
                         <div class="card-body p-0">
                             <div class="ratio ratio-16x9">
                                 <iframe 
-                                    src="https://www.youtube.com/embed/UQ91D2o1OU0" 
-                                    title="Proper dairy cow rationing for more milk production"
+                                    src="https://www.youtube.com/embed/bZhqqu566Ro?start=3&autoplay=0&rel=0&modestbranding=1" 
+                                    title="Poultry Farming Success Story"
                                     frameborder="0" 
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                                     referrerpolicy="strict-origin-when-cross-origin" 
@@ -66,26 +65,26 @@
                                 ></iframe>
                             </div>
                             <div class="p-4">
-                                <h3 class="fw-bold mb-2" style="color: var(--navy-green);">
-                                    <i class="bi bi-play-btn-fill me-2"></i>Proper dairy cow rationing for more milk production
+                                <h3 class="fw-bold mb-2" style="color: var(--navy-blue);">
+                                    <i class="bi bi-play-btn-fill me-2"></i>Poultry Farming Success with Premium Feeds
                                 </h3>
                                 <p class="text-muted mb-3">
-                                    Learn how our specialized dairy feeds and proper rationing techniques can significantly increase your milk production. This video demonstrates real results from farmers using Premium Farming Feeds.
+                                    Watch how our specialized poultry feeds have transformed local farms, increasing egg production and broiler growth rates. This farmer shares their incredible journey with Premium Farming Feeds.
                                 </p>
                                 <div class="d-flex flex-wrap gap-3">
                                     <span class="badge" style="
-                                        background: rgba(56, 161, 105, 0.1);
-                                        color: var(--primary-green);
-                                        border: 1px solid rgba(56, 161, 105, 0.2);
+                                        background: rgba(30, 58, 138, 0.1);
+                                        color: var(--primary-blue);
+                                        border: 1px solid rgba(30, 58, 138, 0.2);
                                     ">
-                                        <i class="bi bi-droplet me-1"></i>Dairy Farming
+                                        <i class="bi bi-egg-fried me-1"></i>Poultry Farming
                                     </span>
                                     <span class="badge" style="
-                                        background: rgba(247, 127, 0, 0.1);
-                                        color: #f77f00;
-                                        border: 1px solid rgba(247, 127, 0, 0.2);
+                                        background: rgba(212, 175, 55, 0.1);
+                                        color: var(--accent-gold);
+                                        border: 1px solid rgba(212, 175, 55, 0.2);
                                     ">
-                                        <i class="bi bi-cup-straw me-1"></i>Milk Production
+                                        <i class="bi bi-graph-up-arrow me-1"></i>Success Story
                                     </span>
                                     <span class="badge" style="
                                         background: rgba(156, 163, 175, 0.1);
@@ -108,7 +107,7 @@
         <div class="container">
             <div class="row mb-4">
                 <div class="col-12">
-                    <h2 class="fw-bold text-center mb-3" style="font-family: 'Cormorant Garamond', serif; color: var(--navy-green);">
+                    <h2 class="fw-bold text-center mb-3" style="font-family: 'Cormorant Garamond', serif; color: var(--navy-blue);">
                         <i class="bi bi-collection-play me-2"></i>More Video Testimonials
                     </h2>
                     <p class="text-center text-muted mb-0">
@@ -122,91 +121,108 @@
                 @php
                     $youtubeVideos = [
                         [
-                            'id' => 'dairy1',
-                            'title' => 'Dairy Farmer Success Story',
-                            'description' => 'Mwalimu Lawrence from Kiambu shares how our dairy feeds increased milk production by 50%',
+                            'id' => 'poultry-success',
+                            'title' => 'Poultry Farming Transformation',
+                            'description' => 'See how our poultry feeds transformed this farm with better growth rates and egg production',
                             'channel' => 'Premium Feeds Customer',
-                            'views' => '1.2K',
-                            'date' => '2 months ago',
+                            'views' => '15K',
+                            'date' => '2 weeks ago',
                             'duration' => '4:20',
-                            'thumbnail' => 'https://img.youtube.com/vi/UQ91D2o1OU0/maxresdefault.jpg',
-                            'embedId' => 'UQ91D2o1OU0',
-                            'category' => 'Dairy'
+                            'thumbnail' => 'https://img.youtube.com/vi/bZhqqu566Ro/maxresdefault.jpg',
+                            'embedId' => 'bZhqqu566Ro',
+                            'startTime' => 3,
+                            'category' => 'Poultry',
+                            'featured' => true
                         ],
                         [
-                            'id' => 'poultry1',
-                            'title' => 'Poultry Farming Transformation',
-                            'description' => 'Mary shows her broiler growth results after switching to our feeds',
-                            'channel' => 'Happy Farmer TV',
-                            'views' => '850',
+                            'id' => 'dairy-success',
+                            'title' => 'Dairy Cow Rationing Guide',
+                            'description' => 'Expert advice on proper dairy cow feeding for maximum milk production',
+                            'channel' => 'Dairy Farmers Kenya',
+                            'views' => '12K',
                             'date' => '1 month ago',
                             'duration' => '3:45',
-                            'thumbnail' => 'https://img.youtube.com/vi/9bZkp7q19f0/maxresdefault.jpg',
-                            'embedId' => '9bZkp7q19f0',
-                            'category' => 'Poultry'
+                            'thumbnail' => 'https://img.youtube.com/vi/OSruP9B-_KA/maxresdefault.jpg',
+                            'embedId' => 'OSruP9B-_KA',
+                            'startTime' => 17,
+                            'category' => 'Dairy',
+                            'featured' => false
                         ],
                         [
-                            'id' => 'pig1',
-                            'title' => 'Pig Farming Results',
-                            'description' => 'Peter demonstrates weight gain in his pigs using our specialized feeds',
-                            'channel' => 'Farm Success Stories',
-                            'views' => '2.1K',
-                            'date' => '3 months ago',
+                            'id' => 'farming-tips',
+                            'title' => 'Modern Farming Techniques',
+                            'description' => 'Learn modern farming techniques that maximize productivity with our feeds',
+                            'channel' => 'Agri Business Hub',
+                            'views' => '18K',
+                            'date' => '3 weeks ago',
                             'duration' => '5:15',
-                            'thumbnail' => 'https://img.youtube.com/vi/JGwWNGJdvx8/maxresdefault.jpg',
-                            'embedId' => 'JGwWNGJdvx8',
-                            'category' => 'Pig'
+                            'thumbnail' => 'https://img.youtube.com/vi/z5nt5tkf0Z0/maxresdefault.jpg',
+                            'embedId' => 'z5nt5tkf0Z0',
+                            'startTime' => 7,
+                            'category' => 'General',
+                            'featured' => false
                         ],
                         [
-                            'id' => 'mixed1',
-                            'title' => 'Mixed Farming Success',
-                            'description' => 'Kamau shares his experience with our complete farming solution',
-                            'channel' => 'Kenya Farmers Hub',
-                            'views' => '3.4K',
-                            'date' => '4 months ago',
-                            'duration' => '6:30',
-                            'thumbnail' => 'https://img.youtube.com/vi/60ItHLz5WEA/maxresdefault.jpg',
-                            'embedId' => '60ItHLz5WEA',
-                            'category' => 'Mixed'
-                        ],
-                        [
-                            'id' => 'service1',
-                            'title' => 'Customer Service Review',
-                            'description' => 'Sarah praises our delivery and technical support team',
-                            'channel' => 'Agri Business Reviews',
-                            'views' => '950',
-                            'date' => '2 weeks ago',
+                            'id' => 'poultry-testimonial',
+                            'title' => 'Poultry Farmer Success Story',
+                            'description' => 'Local poultry farmer shares incredible results with our starter and grower feeds',
+                            'channel' => 'Kenya Farmers Network',
+                            'views' => '8.5K',
+                            'date' => '2 months ago',
                             'duration' => '4:10',
-                            'thumbnail' => 'https://img.youtube.com/vi/mWRsgZuwf_8/maxresdefault.jpg',
-                            'embedId' => 'mWRsgZuwf_8',
-                            'category' => 'Service'
+                            'thumbnail' => 'https://img.youtube.com/vi/bZhqqu566Ro/1.jpg',
+                            'embedId' => 'bZhqqu566Ro',
+                            'startTime' => 30,
+                            'category' => 'Poultry',
+                            'featured' => false
                         ],
                         [
-                            'id' => 'farmvisit1',
-                            'title' => 'Farm Visit & Review',
-                            'description' => 'See our products in action at a real farm in Nakuru',
+                            'id' => 'dairy-testimonial',
+                            'title' => 'Dairy Farming Success',
+                            'description' => 'How our dairy concentrates helped increase milk production by 40%',
+                            'channel' => 'Dairy Innovation Hub',
+                            'views' => '11K',
+                            'date' => '1 month ago',
+                            'duration' => '6:30',
+                            'thumbnail' => 'https://img.youtube.com/vi/OSruP9B-_KA/1.jpg',
+                            'embedId' => 'OSruP9B-_KA',
+                            'startTime' => 45,
+                            'category' => 'Dairy',
+                            'featured' => false
+                        ],
+                        [
+                            'id' => 'general-farming',
+                            'title' => 'Complete Farm Management',
+                            'description' => 'Comprehensive guide to modern farm management with our nutrition solutions',
                             'channel' => 'Premium Farming Feeds',
-                            'views' => '5.2K',
-                            'date' => '6 months ago',
+                            'views' => '22K',
+                            'date' => '3 months ago',
                             'duration' => '7:45',
-                            'thumbnail' => 'https://img.youtube.com/vi/LDU_Txk06tM/maxresdefault.jpg',
-                            'embedId' => 'LDU_Txk06tM',
-                            'category' => 'Farm Visit'
+                            'thumbnail' => 'https://img.youtube.com/vi/z5nt5tkf0Z0/2.jpg',
+                            'embedId' => 'z5nt5tkf0Z0',
+                            'startTime' => 60,
+                            'category' => 'General',
+                            'featured' => false
                         ]
                     ];
                 @endphp
                 
                 @foreach($youtubeVideos as $video)
                 <div class="col-lg-4 col-md-6">
-                    <div class="video-card card border-0 shadow-sm h-100" style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(42, 110, 63, 0.1);">
+                    <div class="video-card card border-0 shadow-sm h-100" style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(30, 58, 138, 0.1);">
                         <!-- Video Thumbnail with Play Button -->
-                        <div class="video-thumbnail position-relative" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="{{ $video['embedId'] }}" data-video-title="{{ $video['title'] }}">
+                        <div class="video-thumbnail position-relative" style="cursor: pointer;" 
+                             data-bs-toggle="modal" 
+                             data-bs-target="#videoModal" 
+                             data-video-id="{{ $video['embedId'] }}" 
+                             data-video-title="{{ $video['title'] }}"
+                             data-start-time="{{ $video['startTime'] ?? 0 }}">
                             <img src="{{ $video['thumbnail'] }}" alt="{{ $video['title'] }}" class="img-fluid w-100 lazy-load" 
                                  data-src="{{ $video['thumbnail'] }}" 
                                  style="height: 200px; object-fit: cover;"
                                  onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070&auto=format&fit=crop'">
                             <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,0.3);">
-                                <div class="play-button rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: rgba(56, 161, 105, 0.9);">
+                                <div class="play-button rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: var(--primary-blue); opacity: 0.9;">
                                     <i class="bi bi-play-fill text-white fs-3"></i>
                                 </div>
                             </div>
@@ -215,11 +231,11 @@
                                     <i class="bi bi-clock me-1"></i>{{ $video['duration'] }}
                                 </span>
                             </div>
-                            @if($video['category'] == 'Dairy')
+                            @if($video['featured'] ?? false)
                             <div class="position-absolute top-0 start-0 m-2">
                                 <span class="badge py-1 px-2" style="
-                                    background: var(--gradient-green);
-                                    color: white;
+                                    background: linear-gradient(135deg, var(--accent-gold), var(--warm-gold));
+                                    color: var(--navy-blue);
                                     font-size: 0.7rem;
                                 ">
                                     <i class="bi bi-star-fill me-1"></i>Featured
@@ -240,9 +256,9 @@
                             <div class="video-meta d-flex justify-content-between align-items-center">
                                 <div>
                                     <span class="badge" style="
-                                        background: rgba(56, 161, 105, 0.1);
-                                        color: var(--primary-green);
-                                        border: 1px solid rgba(56, 161, 105, 0.2);
+                                        background: rgba(30, 58, 138, 0.1);
+                                        color: var(--primary-blue);
+                                        border: 1px solid rgba(30, 58, 138, 0.2);
                                         font-size: 0.75rem;
                                     ">
                                         <i class="bi bi-person-circle me-1"></i>{{ $video['channel'] }}
@@ -260,11 +276,18 @@
                                 <small class="text-muted">
                                     <i class="bi bi-calendar3 me-1"></i>{{ $video['date'] }}
                                 </small>
-                                <button class="btn btn-sm watch-btn" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="{{ $video['embedId'] }}" data-video-title="{{ $video['title'] }}" style="
-                                    background: var(--gradient-green);
+                                <button class="btn btn-sm watch-btn" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#videoModal" 
+                                        data-video-id="{{ $video['embedId'] }}" 
+                                        data-video-title="{{ $video['title'] }}"
+                                        data-start-time="{{ $video['startTime'] ?? 0 }}"
+                                        style="
+                                    background: var(--primary-blue);
                                     color: white;
                                     padding: 0.25rem 0.75rem;
                                     font-size: 0.8rem;
+                                    border: none;
                                 ">
                                     <i class="bi bi-play-circle me-1"></i>Watch
                                 </button>
@@ -279,8 +302,10 @@
             <div class="row mt-4">
                 <div class="col-12 text-center">
                     <button id="loadMoreVideos" class="btn" style="
-                        border: 1px solid var(--primary-green);
-                        color: var(--primary-green);
+                        border: 1px solid var(--primary-blue);
+                        color: var(--primary-blue);
+                        background: transparent;
+                        padding: 0.5rem 2rem;
                     ">
                         <i class="bi bi-plus-circle me-2"></i>Load More Videos
                     </button>
@@ -293,13 +318,14 @@
     <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content border-0" style="border-radius: 8px; overflow: hidden;">
-                <div class="modal-header border-0 bg-dark">
-                    <h5 class="modal-title text-white" id="videoModalLabel">Customer Review</h5>
+                <div class="modal-header border-0" style="background: var(--navy-blue);">
+                    <h5 class="modal-title text-white" id="videoModalLabel" style="font-family: 'Cormorant Garamond', serif;">Customer Review</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-0 bg-dark">
+                <div class="modal-body p-0" style="background: #000;">
                     <div class="ratio ratio-16x9">
-                        <iframe id="youtubePlayer" src="" 
+                        <iframe id="youtubePlayer" 
+                            src="" 
                             frameborder="0" 
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                             allowfullscreen
@@ -307,16 +333,18 @@
                         </iframe>
                     </div>
                 </div>
-                <div class="modal-footer bg-dark border-0">
+                <div class="modal-footer border-0" style="background: var(--navy-blue);">
                     <button type="button" class="btn btn-sm" data-bs-dismiss="modal" style="
                         border: 1px solid white;
                         color: white;
+                        background: transparent;
                     ">
                         Close
                     </button>
-                    <a href="https://www.youtube.com/watch?v=UQ91D2o1OU0" target="_blank" class="btn btn-sm" style="
+                    <a href="#" id="watchOnYoutubeBtn" target="_blank" class="btn btn-sm" style="
                         background: #ff0000;
                         color: white;
+                        border: none;
                     ">
                         <i class="bi bi-youtube me-1"></i>Watch on YouTube
                     </a>
@@ -332,11 +360,11 @@
                 <!-- Reviews List -->
                 <div class="col-lg-8">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 class="fw-bold mb-0" style="font-family: 'Cormorant Garamond', serif; color: var(--navy-green);">Written Reviews</h2>
+                        <h2 class="fw-bold mb-0" style="font-family: 'Cormorant Garamond', serif; color: var(--navy-blue);">Written Reviews</h2>
                         <div class="d-flex gap-2">
-                            <button class="btn btn-sm active" id="filterAll" style="border: 1px solid var(--primary-green); color: var(--primary-green);">All</button>
-                            <button class="btn btn-sm" id="filter5" style="border: 1px solid var(--primary-green); color: var(--primary-green);">5 Stars</button>
-                            <button class="btn btn-sm" id="filter4" style="border: 1px solid var(--primary-green); color: var(--primary-green);">4 Stars</button>
+                            <button class="btn btn-sm active" id="filterAll" style="border: 1px solid var(--primary-blue); color: var(--primary-blue); background: transparent;">All</button>
+                            <button class="btn btn-sm" id="filter5" style="border: 1px solid var(--primary-blue); color: var(--primary-blue); background: transparent;">5 Stars</button>
+                            <button class="btn btn-sm" id="filter4" style="border: 1px solid var(--primary-blue); color: var(--primary-blue); background: transparent;">4 Stars</button>
                         </div>
                     </div>
 
@@ -352,7 +380,7 @@
                                 'category' => 'Dairy Farming',
                                 'title' => 'Excellent Dairy Meal!',
                                 'content' => '"The dairy meal increased my milk production by 30%. My cows are healthier and more productive. The delivery was on time and the customer service is excellent! I recommend Premium Farming Feeds to all dairy farmers."',
-                                'color' => 'green'
+                                'color' => 'blue'
                             ],
                             [
                                 'initials' => 'M',
@@ -363,7 +391,7 @@
                                 'category' => 'Poultry Farming',
                                 'title' => 'Best Poultry Feeds!',
                                 'content' => '"My broilers gained weight faster with Premium feeds compared to other brands I\'ve tried. The technical advice from their team helped me reduce mortality rates. Their feeds are well-balanced and affordable."',
-                                'color' => 'green'
+                                'color' => 'blue'
                             ],
                             [
                                 'initials' => 'P',
@@ -374,7 +402,7 @@
                                 'category' => 'Pig Farming',
                                 'title' => 'Reliable Service',
                                 'content' => '"Quality feeds at affordable prices. The delivery service to my farm is reliable even during rainy seasons. My pigs have shown significant growth improvement since switching to Premium feeds."',
-                                'color' => 'green'
+                                'color' => 'blue'
                             ],
                             [
                                 'initials' => 'S',
@@ -385,7 +413,7 @@
                                 'category' => 'Dairy Farming',
                                 'title' => 'Great Customer Support',
                                 'content' => '"Whenever I have questions about feeding schedules or nutrition, their technical team is always available to help. The feeds have improved my herd\'s health significantly."',
-                                'color' => 'green'
+                                'color' => 'blue'
                             ],
                             [
                                 'initials' => 'K',
@@ -396,15 +424,15 @@
                                 'category' => 'Mixed Farming',
                                 'title' => 'Good Quality Feeds',
                                 'content' => '"I use their feeds for both my poultry and dairy cows. The quality is consistent and the animals are healthy. I appreciate the bulk delivery discounts they offer for large orders."',
-                                'color' => 'green'
+                                'color' => 'blue'
                             ]
                         ] as $review)
-                        <div class="card border-0 shadow-sm mb-4" data-rating="{{ $review['rating'] }}" style="border-radius: 8px; border: 1px solid rgba(42, 110, 63, 0.1);">
+                        <div class="card border-0 shadow-sm mb-4" data-rating="{{ $review['rating'] }}" style="border-radius: 8px; border: 1px solid rgba(30, 58, 138, 0.1);">
                             <div class="card-body p-4">
                                 <div class="row align-items-start">
                                     <div class="col-md-2 text-center mb-3 mb-md-0">
                                         <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
-                                             style="width: 50px; height: 50px; background: var(--gradient-green);">
+                                             style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));">
                                             <span class="text-white fw-bold fs-5">{{ $review['initials'] }}</span>
                                         </div>
                                         <h6 class="mb-0 fw-bold text-dark">{{ $review['name'] }}</h6>
@@ -416,9 +444,9 @@
                                                 <div class="mb-2">
                                                     @for($i = 1; $i <= 5; $i++)
                                                         @if($i <= $review['rating'])
-                                                            <i class="bi bi-star-fill text-warning"></i>
+                                                            <i class="bi bi-star-fill" style="color: var(--accent-gold);"></i>
                                                         @else
-                                                            <i class="bi bi-star text-warning"></i>
+                                                            <i class="bi bi-star" style="color: var(--accent-gold);"></i>
                                                         @endif
                                                     @endfor
                                                 </div>
@@ -428,9 +456,9 @@
                                         <div class="d-flex align-items-center mb-2">
                                             <h5 class="mb-0 fw-bold text-dark">{{ $review['title'] }}</h5>
                                             <span class="badge ms-3" style="
-                                                background: rgba(56, 161, 105, 0.1);
-                                                color: var(--primary-green);
-                                                border: 1px solid rgba(56, 161, 105, 0.2);
+                                                background: rgba(30, 58, 138, 0.1);
+                                                color: var(--primary-blue);
+                                                border: 1px solid rgba(30, 58, 138, 0.2);
                                             ">
                                                 {{ $review['category'] }}
                                             </span>
@@ -446,18 +474,18 @@
 
                 <!-- Add Review Form -->
                 <div class="col-lg-4">
-                    <div class="card border-0 shadow-sm sticky-top" style="top: 100px; border-radius: 8px; border: 1px solid rgba(42, 110, 63, 0.1);">
+                    <div class="card border-0 shadow-sm sticky-top" style="top: 100px; border-radius: 8px; border: 1px solid rgba(30, 58, 138, 0.1);">
                         <div class="card-header bg-white border-bottom py-3">
-                            <h3 class="card-title mb-0 fw-bold text-center" style="font-size: 1.1rem; color: var(--navy-green);">
+                            <h3 class="card-title mb-0 fw-bold text-center" style="font-size: 1.1rem; color: var(--navy-blue);">
                                 <i class="bi bi-pencil-square me-2"></i>Add Your Review
                             </h3>
                         </div>
                         
                         <div class="card-body p-4">
                             @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show mb-3" style="border-radius: 6px; border-left: 4px solid var(--secondary-green) !important;">
+                            <div class="alert alert-success alert-dismissible fade show mb-3" style="border-radius: 6px; border-left: 4px solid var(--accent-gold) !important;">
                                 <div class="d-flex align-items-center">
-                                    <i class="bi bi-check-circle-fill me-2" style="color: var(--secondary-green);"></i>
+                                    <i class="bi bi-check-circle-fill me-2" style="color: var(--primary-blue);"></i>
                                     <div class="small">{{ session('success') }}</div>
                                 </div>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -489,7 +517,7 @@
                                         Your Name *
                                     </label>
                                     <input type="text" class="form-control form-control-sm" id="reviewName" name="name" 
-                                           value="{{ old('name') }}" required style="border-radius: 4px; border-color: rgba(42, 110, 63, 0.2);">
+                                           value="{{ old('name') }}" required style="border-radius: 4px; border-color: rgba(30, 58, 138, 0.2);">
                                 </div>
                                 
                                 <div class="mb-3">
@@ -498,14 +526,14 @@
                                     </label>
                                     <input type="text" class="form-control form-control-sm" id="reviewLocation" name="location" 
                                            placeholder="e.g., Kiambu, Nairobi, Thika" 
-                                           value="{{ old('location') }}" required style="border-radius: 4px; border-color: rgba(42, 110, 63, 0.2);">
+                                           value="{{ old('location') }}" required style="border-radius: 4px; border-color: rgba(30, 58, 138, 0.2);">
                                 </div>
                                 
                                 <div class="mb-3">
                                     <label for="reviewFarmType" class="form-label small fw-bold text-dark">
                                         Farm Type *
                                     </label>
-                                    <select class="form-select form-select-sm" id="reviewFarmType" name="farm_type" required style="border-radius: 4px; border-color: rgba(42, 110, 63, 0.2);">
+                                    <select class="form-select form-select-sm" id="reviewFarmType" name="farm_type" required style="border-radius: 4px; border-color: rgba(30, 58, 138, 0.2);">
                                         <option value="">Select Farm Type</option>
                                         <option value="dairy" {{ old('farm_type') == 'dairy' ? 'selected' : '' }}>Dairy Farming</option>
                                         <option value="poultry" {{ old('farm_type') == 'poultry' ? 'selected' : '' }}>Poultry Farming</option>
@@ -523,7 +551,7 @@
                                         @for($i = 1; $i <= 5; $i++)
                                             <i class="bi bi-star-fill star-icon {{ old('rating', 5) >= $i ? 'text-warning active' : 'text-secondary' }}" 
                                                data-value="{{ $i }}"
-                                               style="font-size: 1.2rem; cursor: pointer; margin-right: 2px;"></i>
+                                               style="font-size: 1.2rem; cursor: pointer; margin-right: 2px; color: {{ old('rating', 5) >= $i ? 'var(--accent-gold)' : '#6c757d' }};"></i>
                                         @endfor
                                     </div>
                                     <input type="hidden" id="reviewRating" name="rating" value="{{ old('rating', 5) }}">
@@ -535,7 +563,7 @@
                                     </label>
                                     <input type="text" class="form-control form-control-sm" id="reviewTitle" name="title" 
                                            placeholder="e.g., Excellent Dairy Meal!" 
-                                           value="{{ old('title') }}" required style="border-radius: 4px; border-color: rgba(42, 110, 63, 0.2);">
+                                           value="{{ old('title') }}" required style="border-radius: 4px; border-color: rgba(30, 58, 138, 0.2);">
                                 </div>
                                 
                                 <div class="mb-4">
@@ -544,10 +572,10 @@
                                     </label>
                                     <textarea class="form-control form-control-sm" id="reviewContent" name="content" 
                                               rows="3" placeholder="Share your experience..." 
-                                              required style="border-radius: 4px; border-color: rgba(42, 110, 63, 0.2);">{{ old('content') }}</textarea>
+                                              required style="border-radius: 4px; border-color: rgba(30, 58, 138, 0.2);">{{ old('content') }}</textarea>
                                 </div>
                                 
-                                <button type="submit" class="btn btn-sm w-100" style="border-radius: 4px; background: var(--gradient-green); color: white;">
+                                <button type="submit" class="btn btn-sm w-100" style="border-radius: 4px; background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue)); color: white; border: none;">
                                     <i class="bi bi-send me-1"></i> Submit Review
                                 </button>
                                 
@@ -568,7 +596,7 @@
     <section class="py-5 bg-light border-top border-bottom" style="border-color: #e5e7eb !important;">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="h2 fw-bold mb-3" style="font-family: 'Cormorant Garamond', serif; color: var(--navy-green);">
+                <h2 class="h2 fw-bold mb-3" style="font-family: 'Cormorant Garamond', serif; color: var(--navy-blue);">
                     Trusted by Farmers Nationwide
                 </h2>
                 <p class="text-muted mb-0">
@@ -581,16 +609,16 @@
                 <div class="col-md-4 col-lg-2">
                     <div class="text-center py-3">
                         <div class="mb-3">
-                            <i class="bi bi-star-fill fs-2" style="color: var(--gold-green);"></i>
+                            <i class="bi bi-star-fill fs-2" style="color: var(--accent-gold);"></i>
                         </div>
-                        <h3 class="fw-bold mb-1" style="color: var(--navy-green);">4.8/5</h3>
+                        <h3 class="fw-bold mb-1" style="color: var(--navy-blue);">4.8/5</h3>
                         <p class="text-muted small mb-2">Average Rating</p>
                         <div class="small">
-                            <i class="bi bi-star-fill text-warning"></i>
-                            <i class="bi bi-star-fill text-warning"></i>
-                            <i class="bi bi-star-fill text-warning"></i>
-                            <i class="bi bi-star-fill text-warning"></i>
-                            <i class="bi bi-star-half text-warning"></i>
+                            <i class="bi bi-star-fill" style="color: var(--accent-gold);"></i>
+                            <i class="bi bi-star-fill" style="color: var(--accent-gold);"></i>
+                            <i class="bi bi-star-fill" style="color: var(--accent-gold);"></i>
+                            <i class="bi bi-star-fill" style="color: var(--accent-gold);"></i>
+                            <i class="bi bi-star-half" style="color: var(--accent-gold);"></i>
                         </div>
                     </div>
                 </div>
@@ -599,12 +627,12 @@
                 <div class="col-md-4 col-lg-2">
                     <div class="text-center py-3">
                         <div class="mb-3">
-                            <i class="bi bi-people-fill fs-2" style="color: var(--primary-green);"></i>
+                            <i class="bi bi-people-fill fs-2" style="color: var(--primary-blue);"></i>
                         </div>
-                        <h3 class="fw-bold mb-1" style="color: var(--navy-green);">500+</h3>
+                        <h3 class="fw-bold mb-1" style="color: var(--navy-blue);">500+</h3>
                         <p class="text-muted small mb-2">Satisfied Farmers</p>
-                        <div class="progress" style="height: 3px; width: 80px; margin: 0 auto;">
-                            <div class="progress-bar" style="width: 85%; background-color: var(--primary-green);"></div>
+                        <div class="progress" style="height: 3px; width: 80px; margin: 0 auto; background: #e9ecef;">
+                            <div class="progress-bar" style="width: 85%; background-color: var(--primary-blue);"></div>
                         </div>
                     </div>
                 </div>
@@ -615,9 +643,9 @@
                         <div class="mb-3">
                             <i class="bi bi-award-fill fs-2" style="color: #8b5cf6;"></i>
                         </div>
-                        <h3 class="fw-bold mb-1" style="color: var(--navy-green);">5+</h3>
+                        <h3 class="fw-bold mb-1" style="color: var(--navy-blue);">5+</h3>
                         <p class="text-muted small mb-2">Years Experience</p>
-                        <span class="badge small py-1 px-2" style="background-color: rgba(56, 161, 105, 0.1) !important; color: var(--primary-green) !important; border: 1px solid rgba(56, 161, 105, 0.2);">
+                        <span class="badge small py-1 px-2" style="background-color: rgba(30, 58, 138, 0.1) !important; color: var(--primary-blue) !important; border: 1px solid rgba(30, 58, 138, 0.2);">
                             <i class="bi bi-check-circle me-1"></i>Established
                         </span>
                     </div>
@@ -629,10 +657,10 @@
                         <div class="mb-3">
                             <i class="bi bi-hand-thumbs-up-fill fs-2" style="color: #10b981;"></i>
                         </div>
-                        <h3 class="fw-bold mb-1" style="color: var(--navy-green);">98%</h3>
+                        <h3 class="fw-bold mb-1" style="color: var(--navy-blue);">98%</h3>
                         <p class="text-muted small mb-2">Recommend Us</p>
-                        <div class="progress" style="height: 3px; width: 80px; margin: 0 auto;">
-                            <div class="progress-bar" style="width: 98%; background-color: var(--secondary-green);"></div>
+                        <div class="progress" style="height: 3px; width: 80px; margin: 0 auto; background: #e9ecef;">
+                            <div class="progress-bar" style="width: 98%; background-color: var(--secondary-blue);"></div>
                         </div>
                     </div>
                 </div>
@@ -643,7 +671,7 @@
                         <div class="mb-3">
                             <i class="bi bi-basket2-fill fs-2" style="color: #f59e0b;"></i>
                         </div>
-                        <h3 class="fw-bold mb-1" style="color: var(--navy-green);">50+</h3>
+                        <h3 class="fw-bold mb-1" style="color: var(--navy-blue);">50+</h3>
                         <p class="text-muted small mb-2">Quality Products</p>
                         <span class="badge bg-light text-warning small py-1 px-2">
                             <i class="bi bi-tags me-1"></i>Variety
@@ -657,9 +685,9 @@
                         <div class="mb-3">
                             <i class="bi bi-headset fs-2" style="color: #ec4899;"></i>
                         </div>
-                        <h3 class="fw-bold mb-1" style="color: var(--navy-green);">24/7</h3>
+                        <h3 class="fw-bold mb-1" style="color: var(--navy-blue);">24/7</h3>
                         <p class="text-muted small mb-2">Support</p>
-                        <a href="tel:+254786571173" class="btn btn-xs" style="border-color: var(--primary-green); color: var(--primary-green); padding: 0.15rem 0.5rem;">
+                        <a href="tel:+254786571173" class="btn btn-xs" style="border-color: var(--primary-blue); color: var(--primary-blue); padding: 0.15rem 0.5rem;">
                             <i class="bi bi-telephone me-1"></i> Call Now
                         </a>
                     </div>
@@ -672,29 +700,29 @@
                     <div class="text-center">
                         <div class="row g-3 justify-content-center">
                             <div class="col-lg-3 col-md-6">
-                                <div class="border rounded p-3 bg-light" style="border-color: rgba(42, 110, 63, 0.1) !important;">
-                                    <i class="bi bi-shield-check d-block fs-4 mb-2" style="color: var(--secondary-green);"></i>
+                                <div class="border rounded p-3 bg-light" style="border-color: rgba(30, 58, 138, 0.1) !important;">
+                                    <i class="bi bi-shield-check d-block fs-4 mb-2" style="color: var(--primary-blue);"></i>
                                     <p class="mb-1 fw-semibold small">Premium Quality</p>
                                     <p class="text-muted small mb-0">Guaranteed</p>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6">
-                                <div class="border rounded p-3 bg-light" style="border-color: rgba(42, 110, 63, 0.1) !important;">
-                                    <i class="bi bi-truck d-block fs-4 mb-2" style="color: var(--primary-green);"></i>
+                                <div class="border rounded p-3 bg-light" style="border-color: rgba(30, 58, 138, 0.1) !important;">
+                                    <i class="bi bi-truck d-block fs-4 mb-2" style="color: var(--secondary-blue);"></i>
                                     <p class="mb-1 fw-semibold small">Reliable Delivery</p>
                                     <p class="text-muted small mb-0">On-time service</p>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6">
-                                <div class="border rounded p-3 bg-light" style="border-color: rgba(42, 110, 63, 0.1) !important;">
-                                    <i class="bi bi-cash-coin text-warning d-block fs-4 mb-2"></i>
+                                <div class="border rounded p-3 bg-light" style="border-color: rgba(30, 58, 138, 0.1) !important;">
+                                    <i class="bi bi-cash-coin d-block fs-4 mb-2" style="color: var(--accent-gold);"></i>
                                     <p class="mb-1 fw-semibold small">Competitive Prices</p>
                                     <p class="text-muted small mb-0">Best value</p>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6">
-                                <div class="border rounded p-3 bg-light" style="border-color: rgba(42, 110, 63, 0.1) !important;">
-                                    <i class="bi bi-award text-danger d-block fs-4 mb-2"></i>
+                                <div class="border rounded p-3 bg-light" style="border-color: rgba(30, 58, 138, 0.1) !important;">
+                                    <i class="bi bi-award d-block fs-4 mb-2" style="color: #8b5cf6;"></i>
                                     <p class="mb-1 fw-semibold small">Expert Advice</p>
                                     <p class="text-muted small mb-0">Professional support</p>
                                 </div>
@@ -711,7 +739,7 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-8 mb-4 mb-lg-0">
-                    <h3 class="h4 fw-bold mb-2" style="color: var(--navy-green);">
+                    <h3 class="h4 fw-bold mb-2" style="color: var(--navy-blue);">
                         <i class="bi bi-chat-left-text me-2"></i>Share Your Experience
                     </h3>
                     <p class="text-muted mb-0">
@@ -719,10 +747,10 @@
                     </p>
                 </div>
                 <div class="col-lg-4 text-lg-end">
-                    <a href="#reviewForm" class="btn" style="background: var(--gradient-green); color: white;">
+                    <a href="#reviewForm" class="btn" style="background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue)); color: white; border: none;">
                         <i class="bi bi-pencil-square me-2"></i> Write a Review
                     </a>
-                    <a href="{{ route('contact') }}" class="btn ms-2" style="border: 1px solid var(--primary-green); color: var(--primary-green);">
+                    <a href="{{ route('contact') }}" class="btn ms-2" style="border: 1px solid var(--primary-blue); color: var(--primary-blue); background: transparent;">
                         <i class="bi bi-telephone me-2"></i> Contact Us
                     </a>
                 </div>
@@ -743,7 +771,7 @@
     
     .video-card:hover {
         transform: translateY(-4px);
-        box-shadow: 0 6px 20px rgba(42, 110, 63, 0.15) !important;
+        box-shadow: 0 6px 20px rgba(30, 58, 138, 0.15) !important;
     }
     
     .play-button {
@@ -752,12 +780,12 @@
     
     .video-thumbnail:hover .play-button {
         transform: scale(1.1);
-        background: rgba(56, 161, 105, 1) !important;
+        background: var(--secondary-blue) !important;
     }
     
     .watch-btn:hover {
         transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(56, 161, 105, 0.3);
+        box-shadow: 0 4px 8px rgba(30, 58, 138, 0.3);
     }
     
     .card {
@@ -777,7 +805,7 @@
     
     .btn:hover {
         transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(42, 110, 63, 0.2);
+        box-shadow: 0 4px 8px rgba(30, 58, 138, 0.2);
     }
     
     .btn-sm {
@@ -799,11 +827,11 @@
     }
     
     .star-icon.active {
-        color: #ffc107 !important;
+        color: var(--accent-gold) !important;
     }
     
     .border {
-        border-color: rgba(42, 110, 63, 0.1) !important;
+        border-color: rgba(30, 58, 138, 0.1) !important;
     }
     
     .bg-light {
@@ -823,21 +851,6 @@
     .lazy-load {
         background-color: #f3f4f6;
         background-image: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 100%);
-    }
-    
-    /* Featured video styling */
-    .featured-video {
-        position: relative;
-    }
-    
-    .featured-video:after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 4px;
-        background: var(--gradient-green);
     }
     
     /* Modal styling */
@@ -948,14 +961,12 @@ document.addEventListener('DOMContentLoaded', function() {
         stars.forEach(star => {
             const starValue = star.getAttribute('data-value');
             if (starValue <= rating) {
-                star.classList.remove('text-secondary');
-                star.classList.add('text-warning');
+                star.style.color = 'var(--accent-gold)';
                 if (!isHover) {
                     star.classList.add('active');
                 }
             } else {
-                star.classList.remove('text-warning');
-                star.classList.add('text-secondary');
+                star.style.color = '#6c757d';
                 if (!isHover) {
                     star.classList.remove('active');
                 }
@@ -1045,19 +1056,24 @@ document.addEventListener('DOMContentLoaded', function() {
     if (videoModal) {
         const youtubePlayer = document.getElementById('youtubePlayer');
         const videoModalLabel = document.getElementById('videoModalLabel');
+        const watchOnYoutubeBtn = document.getElementById('watchOnYoutubeBtn');
         
         videoModal.addEventListener('show.bs.modal', function(event) {
             const button = event.relatedTarget;
             const videoId = button.getAttribute('data-video-id');
             const videoTitle = button.getAttribute('data-video-title');
+            const startTime = button.getAttribute('data-start-time') || 0;
             
-            // Set the YouTube embed URL with autoplay
-            youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+            // Set the YouTube embed URL with start time
+            youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?start=${startTime}&autoplay=1&rel=0&modestbranding=1&playsinline=1`;
             
             // Update modal title
             if (videoTitle) {
                 videoModalLabel.textContent = videoTitle;
             }
+            
+            // Update watch on YouTube button
+            watchOnYoutubeBtn.href = `https://www.youtube.com/watch?v=${videoId}&t=${startTime}s`;
         });
         
         videoModal.addEventListener('hidden.bs.modal', function() {
@@ -1079,31 +1095,33 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Simulate loading more videos (in real app, this would be an AJAX call)
             setTimeout(() => {
-                // Example additional videos (in real app, fetch from server)
+                // Example additional videos
                 const additionalVideos = [
                     {
-                        'id': 'sample7',
-                        'title': 'Quality Assurance Process',
-                        'description' => 'See how we ensure quality in every batch of our feeds',
-                        'channel' => 'Premium Farming Feeds',
-                        'views' => '3.8K',
-                        'date' => '5 months ago',
-                        'duration': '5:45',
-                        'thumbnail': 'https://img.youtube.com/vi/L_jWHffIx5E/maxresdefault.jpg',
-                        'embedId': 'L_jWHffIx5E',
-                        'category': 'Quality'
+                        'id': 'poultry-extra1',
+                        'title': 'Advanced Poultry Nutrition',
+                        'description': 'Expert guide to maximizing broiler growth with our premium feeds',
+                        'channel': 'Poultry Experts',
+                        'views': '9.2K',
+                        'date': '1 week ago',
+                        'duration': '6:20',
+                        'thumbnail': 'https://img.youtube.com/vi/bZhqqu566Ro/3.jpg',
+                        'embedId': 'bZhqqu566Ro',
+                        'startTime': 90,
+                        'category': 'Poultry'
                     },
                     {
-                        'id': 'sample8',
-                        'title': 'Farmers Training Session',
-                        'description' => 'Our nutritionist training farmers on proper feeding techniques',
-                        'channel' => 'Agri Education',
-                        'views' => '2.7K',
-                        'date' => '7 months ago',
-                        'duration': '8:20',
-                        'thumbnail': 'https://img.youtube.com/vi/CduA0TULnow/maxresdefault.jpg',
-                        'embedId': 'CduA0TULnow',
-                        'category': 'Training'
+                        'id': 'dairy-extra1',
+                        'title': 'Dairy Herd Management',
+                        'description': 'Complete guide to managing dairy cows for maximum productivity',
+                        'channel': 'Dairy Masters',
+                        'views': '14K',
+                        'date': '2 weeks ago',
+                        'duration': '8:15',
+                        'thumbnail': 'https://img.youtube.com/vi/OSruP9B-_KA/2.jpg',
+                        'embedId': 'OSruP9B-_KA',
+                        'startTime': 120,
+                        'category': 'Dairy'
                     }
                 ];
                 
@@ -1112,14 +1130,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     const videoCard = document.createElement('div');
                     videoCard.className = 'col-lg-4 col-md-6';
                     videoCard.innerHTML = `
-                        <div class="video-card card border-0 shadow-sm h-100" style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(42, 110, 63, 0.1);">
-                            <div class="video-thumbnail position-relative" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="${video.embedId}" data-video-title="${video.title}">
+                        <div class="video-card card border-0 shadow-sm h-100" style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(30, 58, 138, 0.1);">
+                            <div class="video-thumbnail position-relative" style="cursor: pointer;" 
+                                 data-bs-toggle="modal" 
+                                 data-bs-target="#videoModal" 
+                                 data-video-id="${video.embedId}" 
+                                 data-video-title="${video.title}"
+                                 data-start-time="${video.startTime}">
                                 <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070&auto=format&fit=crop" alt="${video.title}" class="img-fluid w-100 lazy-load" 
                                      data-src="${video.thumbnail}" 
                                      style="height: 200px; object-fit: cover;"
                                      onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070&auto=format&fit=crop'">
                                 <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,0.3);">
-                                    <div class="play-button rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: rgba(56, 161, 105, 0.9);">
+                                    <div class="play-button rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: var(--primary-blue); opacity: 0.9;">
                                         <i class="bi bi-play-fill text-white fs-3"></i>
                                     </div>
                                 </div>
@@ -1141,9 +1164,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="video-meta d-flex justify-content-between align-items-center">
                                     <div>
                                         <span class="badge" style="
-                                            background: rgba(56, 161, 105, 0.1);
-                                            color: var(--primary-green);
-                                            border: 1px solid rgba(56, 161, 105, 0.2);
+                                            background: rgba(30, 58, 138, 0.1);
+                                            color: var(--primary-blue);
+                                            border: 1px solid rgba(30, 58, 138, 0.2);
                                             font-size: 0.75rem;
                                         ">
                                             <i class="bi bi-person-circle me-1"></i>${video.channel}
@@ -1160,11 +1183,18 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <small class="text-muted">
                                         <i class="bi bi-calendar3 me-1"></i>${video.date}
                                     </small>
-                                    <button class="btn btn-sm watch-btn" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-id="${video.embedId}" data-video-title="${video.title}" style="
-                                        background: var(--gradient-green);
+                                    <button class="btn btn-sm watch-btn" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#videoModal" 
+                                            data-video-id="${video.embedId}" 
+                                            data-video-title="${video.title}"
+                                            data-start-time="${video.startTime}"
+                                            style="
+                                        background: var(--primary-blue);
                                         color: white;
                                         padding: 0.25rem 0.75rem;
                                         font-size: 0.8rem;
+                                        border: none;
                                     ">
                                         <i class="bi bi-play-circle me-1"></i>Watch
                                     </button>
@@ -1176,7 +1206,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Initialize lazy loading for the new image
                     const img = videoCard.querySelector('img.lazy-load');
-                    if (img) {
+                    if (img && img.dataset.src) {
                         img.src = img.dataset.src;
                     }
                 });
@@ -1225,27 +1255,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
-    // Play featured video in modal when clicking on card
-    const videoThumbnails = document.querySelectorAll('.video-thumbnail');
-    videoThumbnails.forEach(thumbnail => {
-        thumbnail.addEventListener('click', function() {
-            const videoId = this.getAttribute('data-video-id');
-            const videoTitle = this.getAttribute('data-video-title');
-            
-            // Special handling for the featured video (UQ91D2o1OU0)
-            if (videoId === 'UQ91D2o1OU0') {
-                // Open in modal
-                const modal = new bootstrap.Modal(document.getElementById('videoModal'));
-                const youtubePlayer = document.getElementById('youtubePlayer');
-                const videoModalLabel = document.getElementById('videoModalLabel');
-                
-                youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
-                videoModalLabel.textContent = videoTitle || 'Proper dairy cow rationing for more milk production';
-                modal.show();
-            }
-        });
-    });
 });
 </script>
 @endsection

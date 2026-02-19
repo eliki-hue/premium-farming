@@ -1147,27 +1147,22 @@
             <div class="col-lg-6">
                 <div class="vm-card">
                     <div class="vm-icon">
-                        <i class="bi bi-eye-fill"></i>
+                        <i class="bi bi-bullseye"></i>
                     </div>
-                    <h3>Our Vision</h3>
+                    <h3>Our Mission</h3>
                     <p>
-                        To become East Africa's foremost provider of premium animal nutrition solutions, 
-                        pioneering sustainable farming practices that enhance livestock productivity, 
-                        improve farmer livelihoods, and contribute to food security across the region.
+                        Ensuring access to affordable and consistent high quality agricultural solution.
                     </p>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="vm-card">
                     <div class="vm-icon">
-                        <i class="bi bi-bullseye"></i>
+                        <i class="bi bi-eye-fill"></i>
                     </div>
-                    <h3>Our Mission</h3>
+                    <h3>Our Vision</h3>
                     <p>
-                        To deliver scientifically balanced, affordable animal feeds through innovative 
-                        research, farmer education programs, and exceptional customer service. We are 
-                        committed to building lasting partnerships with farmers while promoting 
-                        environmentally responsible farming practices.
+                        To be the leading company in the agricultural sector by providing sustainabe, high quality and cost-effective solutions.
                     </p>
                 </div>
             </div>

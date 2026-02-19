@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartProxyController;
+
 use App\Http\Controllers\{
     HomeController, ProfileController, ProductController, POSController, ShopController,
     StockController, TransactionController, ReportController, AccountController,
@@ -33,6 +35,13 @@ Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.
 // Reviews
 Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews');
 Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+
+Route::prefix('proxy/cart')->group(function () {
+    Route::get('/', [CartProxyController::class, 'load']);
+    Route::post('/add', [CartProxyController::class, 'add']);
+    Route::patch('/update', [CartProxyController::class, 'update']);
+    Route::delete('/remove', [CartProxyController::class, 'remove']);
+});
 
 Route::get('/cart', [CartController::class, 'view'])->name('cart.view');
     // Route::get('/cart', [CartController::class, 'view'])->name('cart.view');

@@ -14,67 +14,33 @@
     </div>
 </div>
 
-<!-- ================= RECEIPT MODAL ================= -->
-<div id="receiptModal"
-     style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:9999;">
-    <div class="card p-3" style="max-width:600px;margin:60px auto;">
-        <h4>🧾 Receipt</h4>
-        <div id="receiptBody" class="mt-2"></div>
-        <div class="d-flex justify-content-end gap-2 mt-3">
-            <button onclick="closeReceipt()" class="btn btn-danger">Close</button>
-            <button onclick="window.print()" class="btn btn-primary">Print</button>
-        </div>
-    </div>
-</div>
-
 <script>
-/* =====================================================
-   CONFIG
-===================================================== */
-const DJANGO_TOKEN = "{{ session('django_token') }}";
-const DJANGO_BASE = "{{ config('services.django_api.url') }}";
-
 const API = {
-    load:     `${DJANGO_BASE}/api/ecommerce/cart/`,
-    add:      `${DJANGO_BASE}/api/ecommerce/cart/items/`,
-    update:   `${DJANGO_BASE}/api/ecommerce/cart/items/update/`,
-    remove:   `${DJANGO_BASE}/api/ecommerce/cart/items/remove/`,
-    checkout: `${DJANGO_BASE}/api/ecommerce/cart/checkout/`,
+    load:   `/proxy/cart`,
+    add:    `/proxy/cart/add`,
+    update: `/proxy/cart/update`,
+    remove: `/proxy/cart/remove`,
 };
 
+let cart = { items: [], subtotal: 0, total_items: 0 };
 
-let cart = { items: [], subtotal: 0 };
-
-/* =====================================================
-   HELPERS
-===================================================== */
-function authHeaders() {
-    return {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${DJANGO_TOKEN}`
-    };
-}
-
-function showAlert(title, message, type = 'success') {
+/* ================= ALERT ================= */
+function showAlert(message, type = 'danger') {
     const el = document.getElementById('notificationAlert');
     el.className = `alert alert-${type}`;
-    el.textContent = `${title}: ${message}`;
+    el.textContent = message;
     el.classList.remove('d-none');
     setTimeout(() => el.classList.add('d-none'), 4000);
 }
 
-
-/* =====================================================
-   LOAD CART
-===================================================== */
+/* ================= LOAD CART ================= */
 async function loadCart() {
     try {
-        const res = await fetch(API.load, {
-            headers: authHeaders()
-        });
+        const res = await fetch(API.load);
 
-        if (!res.ok) throw new Error('Failed to load cart');
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+        }
 
         cart = await res.json();
         renderCart();
@@ -82,13 +48,11 @@ async function loadCart() {
 
     } catch (err) {
         console.error(err);
-        showAlert('Error', err.message, 'danger');
+        showAlert("Failed to load cart");
     }
 }
 
-/* =====================================================
-   RENDER CART
-===================================================== */
+/* ================= RENDER ================= */
 function renderCart() {
     const container = document.getElementById('cart');
 
@@ -98,12 +62,12 @@ function renderCart() {
     }
 
     let html = `
-        <table class="table align-middle">
+        <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>Product</th>
                     <th width="120">Qty</th>
-                    <th>Unit</th>
+                    <th>Unit Price</th>
                     <th>Total</th>
                     <th></th>
                 </tr>
@@ -116,17 +80,15 @@ function renderCart() {
             <tr>
                 <td>${item.product_name}</td>
                 <td>
-                    <input type="number"
-                           min="1"
-                           value="${item.quantity}"
-                           class="form-control"
-                           onchange="updateItem(${item.product}, this.value)">
+                    <input type="number" min="1" value="${item.quantity}"
+                        class="form-control"
+                        onchange="updateItem(${item.product}, this.value)">
                 </td>
                 <td>KES ${item.unit_price}</td>
                 <td>KES ${(item.unit_price * item.quantity).toFixed(2)}</td>
                 <td>
                     <button class="btn btn-sm btn-danger"
-                            onclick="removeItem(${item.product})">
+                        onclick="removeItem(${item.product})">
                         Remove
                     </button>
                 </td>
@@ -137,163 +99,78 @@ function renderCart() {
     html += `
             </tbody>
         </table>
-
-        <div class="d-flex justify-content-between">
-            <strong>Subtotal: KES ${cart.subtotal}</strong>
-            <button class="btn btn-success" onclick="checkout()">
-                Checkout
-            </button>
-        </div>
+        <strong>Subtotal: KES ${cart.subtotal}</strong>
     `;
 
     container.innerHTML = html;
 }
 
-/* =====================================================
-   ADD ITEM (DJANGO-COMPATIBLE)
-===================================================== */
-async function addItem(e, productId, quantity = 1) {
-    const btn = e.currentTarget;
-    const original = btn.innerHTML;
-
-    btn.disabled = true;
-    btn.innerHTML = 'Adding…';
-
+/* ================= ADD ================= */
+async function addItem(productId, quantity = 1) {
     try {
         const res = await fetch(API.add, {
             method: 'POST',
-            headers: authHeaders(),
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify({
-                product: productId,   // 👈 MUST be "product"
-                quantity: Number(quantity)
-            })
+                product: productId,
+                quantity: Number(quantity),
+            }),
         });
 
         const data = await res.json();
         if (!res.ok) throw new Error(data.detail || 'Add failed');
 
-        showAlert('Success', 'Item added to cart');
-        loadCart();
-
-    } catch (err) {
-        console.error(err);
-        showAlert('Error', err.message, 'danger');
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = original;
-    }
-}
-
-/* =====================================================
-   UPDATE ITEM
-===================================================== */
-async function updateItem(product, quantity) {
-    try {
-        await fetch(API.update, {
-            method: 'PATCH',
-            headers: authHeaders(),
-            body: JSON.stringify({
-                product,
-                quantity: Number(quantity)
-            })
-        });
-
+        showAlert("Item added", "success");
         loadCart();
     } catch (err) {
         console.error(err);
+        showAlert("Add failed");
     }
 }
 
-/* =====================================================
-   REMOVE ITEM
-===================================================== */
-async function removeItem(product) {
-    try {
-        await fetch(API.remove, {
-            method: 'DELETE',
-            headers: authHeaders(),
-            body: JSON.stringify({ product })
-        });
-
-        loadCart();
-    } catch (err) {
-        console.error(err);
-    }
-}
-
-/* =====================================================
-   CHECKOUT
-===================================================== */
-async function checkout() {
-    try {
-        const res = await fetch(API.checkout, {
-            method: 'POST',
-            headers: authHeaders()
-        });
-
-        const data = await res.json();
-
-        if (data.receipt) {
-            showReceipt(data.receipt);
-        }
-
-        loadCart();
-    } catch (err) {
-        console.error(err);
-    }
-}
-
-/* =====================================================
-   RECEIPT
-===================================================== */
-function showReceipt(r) {
-    let html = `
-        <p><strong>Date:</strong> ${new Date(r.created_at).toLocaleString()}</p>
-        <table class="table">
-            <tr>
-                <th>Item</th>
-                <th>Qty</th>
-                <th>Total</th>
-            </tr>
-    `;
-
-    r.items.forEach(i => {
-        html += `
-            <tr>
-                <td>${i.product_name}</td>
-                <td>${i.quantity}</td>
-                <td>KES ${i.subtotal}</td>
-            </tr>
-        `;
+/* ================= UPDATE ================= */
+async function updateItem(productId, quantity) {
+    await fetch(API.update, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            product: productId,
+            quantity: Number(quantity),
+        }),
     });
 
-    html += `
-        </table>
-        <h5>Total: KES ${r.total}</h5>
-    `;
-
-    document.getElementById('receiptBody').innerHTML = html;
-    document.getElementById('receiptModal').style.display = 'block';
+    loadCart();
 }
 
-function closeReceipt() {
-    document.getElementById('receiptModal').style.display = 'none';
+/* ================= REMOVE ================= */
+async function removeItem(productId) {
+    await fetch(API.remove, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            product: productId,
+        }),
+    });
+
+    loadCart();
 }
 
-/* =====================================================
-   CART BADGE
-===================================================== */
+/* ================= BADGE ================= */
 function updateCartBadge() {
     const badge = document.querySelector('.cart-badge');
     if (!badge) return;
 
-    badge.textContent = cart.items.length;
-    badge.style.display = cart.items.length ? 'flex' : 'none';
+    badge.textContent = cart.total_items;
+    badge.style.display = cart.total_items ? 'flex' : 'none';
 }
 
-/* =====================================================
-   INIT
-===================================================== */
+/* ================= INIT ================= */
 document.addEventListener('DOMContentLoaded', loadCart);
 </script>
 

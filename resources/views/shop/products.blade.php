@@ -77,12 +77,14 @@
 
                             <div class="mt-auto">
                                 @auth
-                                   <button class="btn btn-primary"
-                                            onclick="addItem(event, {{ $product->id }}, 1)">
+                                    {{-- Logged-in users can directly add to cart --}}
+                                    <button class="btn btn-primary w-100"
+                                            onclick="addItem(event, {{ $product['id'] }}, 1)">
                                         Add to Cart
                                     </button>
                                 @else
-                                    <a href="{{ route('login') }}?redirect={{ urlencode(request()->fullUrl()) }}"
+                                    {{-- Guests are redirected to login with product_id --}}
+                                    <a href="{{ route('login') }}?product_id={{ $product['id'] }}"
                                        class="btn btn-outline-success w-100">
                                         <i class="bi bi-lock me-2"></i>Login to Purchase
                                     </a>
@@ -101,6 +103,7 @@
         </div>
     @endif
 </div>
+
 
 <style>
     /* ── Hero ── */
