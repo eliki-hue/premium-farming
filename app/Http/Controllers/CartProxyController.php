@@ -4,70 +4,77 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\JsonResponse;
 
 class CartProxyController extends Controller
 {
-    private $base = 'https://unmisanthropically-transcultural-minnie.ngrok-free.dev/api/ecommerce/cart';
+    protected string $djangoBase;
 
-    // Always send JWT token from session
-    private function headers()
+    public function __construct()
     {
-        $headers = ['Accept' => 'application/json'];
-
-        if (session()->has('django_token')) {
-            $headers['Authorization'] = 'Bearer ' . session('django_token');
-        }
-
-        return $headers;
+        $this->djangoBase = config('services.django_api.url');
     }
 
-    // GET /proxy/cart
-    public function load()
+    protected function getJwt(Request $request): string
     {
-        $res = Http::withHeaders($this->headers())
-            ->get($this->base . '/');
-
-        return response()->json($res->json(), $res->status());
+        $token = $request->session()->get('django_token');
+        if (!$token) abort(401, 'Unauthorized');
+        return $token;
     }
 
-    // POST /proxy/cart/add
-   public function add(Request $request)
-{
-    $res = Http::withHeaders([
-        'Accept'        => 'application/json',
-        'Authorization' => 'Bearer ' . session('django_token'),
-    ])->post(
-        config('services.django_api.url') . '/api/ecommerce/cart/items/',
-        [
-            'product'  => $request->product,
-            'quantity' => $request->quantity,
-        ]
-    );
-
-    return response()->json($res->json(), $res->status());
-}
-
-
-    // PATCH /proxy/cart/update
-    public function update(Request $request)
+    protected function djangoHeaders(Request $request): array
     {
-        $res = Http::withHeaders($this->headers())
-            ->patch($this->base . '/items/update/', [
-                'product' => $request->product,
-                'quantity' => $request->quantity,
-            ]);
-
-        return response()->json($res->json(), $res->status());
+        return [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $this->getJwt($request),
+        ];
     }
 
-    // DELETE /proxy/cart/remove
-    public function remove(Request $request)
+    public function load(Request $request): JsonResponse
     {
-        $res = Http::withHeaders($this->headers())
-            ->delete($this->base . '/items/remove/', [
-                'product' => $request->product,
-            ]);
+        $response = Http::withHeaders($this->djangoHeaders($request))
+            ->get("{$this->djangoBase}/api/ecommerce/cart/");
 
-        return response()->json($res->json(), $res->status());
+        return response()->json($response->json(), $response->status());
+    }
+
+    public function add(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'product' => 'required|integer',
+            'quantity' => 'nullable|integer|min:1',
+        ]);
+
+        $response = Http::withHeaders($this->djangoHeaders($request))
+            ->post("{$this->djangoBase}/api/ecommerce/cart/items/", $validated);
+
+        return response()->json($response->json(), $response->status());
+    }
+
+    public function update(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'product' => 'required|integer',
+            'quantity' => 'required|integer|min:0',
+        ]);
+
+        // Forward as PATCH to Django
+        $response = Http::withHeaders($this->djangoHeaders($request))
+            ->patch("{$this->djangoBase}/api/ecommerce/cart/items/update/", $validated);
+
+        return response()->json($response->json(), $response->status());
+    }
+
+    public function remove(Request $request): JsonResponse
+    {
+        $request->validate([
+            'product' => 'required|integer',
+        ]);
+
+        $response = Http::delete(config('services.django_api.url') . '/api/ecommerce/cart/items/remove/', [
+            'product' => $request->product,
+        ]);
+
+        return response()->json($response->json(), $response->status());
     }
 }

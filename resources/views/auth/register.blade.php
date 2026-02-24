@@ -73,8 +73,8 @@
                 </div>
                 @endif
 
-                <form method="POST" action="{{ route('register') }}">
-                    @csrf
+                <form method="POST" action="{{ route('proxy.signup') }}">
+                        @csrf
                     
                     <div class="form-group">
                         <label for="username" class="form-label">

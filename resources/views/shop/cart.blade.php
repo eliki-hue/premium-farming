@@ -36,16 +36,15 @@ function showAlert(message, type = 'danger') {
 /* ================= LOAD CART ================= */
 async function loadCart() {
     try {
-        const res = await fetch(API.load);
+        const res = await fetch(API.load, {
+            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+        });
 
-        if (!res.ok) {
-            throw new Error(`HTTP ${res.status}`);
-        }
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         cart = await res.json();
         renderCart();
         updateCartBadge();
-
     } catch (err) {
         console.error(err);
         showAlert("Failed to load cart");
@@ -66,7 +65,7 @@ function renderCart() {
             <thead>
                 <tr>
                     <th>Product</th>
-                    <th width="120">Qty</th>
+                    <th width="140">Qty</th>
                     <th>Unit Price</th>
                     <th>Total</th>
                     <th></th>
@@ -79,18 +78,21 @@ function renderCart() {
         html += `
             <tr>
                 <td>${item.product_name}</td>
-                <td>
+                <td class="d-flex align-items-center">
+                    <button class="btn btn-sm btn-outline-secondary me-1"
+                        onclick="changeQuantity(${item.product}, ${item.quantity - 1})">-</button>
                     <input type="number" min="1" value="${item.quantity}"
-                        class="form-control"
-                        onchange="updateItem(${item.product}, this.value)">
+                        class="form-control text-center"
+                        style="width:60px"
+                        onchange="changeQuantity(${item.product}, this.value)">
+                    <button class="btn btn-sm btn-outline-secondary ms-1"
+                        onclick="changeQuantity(${item.product}, ${item.quantity + 1})">+</button>
                 </td>
                 <td>KES ${item.unit_price}</td>
                 <td>KES ${(item.unit_price * item.quantity).toFixed(2)}</td>
                 <td>
                     <button class="btn btn-sm btn-danger"
-                        onclick="removeItem(${item.product})">
-                        Remove
-                    </button>
+                        onclick="removeItem(${item.product})">Remove</button>
                 </td>
             </tr>
         `;
@@ -105,60 +107,57 @@ function renderCart() {
     container.innerHTML = html;
 }
 
-/* ================= ADD ================= */
-async function addItem(productId, quantity = 1) {
+/* ================= CHANGE QUANTITY / UPDATE ================= */
+async function changeQuantity(productId, quantity) {
+    if (quantity <= 0) {
+        removeItem(productId);
+        return;
+    }
+
     try {
-        const res = await fetch(API.add, {
-            method: 'POST',
+        const res = await fetch(API.update, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            body: JSON.stringify({
-                product: productId,
-                quantity: Number(quantity),
-            }),
+            body: JSON.stringify({ product: productId, quantity: Number(quantity) }),
         });
 
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Add failed');
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.detail || `Failed to update: ${res.status}`);
+        }
 
-        showAlert("Item added", "success");
         loadCart();
     } catch (err) {
         console.error(err);
-        showAlert("Add failed");
+        showAlert(err.message || "Failed to update item");
     }
-}
-
-/* ================= UPDATE ================= */
-async function updateItem(productId, quantity) {
-    await fetch(API.update, {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            product: productId,
-            quantity: Number(quantity),
-        }),
-    });
-
-    loadCart();
 }
 
 /* ================= REMOVE ================= */
 async function removeItem(productId) {
-    await fetch(API.remove, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            product: productId,
-        }),
-    });
+    try {
+        const res = await fetch(API.remove, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ product: productId }),
+        });
 
-    loadCart();
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.detail || `Failed to remove: ${res.status}`);
+        }
+
+        loadCart(); // reload cart after deletion
+    } catch (err) {
+        console.error(err);
+        showAlert(err.message || "Failed to remove item");
+    }
 }
 
 /* ================= BADGE ================= */
