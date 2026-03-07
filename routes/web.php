@@ -2,10 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartProxyController;
+use App\Http\Controllers\CheckoutProxyController;
+
 
 use App\Http\Controllers\{
-    HomeController, ProfileController, ProductController, POSController, ShopController,
-    StockController, TransactionController, ReportController, AccountController,
+    HomeController, ProfileController, ProductController, ShopController, TransactionController, ReportController, AccountController,
     SalesReportController, ItemController, InvoiceController, ReceiptController,
     CreditNoteController, PettyCashController, PosReturnController, ContactController,
     CategoryController, CartController, ConversionController, PosProductController,
@@ -65,7 +66,16 @@ Route::prefix('proxy/cart')->group(function () {
     Route::patch('/update', [CartProxyController::class, 'update']); // PATCH (matches Django)
     Route::delete('/remove', [CartProxyController::class, 'remove']);
 });
+Route::get('/cart', function () {
+    return view('shop.cart'); // your cart page
+})->name('cart');
+Route::post('/proxy/checkout/mpesa', [\App\Http\Controllers\CheckoutProxyController::class, 'mpesa']);
+Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
 
+// web.php
+Route::get('/orders', function(){
+    return view('orders');
+})->middleware('auth');
 
 /*
 |--------------------------------------------------------------------------
@@ -77,7 +87,7 @@ Route::get('/cart/load', [CartController::class, 'load']);
 Route::post('/cart/add', [CartController::class, 'add']);
 Route::patch('/cart/update', [CartController::class, 'update']);
 Route::delete('/cart/remove', [CartController::class, 'remove']);
-Route::post('/cart/checkout', [CartController::class, 'checkout']);
+// Route::post('/cart/checkout', [CartController::class, 'checkout']);
 
 
 /*

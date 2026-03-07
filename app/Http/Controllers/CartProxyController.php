@@ -64,17 +64,21 @@ class CartProxyController extends Controller
 
         return response()->json($response->json(), $response->status());
     }
+public function remove(Request $request): JsonResponse
+{
+    $validated = $request->validate([
+        'product' => 'required|integer',
+    ]);
 
-    public function remove(Request $request): JsonResponse
-    {
-        $request->validate([
-            'product' => 'required|integer',
+    $response = Http::withToken($this->getJwt($request))
+        ->acceptJson()
+        ->post($this->djangoBase . '/api/ecommerce/cart/items/remove/', [
+            'product' => $validated['product'],
         ]);
 
-        $response = Http::delete(config('services.django_api.url') . '/api/ecommerce/cart/items/remove/', [
-            'product' => $request->product,
-        ]);
-
-        return response()->json($response->json(), $response->status());
-    }
+    return response()->json(
+        $response->json(),
+        $response->status()
+    );
+}
 }

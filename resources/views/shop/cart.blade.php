@@ -3,7 +3,6 @@
 @section('title', 'Cart')
 
 @section('content')
-
 <div class="container my-4">
     <h3>🛒 Your Cart</h3>
 
@@ -12,38 +11,109 @@
     <div id="cart" class="mt-3">
         <p class="text-muted">Loading cart…</p>
     </div>
+
+    <!-- Checkout Form -->
+    <div id="checkoutSection" class="mt-5 d-none">
+        <h4>Checkout</h4>
+
+        <form id="checkoutForm">
+            @csrf
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label>Full Name *</label>
+                    <input type="text" class="form-control" name="name" value="{{ auth()->user()->name ?? '' }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Phone Number *</label>
+                    <input type="tel" class="form-control" name="phone" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label>Email Address *</label>
+                <input type="email" class="form-control" name="email" value="{{ auth()->user()->email ?? '' }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label>Delivery Address *</label>
+                <textarea class="form-control" name="address" rows="3" required></textarea>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label>County *</label>
+                    <select class="form-control" name="county" required>
+                        <option value="">Select County</option>
+                        <option value="Nairobi">Nairobi</option>
+                        <option value="Kiambu">Kiambu</option>
+                        <option value="Nakuru">Nakuru</option>
+                        <option value="Eldoret">Eldoret</option>
+                        <option value="Kisumu">Kisumu</option>
+                        <option value="Mombasa">Mombasa</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label>Town *</label>
+                    <input type="text" class="form-control" name="town" required>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label>Delivery Type *</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="delivery_type" value="farm_delivery" checked>
+                    <label class="form-check-label">Farm Delivery</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="delivery_type" value="pickup_station">
+                    <label class="form-check-label">Pickup Station</label>
+                </div>
+            </div>
+
+            <!-- MPESA ONLY -->
+            <input type="hidden" name="payment_method" value="mpesa">
+
+            <div id="mpesaDetails" class="mb-4 border p-3 rounded bg-light">
+                <label>M-Pesa Phone Number *</label>
+                <input type="tel" class="form-control" name="mpesa_number" placeholder="2547XXXXXXXX" required>
+            </div>
+
+            <input type="hidden" name="total" id="checkoutTotal">
+
+            <button type="submit" class="btn btn-success btn-lg w-100">
+                Complete Order
+            </button>
+        </form>
+    </div>
 </div>
 
 <script>
 const API = {
     load:   `/proxy/cart`,
-    add:    `/proxy/cart/add`,
     update: `/proxy/cart/update`,
     remove: `/proxy/cart/remove`,
 };
 
 let cart = { items: [], subtotal: 0, total_items: 0 };
 
-/* ================= ALERT ================= */
-function showAlert(message, type = 'danger') {
+function showAlert(message, type='danger') {
     const el = document.getElementById('notificationAlert');
     el.className = `alert alert-${type}`;
     el.textContent = message;
     el.classList.remove('d-none');
-    setTimeout(() => el.classList.add('d-none'), 4000);
+    setTimeout(()=>el.classList.add('d-none'),4000);
 }
 
-/* ================= LOAD CART ================= */
 async function loadCart() {
     try {
         const res = await fetch(API.load, {
             headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
         });
-
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
         cart = await res.json();
         renderCart();
+        renderCheckout();
         updateCartBadge();
     } catch (err) {
         console.error(err);
@@ -51,12 +121,12 @@ async function loadCart() {
     }
 }
 
-/* ================= RENDER ================= */
 function renderCart() {
     const container = document.getElementById('cart');
 
     if (!cart.items || cart.items.length === 0) {
         container.innerHTML = '<p class="text-muted">Your cart is empty.</p>';
+        document.getElementById('checkoutSection').classList.add('d-none');
         return;
     }
 
@@ -107,70 +177,72 @@ function renderCart() {
     container.innerHTML = html;
 }
 
-/* ================= CHANGE QUANTITY / UPDATE ================= */
+function renderCheckout() {
+    if (cart.items.length > 0) {
+        document.getElementById('checkoutSection').classList.remove('d-none');
+        document.getElementById('checkoutTotal').value = cart.subtotal;
+    }
+}
+
 async function changeQuantity(productId, quantity) {
     if (quantity <= 0) {
         removeItem(productId);
         return;
     }
 
-    try {
-        const res = await fetch(API.update, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ product: productId, quantity: Number(quantity) }),
-        });
+    await fetch(API.update, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ product: productId, quantity: Number(quantity) }),
+    });
 
-        if (!res.ok) {
-            const data = await res.json().catch(() => ({}));
-            throw new Error(data.detail || `Failed to update: ${res.status}`);
-        }
-
-        loadCart();
-    } catch (err) {
-        console.error(err);
-        showAlert(err.message || "Failed to update item");
-    }
+    loadCart();
 }
 
-/* ================= REMOVE ================= */
 async function removeItem(productId) {
-    try {
-        const res = await fetch(API.remove, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ product: productId }),
-        });
+    await fetch(API.remove, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ product: productId }),
+    });
 
-        if (!res.ok) {
-            const data = await res.json().catch(() => ({}));
-            throw new Error(data.detail || `Failed to remove: ${res.status}`);
-        }
-
-        loadCart(); // reload cart after deletion
-    } catch (err) {
-        console.error(err);
-        showAlert(err.message || "Failed to remove item");
-    }
+    loadCart();
 }
 
-/* ================= BADGE ================= */
 function updateCartBadge() {
     const badge = document.querySelector('.cart-badge');
     if (!badge) return;
-
     badge.textContent = cart.total_items;
     badge.style.display = cart.total_items ? 'flex' : 'none';
 }
 
-/* ================= INIT ================= */
+/* ✅ CHECKOUT VIA LARAVEL → DJANGO */
+document.getElementById('checkoutForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    const res = await fetch(`/proxy/checkout/mpesa`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: formData
+    });
+
+    if(!res.ok){
+        alert("Checkout failed");
+        return;
+    }
+
+    window.location.href = "/orders";
+});
 document.addEventListener('DOMContentLoaded', loadCart);
 </script>
-
 @endsection

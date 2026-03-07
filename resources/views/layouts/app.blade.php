@@ -813,11 +813,20 @@
                         </p>
                     </div>
                     <div class="d-flex gap-3">
-                        <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-                        <a href="#" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
-                        <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-                        <a href="https://wa.me/254700680017" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=61587310585524" target="_blank" aria-label="Facebook" class="text-white me-2">
+                            <i class="bi bi-facebook"></i>
+                        </a>     
+                        <a href="https://www.instagram.com/premiumfarmingfeeds/" target="_blank" aria-label="Instagram" class="text-white me-2">
+                            <i class="bi bi-instagram"></i>
+                        </a>       
+                        <a href="https://wa.me/254700680017" target="_blank" aria-label="WhatsApp" class="text-white">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>  
+                        <a href="https://www.youtube.com/@PremiumfarmingFeeds" target="_blank" aria-label="YouTube" class="text-white">
+                            <i class="bi bi-youtube"></i>
+                        </a>                  
                     </div>
+                                        
                 </div>
                 
                 <!-- Quick Links -->
@@ -849,14 +858,17 @@
                     <h6>Contact Info</h6>
                     <ul class="list-unstyled">
                         <li class="mb-3 text-white-50 small">
-                            <i class="bi bi-geo-alt me-2"></i>Nairobi, Kenya
+                            <i class="bi bi-geo-alt me-2"></i>Kiambu, Kenya
                         </li>
                         <li class="mb-3 text-white-50 small">
-                            <i class="bi bi-telephone me-2"></i>+254 700 123 456
+                            <i class="bi bi-telephone me-2"></i>+254 700 680 017
                         </li>
-                        <li class="mb-3 text-white-50 small">
-                            <i class="bi bi-envelope me-2"></i>info@premiumfeeds.co.ke
-                        </li>
+                       <li class="mb-3 text-white-50 small">
+                        <i class="bi bi-envelope me-2"></i>
+                        <a href="https://mail.google.com/mail/?view=cm&to=premiumfarmingf@gmail.com" target="_blank" class="text-white-50 text-decoration-none">
+                            premiumfarmingf@gmail.com
+                        </a>
+                     </li>
                         <li class="text-white-50 small">
                             <i class="bi bi-clock me-2"></i>Mon-Sat: 8AM - 6PM
                         </li>

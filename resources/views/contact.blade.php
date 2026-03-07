@@ -5,10 +5,11 @@
 
 @section('content')
 <div class="min-h-screen pt-24">
-    <!-- Contact Hero -->
+    <!-- Contact Hero - Updated with new background -->
     <section class="contact-hero" style="
-        background: var(--gradient-dark-green),
-                    url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070') center/cover;
+        background: linear-gradient(rgba(42, 110, 63, 0.85), rgba(30, 82, 46, 0.85)),
+                    url('/images/contacts.png') center/cover;
+        background-attachment: fixed;
         padding: 6rem 0 4rem;
         color: white;
         position: relative;

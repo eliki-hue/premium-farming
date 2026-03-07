@@ -751,7 +751,7 @@
         <div class="container">
             <div class="section-title text-center mb-5">
                 <h2 class="text-dark-green">Trusted by Farmers Nationwide</h2>
-                <p class="text-muted">Excellence in quality and service since 2018</p>
+                <p class="text-muted">Excellence in quality and service since 2020</p>
             </div>
             
             <div class="row g-4">

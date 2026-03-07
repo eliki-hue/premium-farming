@@ -11,14 +11,22 @@ use Carbon\Carbon;
 class OrderController extends Controller
 {
 
-  public function index()
-{
-    $orders = Order::with('customer')->latest()->get();
-    $customers = Customer::all();
+  public function index(Request $request)
+    {
+        $mpesa = $request->query('mpesa');
 
-    return view('shop.orders', compact('orders', 'customers'));
-}
+        $response = Http::get(env('DJANGO_API_URL').'/api/ecommerce/orders', [
+            'mpesa' => $mpesa
+        ]);
 
+        if(!$response->ok()){
+            abort(500, 'Failed to fetch orders');
+        }
+
+        $orders = $response->json();
+
+        return view('orders.index', compact('orders'));
+    }
 
     public function create()
     {

@@ -4,15 +4,32 @@
 
 @push('styles')
 <style>
-    /* Gallery Hero Section - Classic Style */
+    /* Gallery Hero Section - Updated with clean background */
     .gallery-hero {
-        background: linear-gradient(rgba(42, 110, 63, 0.85), rgba(30, 82, 46, 0.85)),
-                    url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070') center/cover;
+        background: url('/images/fl.jpeg') center/cover;
+        background-attachment: fixed;
         padding: 8rem 0 5rem;
         color: white;
         text-align: center;
         position: relative;
         margin-bottom: 2rem;
+    }
+    
+    /* Add a very subtle dark overlay if needed for text readability */
+    .gallery-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4); /* Very subtle dark overlay */
+        z-index: 1;
+    }
+    
+    .gallery-hero .container {
+        position: relative;
+        z-index: 2;
     }
 
     .gallery-hero h1 {
@@ -30,15 +47,16 @@
         margin: 0 auto;
         line-height: 1.8;
         font-weight: 300;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
     }
 
     .breadcrumb-custom {
-        background: rgba(255,255,255,0.15);
+        background: rgba(0,0,0,0.3);
         display: inline-block;
         padding: 0.8rem 2rem;
         border-radius: 40px;
         margin-top: 2rem;
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(5px);
         border: 1px solid rgba(255,255,255,0.2);
     }
 
@@ -171,7 +189,7 @@
     /* Gallery Grid - Classic Card Layout */
     .gallery-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: 2rem;
         margin-top: 2rem;
     }
@@ -192,17 +210,20 @@
         border-color: #cbd5e0;
     }
 
-    /* Card Image Container - FIXED consistent size */
+    /* Card Image Container - IMPROVED for better photo visibility */
     .gallery-card-image {
         position: relative;
         width: 100%;
-        height: 220px; /* Fixed height for all images */
+        height: 250px; /* Increased height for better visibility */
         overflow: hidden;
         background: #f7fafc;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    /* Image styling - FIXED to prevent cutting people */
+    /* Image styling - IMPROVED to show full people */
     .gallery-card-image img {
         width: 100%;
         height: 100%;
@@ -210,27 +231,45 @@
         transition: transform 0.5s ease;
     }
 
-    /* Special handling for person photos - FIXED */
+    /* Special handling for person photos - IMPROVED */
+    .gallery-card[data-category="team"] .gallery-card-image {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
     .gallery-card[data-category="team"] .gallery-card-image img {
-        object-fit: cover;
-        object-position: center 30%; /* Focus on face area */
+        object-fit: contain; /* Changed to contain for full person visibility */
+        object-position: center;
+        background-color: #ffffff;
+        padding: 10px; /* Add padding to see full image */
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        margin: 0 auto;
     }
 
-    /* Individual team member adjustments */
+    /* Individual team member adjustments - OPTIMIZED */
     .gallery-card[data-category="team"]:nth-of-type(1) .gallery-card-image img {
-        object-position: center 25%; /* Paul - focus on face */
+        object-fit: contain;
+        object-position: center;
+        transform: scale(0.95);
     }
 
-    .gallery-card[data-category="team"]:nth-of-type(2) .gallery-card-image img {
-        object-position: center 35%; /* Joyce - focus on face */
-    }
-
-    .gallery-card[data-category="team"]:nth-of-type(3) .gallery-card-image img {
-        object-position: center 30%; /* Naomi - focus on face */
+    .gallery-card[data-category="team"]:nth-of-type(2) .gallery-card-image img,
+    .gallery-card[data-category="team"]:nth-of-type(3) .gallery-card-image img,
+    .gallery-card[data-category="team"]:nth-of-type(4) .gallery-card-image img,
+    .gallery-card[data-category="team"]:nth-of-type(5) .gallery-card-image img,
+    .gallery-card[data-category="team"]:nth-of-type(6) .gallery-card-image img,
+    .gallery-card[data-category="team"]:nth-of-type(7) .gallery-card-image img,
+    .gallery-card[data-category="team"]:nth-of-type(8) .gallery-card-image img,
+    .gallery-card[data-category="team"]:nth-of-type(9) .gallery-card-image img {
+        object-fit: contain;
+        object-position: center;
+        background-color: #f0f4f8;
     }
 
     .gallery-card:hover .gallery-card-image img {
-        transform: scale(1.05);
+        transform: scale(1.03);
     }
 
     /* Card Badge - Classic */
@@ -277,6 +316,7 @@
         gap: 1rem;
         padding-top: 0.75rem;
         border-top: 1px solid #edf2f7;
+        flex-wrap: wrap;
     }
 
     .gallery-card-meta span {
@@ -444,6 +484,7 @@
         background: #1e522e;
         transform: translateY(-2px);
         box-shadow: 0 10px 20px rgba(42,110,63,0.2);
+        color: white;
     }
 
     .spotlight-btn.outline {
@@ -489,6 +530,7 @@
         max-height: 80vh;
         border-radius: 8px;
         box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        object-fit: contain; /* Ensures full image visibility in lightbox */
     }
 
     .lightbox-caption {
@@ -618,8 +660,25 @@
         margin-bottom: 1rem;
     }
 
+    /* Container padding for better screen alignment */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
     /* Responsive */
+    @media (max-width: 1200px) {
+        .container {
+            max-width: 960px;
+        }
+    }
+
     @media (max-width: 992px) {
+        .container {
+            max-width: 720px;
+        }
+
         .gallery-hero h1 {
             font-size: 2.8rem;
         }
@@ -629,16 +688,21 @@
         }
 
         .gallery-grid {
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 1.5rem;
         }
 
         .gallery-card-image {
-            height: 200px;
+            height: 230px;
         }
     }
 
     @media (max-width: 768px) {
+        .container {
+            max-width: 540px;
+            padding: 0 1rem;
+        }
+
         .gallery-hero {
             padding: 6rem 0 4rem;
         }
@@ -698,11 +762,36 @@
             height: 220px;
         }
     }
+
+    /* Smooth scrolling */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Image loading animation */
+    .gallery-card-image img {
+        opacity: 0;
+        animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Hover effect for team cards */
+    .gallery-card[data-category="team"]:hover .gallery-card-image img {
+        transform: scale(1.02);
+    }
 </style>
 @endpush
 
 @section('content')
-<!-- Gallery Hero Section -->
+<!-- Gallery Hero Section - Updated with clean background -->
 <section class="gallery-hero">
     <div class="container">
         <h1>Our Gallery</h1>
@@ -721,7 +810,7 @@
         <!-- Gallery Stats -->
         <div class="gallery-stats">
             <div class="stat-item">
-                <div class="number">50+</div>
+                <div class="number">60+</div>
                 <div class="label">Photos</div>
             </div>
             <div class="stat-item">
@@ -758,7 +847,7 @@
                 <!-- Facility Images -->
                 <div class="gallery-card" data-category="facility">
                     <div class="gallery-card-image">
-                        <img src="{{ asset('images/comp.jpeg') }}" alt="Main Facility" onerror="this.src='https://images.unsplash.com/photo-1574943320219-553eb213f72d?q=80&w=2000'">
+                        <img src="{{ asset('images/comp.jpeg') }}" alt="Main Facility" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1574943320219-553eb213f72d?q=80&w=2000'">
                         <span class="gallery-card-badge">Facility</span>
                         <div class="quick-view-overlay">
                             <button class="quick-view-btn" onclick="openLightboxFromCard(0)">
@@ -781,7 +870,7 @@
 
                 <div class="gallery-card" data-category="facility">
                     <div class="gallery-card-image">
-                        <img src="{{ asset('images/space.jpeg') }}" alt="Warehouse" onerror="this.src='https://images.unsplash.com/photo-1592595896616-c37162298647?q=80&w=2070'">
+                        <img src="{{ asset('images/space.jpeg') }}" alt="Warehouse" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1592595896616-c37162298647?q=80&w=2070'">
                         <span class="gallery-card-badge">Facility</span>
                         <div class="quick-view-overlay">
                             <button class="quick-view-btn" onclick="openLightboxFromCard(1)">
@@ -804,7 +893,7 @@
 
                 <div class="gallery-card" data-category="facility">
                     <div class="gallery-card-image">
-                        <img src="{{ asset('images/comp.jpeg') }}" alt="Production Line" onerror="this.src='https://images.unsplash.com/photo-1560493676-04071c5f467b?q=80&w=2000'">
+                        <img src="{{ asset('images/comp.jpeg') }}" alt="Production Line" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1560493676-04071c5f467b?q=80&w=2000'">
                         <span class="gallery-card-badge">Facility</span>
                         <div class="quick-view-overlay">
                             <button class="quick-view-btn" onclick="openLightboxFromCard(2)">
@@ -828,7 +917,7 @@
                 <!-- Products Images -->
                 <div class="gallery-card" data-category="products">
                     <div class="gallery-card-image">
-                        <img src="{{ asset('images/superlayers.jpeg') }}" alt="Poultry Feed">
+                        <img src="{{ asset('images/pou.jpeg') }}" alt="Poultry Feed" loading="lazy">
                         <span class="gallery-card-badge">Products</span>
                         <div class="quick-view-overlay">
                             <button class="quick-view-btn" onclick="openLightboxFromCard(3)">
@@ -840,8 +929,7 @@
                         <h4>Premium Poultry Feed</h4>
                         <p>For optimal growth and egg production</p>
                         <div class="gallery-card-meta">
-                            <span><i class="bi bi-egg"></i> Layers</span>
-                            <span><i class="bi bi-basket"></i> 50kg</span>
+                            <span><i class="bi bi-basket"></i> 70kg</span>
                         </div>
                         <button class="gallery-card-btn" onclick="openLightboxFromCard(3)">
                             View <i class="bi bi-arrow-right"></i>
@@ -851,7 +939,7 @@
 
                 <div class="gallery-card" data-category="products">
                     <div class="gallery-card-image">
-                        <img src="{{ asset('images/dairyhigh2.jpeg') }}" alt="Dairy Feed">
+                        <img src="{{ asset('images/dry.jpeg') }}" alt="Dairy Feed" loading="lazy">
                         <span class="gallery-card-badge">Products</span>
                         <div class="quick-view-overlay">
                             <button class="quick-view-btn" onclick="openLightboxFromCard(4)">
@@ -874,7 +962,7 @@
 
                 <div class="gallery-card" data-category="products">
                     <div class="gallery-card-image">
-                        <img src="{{ asset('images/comp1.jpeg') }}" alt="Pig Feed">
+                        <img src="{{ asset('images/swn.jpeg') }}" alt="Pig Feed" loading="lazy">
                         <span class="gallery-card-badge">Products</span>
                         <div class="quick-view-overlay">
                             <button class="quick-view-btn" onclick="openLightboxFromCard(5)">
@@ -886,6 +974,7 @@
                         <h4>Pig Feeds</h4>
                         <p>Balanced nutrition for healthy growth</p>
                         <div class="gallery-card-meta">
+                            <span><i class="bi bi-flower1"></i> Starter</span>
                             <span><i class="bi bi-flower1"></i> Grower</span>
                             <span><i class="bi bi-flower2"></i> Finisher</span>
                         </div>
@@ -895,10 +984,80 @@
                     </div>
                 </div>
 
+                <!-- New Product Images -->
+                <div class="gallery-card" data-category="products">
+                    <div class="gallery-card-image">
+                        <img src="{{ asset('images/dg.jpeg') }}" alt="Dog Feed" loading="lazy">
+                        <span class="gallery-card-badge">Products</span>
+                        <div class="quick-view-overlay">
+                            <button class="quick-view-btn" onclick="openLightboxFromCard(21)">
+                                <i class="bi bi-eye"></i> Quick View
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gallery-card-content">
+                        <h4>Premium Dog Feed</h4>
+                        <p>Complete nutrition for healthy dogs</p>
+                        <div class="gallery-card-meta">
+                            <span><i class="bi bi-heart"></i> High Protein</span>
+                            <span><i class="bi bi-basket"></i> 20kg</span>
+                        </div>
+                        <button class="gallery-card-btn" onclick="openLightboxFromCard(21)">
+                            View <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="gallery-card" data-category="products">
+                    <div class="gallery-card-image">
+                        <img src="{{ asset('images/gt.jpeg') }}" alt="Goat Feed" loading="lazy">
+                        <span class="gallery-card-badge">Products</span>
+                        <div class="quick-view-overlay">
+                            <button class="quick-view-btn" onclick="openLightboxFromCard(22)">
+                                <i class="bi bi-eye"></i> Quick View
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gallery-card-content">
+                        <h4>Specialized Goat Feed</h4>
+                        <p>For healthy growth and milk production</p>
+                        <div class="gallery-card-meta">
+                            <span><i class="bi bi-droplet"></i> High Fiber</span>
+                            <span><i class="bi bi-basket"></i> 50kg</span>
+                        </div>
+                        <button class="gallery-card-btn" onclick="openLightboxFromCard(22)">
+                            View <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="gallery-card" data-category="products">
+                    <div class="gallery-card-image">
+                        <img src="{{ asset('images/rbt.jpeg') }}" alt="Rabbit Feed" loading="lazy">
+                        <span class="gallery-card-badge">Products</span>
+                        <div class="quick-view-overlay">
+                            <button class="quick-view-btn" onclick="openLightboxFromCard(23)">
+                                <i class="bi bi-eye"></i> Quick View
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gallery-card-content">
+                        <h4>Premium Rabbit Pellets</h4>
+                        <p>Balanced nutrition for healthy rabbits</p>
+                        <div class="gallery-card-meta">
+                            <span><i class="bi bi-leaf"></i> High Fiber</span>
+                            <span><i class="bi bi-basket"></i> 25kg</span>
+                        </div>
+                        <button class="gallery-card-btn" onclick="openLightboxFromCard(23)">
+                            View <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Delivery Images -->
                 <div class="gallery-card" data-category="delivery">
                     <div class="gallery-card-image">
-                        <img src="{{ asset('images/trns.jpeg') }}" alt="Delivery Fleet" onerror="this.src='https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=2000'">
+                        <img src="{{ asset('images/trns.jpeg') }}" alt="Delivery Fleet" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=2000'">
                         <span class="gallery-card-badge">Delivery</span>
                         <div class="quick-view-overlay">
                             <button class="quick-view-btn" onclick="openLightboxFromCard(6)">
@@ -921,7 +1080,7 @@
 
                 <div class="gallery-card" data-category="delivery">
                     <div class="gallery-card-image">
-                        <img src="{{ asset('images/delivery.jpeg') }}" alt="Loading Operations" onerror="this.src='https://images.unsplash.com/photo-1589923186741-7d1d6ccee3c3?q=80&w=2070'">
+                        <img src="{{ asset('images/delivery.jpeg') }}" alt="Loading Operations" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1589923186741-7d1d6ccee3c3?q=80&w=2070'">
                         <span class="gallery-card-badge">Delivery</span>
                         <div class="quick-view-overlay">
                             <button class="quick-view-btn" onclick="openLightboxFromCard(7)">
@@ -944,7 +1103,7 @@
 
                 <div class="gallery-card" data-category="delivery">
                     <div class="gallery-card-image">
-                        <img src="{{ asset('images/trsnp2.jpeg') }}" alt="Farm Delivery" onerror="this.src='https://images.unsplash.com/photo-1560472354-b33ff0c44a43?q=80&w=2000'">
+                        <img src="{{ asset('images/trsnp2.jpeg') }}" alt="Farm Delivery" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1560472354-b33ff0c44a43?q=80&w=2000'">
                         <span class="gallery-card-badge">Delivery</span>
                         <div class="quick-view-overlay">
                             <button class="quick-view-btn" onclick="openLightboxFromCard(8)">
@@ -965,10 +1124,10 @@
                     </div>
                 </div>
 
-                <!-- Team Images - FIXED person photos -->
+                <!-- Team Images - IMPROVED with full visibility -->
                 <div class="gallery-card" data-category="team">
                     <div class="gallery-card-image">
-                        <img src="{{ asset('images/boss.jpeg') }}" alt="Paul Mbua" onerror="this.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=2000'">
+                        <img src="{{ asset('images/boss1.jpeg') }}" alt="Paul Mbua - Founder & CEO" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=2000'">
                         <span class="gallery-card-badge">Leadership</span>
                         <div class="quick-view-overlay">
                             <button class="quick-view-btn" onclick="openLightboxFromCard(9)">
@@ -989,9 +1148,10 @@
                     </div>
                 </div>
 
+                <!-- Operations Director Photo - OPTIMIZED to bring it closer and more visible -->
                 <div class="gallery-card" data-category="team">
                     <div class="gallery-card-image">
-                        <img src="{{ asset('images/md boss.jpeg') }}" alt="Joyce Mbua" onerror="this.src='https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2000'">
+                        <img src="{{ asset('images/md boss.jpeg') }}" alt="Joyce Mbua - Operations Director" loading="lazy" style="object-fit: cover; object-position: center 37%; width: 100%; height: 100%; transform: scale(1.1);" onerror="this.src='https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2000'">
                         <span class="gallery-card-badge">Leadership</span>
                         <div class="quick-view-overlay">
                             <button class="quick-view-btn" onclick="openLightboxFromCard(10)">
@@ -1014,7 +1174,7 @@
 
                 <div class="gallery-card" data-category="team">
                     <div class="gallery-card-image">
-                        <img src="{{ asset('images/manager.jpeg') }}" alt="Naomi" onerror="this.src='https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=2000'">
+                        <img src="{{ asset('images/naomi1.jpeg') }}" alt="Naomi - General Manager" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=2000'">
                         <span class="gallery-card-badge">Management</span>
                         <div class="quick-view-overlay">
                             <button class="quick-view-btn" onclick="openLightboxFromCard(11)">
@@ -1023,8 +1183,8 @@
                         </div>
                     </div>
                     <div class="gallery-card-content">
-                        <h4>Naomi - Branch Manager</h4>
-                        <p>Customer service & branch operations</p>
+                        <h4>Naomi - Logistics and Accounts</h4>
+                        <p>Overseeing daily operations and logistics</p>
                         <div class="gallery-card-meta">
                             <span><i class="bi bi-people"></i> Customer Service</span>
                             <span><i class="bi bi-shop"></i> Branch Ops</span>
@@ -1035,13 +1195,149 @@
                     </div>
                 </div>
 
+                <div class="gallery-card" data-category="team">
+                    <div class="gallery-card-image">
+                        <img src="{{ asset('images/mary1.jpeg') }}" alt="Mary - Accountant" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2000'">
+                        <span class="gallery-card-badge">Finance</span>
+                        <div class="quick-view-overlay">
+                            <button class="quick-view-btn" onclick="openLightboxFromCard(12)">
+                                <i class="bi bi-eye"></i> Quick View
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gallery-card-content">
+                        <h4>Mary - Cashier</h4>
+                        <p>Managing financial operations and accounts</p>
+                        <div class="gallery-card-meta">
+                            <span><i class="bi bi-calculator"></i> Cashier</span>
+                        </div>
+                        <button class="gallery-card-btn" onclick="openLightboxFromCard(12)">
+                            View <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="gallery-card" data-category="team">
+                    <div class="gallery-card-image">
+                        <img src="{{ asset('images/rahab.jpeg') }}" alt="Rahab - Operational Manager" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=2000'">
+                        <span class="gallery-card-badge">Operations</span>
+                        <div class="quick-view-overlay">
+                            <button class="quick-view-btn" onclick="openLightboxFromCard(13)">
+                                <i class="bi bi-eye"></i> Quick View
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gallery-card-content">
+                        <h4>Rahab - Operational Manager</h4>
+                        <p>Customer service & branch operations</p>
+                        <div class="gallery-card-meta">
+                            <span><i class="bi bi-gear"></i> Operations</span>
+                        </div>
+                        <button class="gallery-card-btn" onclick="openLightboxFromCard(13)">
+                            View <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="gallery-card" data-category="team">
+                    <div class="gallery-card-image">
+                        <img src="{{ asset('images/mirry.jpeg') }}" alt="Miriam - Software Engineer" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2000'">
+                        <span class="gallery-card-badge">Technology</span>
+                        <div class="quick-view-overlay">
+                            <button class="quick-view-btn" onclick="openLightboxFromCard(14)">
+                                <i class="bi bi-eye"></i> Quick View
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gallery-card-content">
+                        <h4>Miriam - Software Engineer</h4>
+                        <p>Developing digital solutions for farm management</p>
+                        <div class="gallery-card-meta">
+                            <span><i class="bi bi-laptop"></i> Tech</span>
+                            <span><i class="bi bi-code-slash"></i> Development</span>
+                        </div>
+                        <button class="gallery-card-btn" onclick="openLightboxFromCard(14)">
+                            View <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="gallery-card" data-category="team">
+                    <div class="gallery-card-image">
+                        <img src="{{ asset('images/sale1.jpeg') }}" alt="Steve - Sales Representative" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2000'">
+                        <span class="gallery-card-badge">Sales</span>
+                        <div class="quick-view-overlay">
+                            <button class="quick-view-btn" onclick="openLightboxFromCard(15)">
+                                <i class="bi bi-eye"></i> Quick View
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gallery-card-content">
+                        <h4>Steve - Sales Representative</h4>
+                        <p>Helping farmers choose the right feeds</p>
+                        <div class="gallery-card-meta">
+                            <span><i class="bi bi-people"></i> Sales</span>
+                            <span><i class="bi bi-chat"></i> Customer Support</span>
+                        </div>
+                        <button class="gallery-card-btn" onclick="openLightboxFromCard(15)">
+                            View <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="gallery-card" data-category="team">
+                    <div class="gallery-card-image">
+                        <img src="{{ asset('images/sale2.jpeg') }}" alt="Leonard - Sales Representative" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2000'">
+                        <span class="gallery-card-badge">Sales</span>
+                        <div class="quick-view-overlay">
+                            <button class="quick-view-btn" onclick="openLightboxFromCard(16)">
+                                <i class="bi bi-eye"></i> Quick View
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gallery-card-content">
+                        <h4>Leonard - Sales Representative</h4>
+                        <p>Providing expert advice on feed selection</p>
+                        <div class="gallery-card-meta">
+                            <span><i class="bi bi-people"></i> Sales</span>
+                            <span><i class="bi bi-chat"></i> Customer Support</span>
+                        </div>
+                        <button class="gallery-card-btn" onclick="openLightboxFromCard(16)">
+                            View <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="gallery-card" data-category="team">
+                    <div class="gallery-card-image">
+                        <img src="{{ asset('images/mercy.jpeg') }}" alt="Mercy - Vet Incharge" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2000'">
+                        <span class="gallery-card-badge">Veterinary</span>
+                        <div class="quick-view-overlay">
+                            <button class="quick-view-btn" onclick="openLightboxFromCard(17)">
+                                <i class="bi bi-eye"></i> Quick View
+                            </button>
+                        </div>
+                    </div>
+                    <div class="gallery-card-content">
+                        <h4>Mercy - Vet Incharge</h4>
+                        <p>Animal health and nutrition specialist</p>
+                        <div class="gallery-card-meta">
+                            <span><i class="bi bi-heart-pulse"></i> Health</span>
+                            <span><i class="bi bi-capsule"></i> Nutrition</span>
+                        </div>
+                        <button class="gallery-card-btn" onclick="openLightboxFromCard(17)">
+                            View <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Events Images -->
                 <div class="gallery-card" data-category="events">
                     <div class="gallery-card-image">
-                        <img src="https://images.unsplash.com/photo-1593113598335-cb59a9c7e2e4?q=80&w=2000" alt="Farmers Training">
+                        <img src="{{ asset('images/event2.jpg') }}" alt="Farmers Training" loading="lazy">
                         <span class="gallery-card-badge">Events</span>
                         <div class="quick-view-overlay">
-                            <button class="quick-view-btn" onclick="openLightboxFromCard(12)">
+                            <button class="quick-view-btn" onclick="openLightboxFromCard(18)">
                                 <i class="bi bi-eye"></i> Quick View
                             </button>
                         </div>
@@ -1053,7 +1349,7 @@
                             <span><i class="bi bi-calendar"></i> March 2024</span>
                             <span><i class="bi bi-people"></i> 50+ Farmers</span>
                         </div>
-                        <button class="gallery-card-btn" onclick="openLightboxFromCard(12)">
+                        <button class="gallery-card-btn" onclick="openLightboxFromCard(18)">
                             View <i class="bi bi-arrow-right"></i>
                         </button>
                     </div>
@@ -1061,10 +1357,10 @@
 
                 <div class="gallery-card" data-category="events">
                     <div class="gallery-card-image">
-                        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2000" alt="Agricultural Show">
+                        <img src="{{ asset('images/event3.jpg') }}" alt="Agricultural Show" loading="lazy">
                         <span class="gallery-card-badge">Events</span>
                         <div class="quick-view-overlay">
-                            <button class="quick-view-btn" onclick="openLightboxFromCard(13)">
+                            <button class="quick-view-btn" onclick="openLightboxFromCard(19)">
                                 <i class="bi bi-eye"></i> Quick View
                             </button>
                         </div>
@@ -1076,7 +1372,7 @@
                             <span><i class="bi bi-trophy"></i> Best Exhibitor</span>
                             <span><i class="bi bi-calendar"></i> June 2024</span>
                         </div>
-                        <button class="gallery-card-btn" onclick="openLightboxFromCard(13)">
+                        <button class="gallery-card-btn" onclick="openLightboxFromCard(19)">
                             View <i class="bi bi-arrow-right"></i>
                         </button>
                     </div>
@@ -1084,10 +1380,10 @@
 
                 <div class="gallery-card" data-category="events">
                     <div class="gallery-card-image">
-                        <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?q=80&w=2000" alt="Team Building">
+                        <img src="{{ asset('images/event4.png') }}" alt="Team Building" loading="lazy">
                         <span class="gallery-card-badge">Events</span>
                         <div class="quick-view-overlay">
-                            <button class="quick-view-btn" onclick="openLightboxFromCard(14)">
+                            <button class="quick-view-btn" onclick="openLightboxFromCard(20)">
                                 <i class="bi bi-eye"></i> Quick View
                             </button>
                         </div>
@@ -1099,7 +1395,7 @@
                             <span><i class="bi bi-emoji-smile"></i> Team Spirit</span>
                             <span><i class="bi bi-calendar"></i> 2024</span>
                         </div>
-                        <button class="gallery-card-btn" onclick="openLightboxFromCard(14)">
+                        <button class="gallery-card-btn" onclick="openLightboxFromCard(20)">
                             View <i class="bi bi-arrow-right"></i>
                         </button>
                     </div>
@@ -1346,6 +1642,13 @@
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth'
+            });
+        });
+
+        // Image load error handling
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('error', function() {
+                this.src = 'https://via.placeholder.com/400x300?text=Image+Not+Available';
             });
         });
     });

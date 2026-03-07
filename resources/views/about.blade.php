@@ -4,21 +4,39 @@
 
 @push('styles')
 <style>
-    /* Hero Section */
+    /* Hero Section - Updated with new background */
     .about-hero {
-        background: linear-gradient(rgba(42, 110, 63, 0.9), rgba(30, 82, 46, 0.9)),
-                    url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070') center/cover;
+        background: url('/images/abtus.png') center/cover;
+        background-attachment: fixed;
         padding: 8rem 0 5rem;
         color: white;
         text-align: center;
         position: relative;
+    }
+    
+    /* Subtle overlay for text readability */
+    .about-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1;
+    }
+    
+    .about-hero .container {
+        position: relative;
+        z-index: 2;
     }
 
     .about-hero h1 {
         font-size: 3.5rem;
         font-weight: 800;
         margin-bottom: 1.5rem;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        animation: fadeInDown 1s ease;
     }
 
     .about-hero p {
@@ -28,6 +46,30 @@
         margin: 0 auto;
         line-height: 1.8;
         font-weight: 300;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        animation: fadeInUp 1s ease 0.3s both;
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     /* Vision & Mission Section */
@@ -505,7 +547,7 @@
         font-size: 1rem;
     }
 
-    /* Team Section - FIXED with proper image display */
+    /* Team Section - UPDATED with proper image display */
     .team-section {
         padding: 6rem 0;
         background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
@@ -571,7 +613,7 @@
         transition: all 0.5s ease;
     }
 
-    /* Individual photo adjustments - FIXED */
+    /* Individual photo adjustments - UPDATED for new images */
     .team-member:nth-child(1) .team-photo {
         object-fit: cover;
         object-position: center 30%;
@@ -877,7 +919,7 @@
 @endpush
 
 @section('content')
-<!-- Hero Section -->
+<!-- Hero Section - Updated with new background -->
 <section class="about-hero">
     <div class="container">
         <h1>Premium Farming Feeds</h1>
@@ -893,6 +935,18 @@
 <section class="vision-mission-section">
     <div class="container">
         <div class="row g-4">
+<div class="col-lg-6">
+                <div class="vm-card">
+                    <div class="vm-icon">
+                        <i class="bi bi-bullseye"></i>
+                    </div>
+                    <h3>Our Mission</h3>
+                    <p>
+                        Ensuring access to affordable and consistent high quality agricultural solutions
+                    </p>
+                </div>
+            </div>
+
             <div class="col-lg-6">
                 <div class="vm-card">
                     <div class="vm-icon">
@@ -900,31 +954,17 @@
                     </div>
                     <h3>Our Vision</h3>
                     <p>
-                        To be East Africa's leading provider of premium animal feeds, empowering farmers 
-                        to achieve maximum productivity through scientifically formulated nutrition solutions 
-                        that enhance livestock health and profitability.
+                      To be the Leading Company in the agricultural sector by providing sustainable, high quality and cost-effective solutions.
                     </p>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="vm-card">
-                    <div class="vm-icon">
-                        <i class="bi bi-bullseye"></i>
-                    </div>
-                    <h3>Our Mission</h3>
-                    <p>
-                        To provide farmers with high-quality, affordable, and scientifically balanced animal 
-                        feeds that optimize livestock growth, health, and productivity. We are committed to 
-                        sustainable farming practices, farmer education, and exceptional customer service.
-                    </p>
-                </div>
-            </div>
+            
         </div>
     </div>
 </section>
 
-<!-- Transport & Delivery Section -->
-<section class="transport-section">
+<!-- Transport & Delivery Section - Commented out as in original -->
+{{-- <section class="transport-section">
     <div class="container">
         <div class="transport-header">
             <h2>Our Delivery Services</h2>
@@ -937,7 +977,7 @@
                     <small>Orders placed after 3:00 PM are delivered the next business day</small>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="row g-4">
             {{-- <div class="col-lg-4">
@@ -958,7 +998,7 @@
                 </div>
             </div> --}}
 
-            <div class="col-lg-4">
+            {{-- <div class="col-lg-4">
                 <div class="transport-card">
                     <div class="transport-image">
                         <img src="{{ asset('images/trns1.jpeg') }}" alt="Our Warehouse" 
@@ -993,7 +1033,7 @@
             </div>
         </div>
     </div>
-</section>
+</section> --}}
 
 <!-- Story Section -->
 <section class="story-section">
@@ -1173,7 +1213,7 @@
             <!-- Preview Images -->
             <div class="gallery-preview">
                 <img src="{{ asset('images/comp.jpeg') }}" alt="Facility Preview" class="preview-image" onclick="window.location.href='{{ route('gallery') }}#facility'">
-                <img src="{{ asset('images/boss.jpeg') }}" alt="Team Preview" class="preview-image" onclick="window.location.href='{{ route('gallery') }}#team'">
+                <img src="{{ asset('images/boss1.jpeg') }}" alt="Team Preview" class="preview-image" onclick="window.location.href='{{ route('gallery') }}#team'">
                 <img src="{{ asset('images/trns.jpeg') }}" alt="Delivery Preview" class="preview-image" onclick="window.location.href='{{ route('gallery') }}#delivery'">
                 <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=2000" alt="Products Preview" class="preview-image" onclick="window.location.href='{{ route('gallery') }}#products'">
                 <img src="{{ asset('images/kiy.jpeg') }}" alt="Warehouse Preview" class="preview-image" onclick="window.location.href='{{ route('gallery') }}#facility'">
@@ -1187,7 +1227,7 @@
     </div>
 </section>
 
-<!-- Team Section (Leadership) - FIXED with proper image display -->
+<!-- Team Section (Leadership) - UPDATED with new images and proper display -->
 <section class="team-section" id="leadership">
     <div class="container">
         <div class="text-center mb-5">
@@ -1198,7 +1238,7 @@
         <div class="team-grid">
             <div class="team-member">
                 <div class="team-photo-container">
-                    <img src="{{ asset('images/boss.jpeg') }}" alt="Paul Mbua" class="team-photo" onerror="this.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=2000'">
+                    <img src="{{ asset('images/boss1.jpeg') }}" alt="Paul Mbua" class="team-photo" onerror="this.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=2000'">
                 </div>
                 <h3>Paul Mbua</h3>
                 <p class="team-role">Founder & CEO</p>
@@ -1220,10 +1260,10 @@
 
             <div class="team-member">
                 <div class="team-photo-container">
-                    <img src="{{ asset('images/manager.jpeg') }}" alt="Naomi" class="team-photo" onerror="this.src='https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=2000'">
+                    <img src="{{ asset('images/naomi1.jpeg') }}" alt="Naomi" class="team-photo" onerror="this.src='https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=2000'">
                 </div>
                 <h3>Naomi</h3>
-                <p class="team-role">Branch Manager</p>
+                <p class="team-role">General Manager</p>
                 <p class="team-bio">
                     Manages daily operations and customer relations at our Turitu branch.
                 </p>
