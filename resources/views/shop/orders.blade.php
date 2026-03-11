@@ -4,12 +4,6 @@
 
 @section('content')
 
-{{-- ══════════════════════════════════════════════════════════
-     M-PESA PAYMENT PENDING BANNER
-     Shown only when redirected here after STK push.
-     Polls GET /api/ecommerce/confirm-payment/ every 4s.
-     Django returns: { status: "Paid" } on success.
-══════════════════════════════════════════════════════════ --}}
 <div id="mpesaBanner" class="mpesa-banner d-none">
     <div class="container">
         <div class="mpesa-banner-inner">
@@ -243,17 +237,14 @@
     .order-meta-value  { font-size: 0.95rem; font-weight: 600; color: #1a1a1a; }
     .order-total       { font-size: 1.3rem; font-weight: 800; color: #2a6e3f; }
 
-    /* ── Status Badges ──
-       Django returns: "Paid", "Pending", "Processing", "Cancelled", "Failed"
-       We lowercase before applying the class.
-    ── */
+    
     .status-badge {
         display: inline-flex; align-items: center; gap: 6px;
         padding: 4px 12px; border-radius: 20px;
         font-size: 0.78rem; font-weight: 700;
         text-transform: uppercase; letter-spacing: 0.5px;
     }
-    .status-paid       { background: #d1e7dd; color: #0a3622; }   /* green — Paid */
+    .status-paid       { background: #d1e7dd; color: #0a3622; }   
     .status-pending    { background: #fff3cd; color: #856404; }
     .status-processing { background: #cff4fc; color: #055160; }
     .status-completed  { background: #d1e7dd; color: #0a3622; }
@@ -300,12 +291,7 @@
 
     const CSRF = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-    /* ═══════════════════════════════════════════════════════════
-       M-PESA PAYMENT POLLING
-       Calls: GET /proxy/checkout/status/{checkoutRequestId}
-              → Django: GET /api/ecommerce/confirm-payment/?checkout_request_id=xxx
-       Django success response: { status: "Paid" }  ← CAPITAL P
-    ═══════════════════════════════════════════════════════════ */
+   
     const urlParams     = new URLSearchParams(window.location.search);
     const checkoutReqId = urlParams.get('checkout_request_id');
     let   pollInterval  = null;
@@ -371,24 +357,7 @@
         document.getElementById('paymentFailedAlert').classList.remove('d-none');
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       LOAD ORDERS
-       Calls: GET /proxy/orders → Django: GET /api/ecommerce/orders/
-
-       Expected Django response (array or paginated):
-       [
-         {
-           "id": 3,
-           "order_number": "ORD-20260311-0003",
-           "customer": "Njoki (customer)",   ← plain string
-           "branch": "gitugi branch",
-           "status": "Paid",                 ← capitalized
-           "total": "1.00",
-           "created_at": "2026-03-11T09:05:...",
-           "items": [...]                    ← may be nested or fetched separately
-         }
-       ]
-    ═══════════════════════════════════════════════════════════ */
+ 
     window.loadOrders = async function () {
         show('ordersLoading');
 
@@ -462,29 +431,6 @@
         show('ordersContainer');
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       VIEW ORDER DETAIL MODAL
-       Calls: GET /proxy/orders/{id} → Django: GET /api/ecommerce/orders/<id>/
-
-       Expected Django response:
-       {
-         "id": 3,
-         "order_number": "ORD-20260311-0003",
-         "customer": "Njoki (customer)",
-         "branch": "gitugi branch",
-         "status": "Paid",
-         "total": "1.00",
-         "created_at": "...",
-         "items": [
-           {
-             "product": "cow salt (0013)",   ← plain string (product __str__)
-             "quantity": 1,
-             "unit_price": "1.00",
-             "subtotal": "1.00"
-           }
-         ]
-       }
-    ═══════════════════════════════════════════════════════════ */
     window.viewOrderDetail = async function (orderId, orderNumber) {
         document.getElementById('modalOrderNumber').textContent = orderNumber;
         document.getElementById('modalOrderBody').innerHTML = `
@@ -575,9 +521,7 @@
             </div>`;
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       HELPERS
-    ═══════════════════════════════════════════════════════════ */
+
     function show(id) {
         ['ordersLoading','ordersError','ordersGuest','ordersEmpty','ordersContainer']
             .forEach(i => document.getElementById(i)?.classList.add('d-none'));
@@ -592,8 +536,7 @@
         });
     }
 
-    // Django returns "Paid", "Pending", "Processing", "Cancelled", "Failed"
-    // We lowercase to match CSS class names: status-paid, status-pending, etc.
+   
     function statusBadge(status) {
         const s = (status ?? 'pending').toLowerCase();
         const icons = {
@@ -611,7 +554,6 @@
                 </span>`;
     }
 
-    /* Boot */
     document.addEventListener('DOMContentLoaded', loadOrders);
 
 })();

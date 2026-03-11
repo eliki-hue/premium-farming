@@ -777,6 +777,9 @@
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('reviews') ? 'active' : '' }}" href="/reviews">Reviews</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('orders') ? 'active' : '' }}" href="/orders">My Orders</a>
+                    </li>
                     
                     <li class="nav-item">
                         <div class="navbar-cart-container">
@@ -838,6 +841,7 @@
                         <li class="mb-2"><a href="/about" class="text-white-50">About Us</a></li>
                         <li class="mb-2"><a href="/contact" class="text-white-50">Contact</a></li>
                         <li class="mb-2"><a href="/reviews" class="text-white-50">Reviews</a></li>
+                        <li class="mb-2"><a href="/orders" class="text-white-50">My Orders</a></li>
                     </ul>
                 </div>
                 
@@ -866,7 +870,7 @@
                        <li class="mb-3 text-white-50 small">
                         <i class="bi bi-envelope me-2"></i>
                         <a href="https://mail.google.com/mail/?view=cm&to=premiumfarmingf@gmail.com" target="_blank" class="text-white-50 text-decoration-none">
-                            premiumfarmingf@gmail.com
+                            premiumfarming@gmail.com
                         </a>
                      </li>
                         <li class="text-white-50 small">
