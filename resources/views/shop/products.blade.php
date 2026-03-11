@@ -48,7 +48,7 @@
 <div class="container my-5" id="products">
     <h2 class="mb-4 text-center section-title">Our Products</h2>
 
-    @if($products->isNotEmpty())
+    @if(!empty($products) && count($products) > 0)
         <div class="row">
             @foreach($products as $product)
                 <div class="col-md-3 col-sm-6 mb-4">
@@ -58,43 +58,68 @@
                         <div class="card-img-top-container">
                             <img
                                 class="card-img-top"
-                                src="{{ $product['image'] ?? asset('images/no-image.png') }}"
-                                alt="{{ $product['name'] }}"
+                                src="{{ $product['image'] ?? $product['image_url'] ?? asset('images/no-image.png') }}"
+                                alt="{{ $product['name'] ?? $product['product_name'] ?? 'Product' }}"
                                 loading="lazy">
                         </div>
 
                         {{-- Card body --}}
                         <div class="card-body d-flex flex-column">
-                            <h5 class="fw-bold">{{ $product['name'] }}</h5>
+                            <h5 class="fw-bold">
+                                {{ $product['name'] ?? $product['product_name'] ?? 'Unknown Product' }}
+                            </h5>
 
                             <p class="price-tag text-success fw-bold">
-                                KES {{ number_format($product['unit_price'], 2) }}
+                                KES {{ number_format($product['unit_price'] ?? $product['price'] ?? $product['selling_price'] ?? 0, 2) }}
                             </p>
 
-                            @if(!empty($product['sku']))
-                                <small class="text-muted mb-2">SKU: {{ $product['sku'] }}</small>
+                            @if(!empty($product['sku'] ?? $product['sku_code'] ?? null))
+                                <small class="text-muted mb-2">
+                                    SKU: {{ $product['sku'] ?? $product['sku_code'] }}
+                                </small>
                             @endif
 
                             <div class="mt-auto">
-                                @auth
-                                    {{-- Logged-in users can directly add to cart --}}
-                                    <button class="btn btn-primary w-100"
-                                            onclick="addItem(event, {{ $product['id'] }}, 1)">
-                                        Add to Cart
+
+                                {{-- ✅ THE KEY FIX:
+                                     Use session('django_token') NOT @auth
+                                     @auth always returns false because we use Django auth, not Laravel auth
+                                     session('django_token') correctly tells us if the user is logged in
+                                     Once logged in → always sees "Add to Cart" → no repeated login --}}
+
+                                @if(session('django_token'))
+                                    {{-- User is logged in → Add to Cart directly, no redirect --}}
+                                    <button
+                                        class="btn btn-primary w-100 add-to-cart-btn"
+                                        data-product-id="{{ $product['id'] }}"
+                                        data-product-name="{{ $product['name'] ?? $product['product_name'] }}"
+                                        onclick="addItem(event, {{ $product['id'] }}, 1)">
+                                        <i class="bi bi-cart-plus me-2"></i>Add to Cart
                                     </button>
                                 @else
-                                    {{-- Guests are redirected to login with product_id --}}
+                                    {{-- Guest → redirect to login, saving product_id so it auto-adds after login --}}
                                     <a href="{{ route('login') }}?product_id={{ $product['id'] }}"
                                        class="btn btn-outline-success w-100">
                                         <i class="bi bi-lock me-2"></i>Login to Purchase
                                     </a>
-                                @endauth
+                                @endif
+
                             </div>
                         </div>
                     </div>
                 </div>
             @endforeach
         </div>
+
+        {{-- View Cart button — only shown when logged in --}}
+        @if(session('django_token'))
+            <div class="text-center mt-4 mb-2">
+                <a href="{{ route('cart.view') }}" class="btn btn-success px-5 btn-lg">
+                    <i class="bi bi-cart3 me-2"></i>View Cart
+                </a>
+            </div>
+        @endif
+
     @else
         <div class="text-center py-5">
             <i class="bi bi-box-seam display-1 text-muted mb-3 d-block"></i>
@@ -102,6 +127,12 @@
             <p class="text-muted">Please check back later or contact us for assistance.</p>
         </div>
     @endif
+</div>
+
+{{-- ─────────────────────────── TOAST NOTIFICATION ─────────────────────────── --}}
+<div id="cart-toast" class="cart-toast" style="display:none;">
+    <i class="bi bi-check-circle-fill me-2 text-success"></i>
+    <span id="cart-toast-msg"></span>
 </div>
 
 
@@ -192,6 +223,21 @@
         border-radius: 2px;
     }
 
+    .btn-primary {
+        background: linear-gradient(135deg, #1a6eb5, #2a8fd4);
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #155a9a, #1a6eb5);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(26, 110, 181, 0.3);
+    }
+
     .btn-success {
         background: linear-gradient(135deg, #2a6e3f, #3a8e5c);
         border: none;
@@ -222,6 +268,37 @@
         transform: translateY(-2px);
     }
 
+    /* ── Cart Toast Notification ── */
+    .cart-toast {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: #fff;
+        border: 1px solid #d4edda;
+        border-left: 5px solid #2a6e3f;
+        border-radius: 10px;
+        padding: 14px 20px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #1a1a1a;
+        box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        animation: slideInRight 0.3s ease;
+        max-width: 320px;
+    }
+
+    .cart-toast.error {
+        border-left-color: #dc3545;
+        border-color: #f5c6cb;
+    }
+
+    @keyframes slideInRight {
+        from { transform: translateX(100px); opacity: 0; }
+        to   { transform: translateX(0);     opacity: 1; }
+    }
+
     @media (max-width: 768px) {
         .hero-section-products {
             min-height: 50vh;
@@ -234,6 +311,13 @@
 
         .card-img-top-container { height: 180px; }
         .col-md-3 { margin-bottom: 1.5rem; }
+
+        .cart-toast {
+            bottom: 15px;
+            right: 15px;
+            left: 15px;
+            max-width: 100%;
+        }
     }
 
     @media (max-width: 576px) {
@@ -250,77 +334,121 @@
 (function () {
     'use strict';
 
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    const CSRF = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-    document.querySelectorAll('.add-to-cart-btn').forEach(function (btn) {
-        btn.addEventListener('click', async function () {
-            const productId   = this.getAttribute('data-product-id');
-            const productName = this.getAttribute('data-product-name');
+    /* ═══════════════════════════════════════════════════════════════
+       addItem()
 
-            const originalHTML = this.innerHTML;
-            this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Adding...';
-            this.disabled = true;
+       HOW IT WORKS:
+         1. User is already logged in (session has django_token)
+         2. Clicks "Add to Cart" on any product
+         3. POST /proxy/cart/add  ← Laravel route
+         4. CartProxyController reads session('django_token')
+         5. Forwards to Django: Authorization: Bearer <token>
+         6. Django adds item to cart ✅
+         7. Toast shows success
+         8. Button resets after 2.5s → user can keep shopping
+         9. NO login prompt unless session actually expires
 
-            try {
-                const response = await fetch('api/ecommerce/cart/items/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type':     'application/json',
-                        'X-CSRF-TOKEN':     csrfToken,
-                        'Accept':           'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({ product_id: productId, quantity: 1 }),
-                });
+       SESSION EXPIRY HANDLING:
+         If Django returns 401 → session expired
+         → redirect to /login?product_id=X
+         → after login, item auto-adds, redirects back to cart
+    ═══════════════════════════════════════════════════════════════ */
+    window.addItem = async function (event, productId, quantity) {
+        const btn          = event.currentTarget;
+        const originalHTML = btn.innerHTML;
+        const productName  = btn.getAttribute('data-product-name') || 'Item';
 
-                const data = await response.json();
+        // ── Show loading spinner ──
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Adding...';
+        btn.disabled  = true;
 
-                if (response.ok && data.success) {
-                    this.innerHTML = '<i class="bi bi-check me-2"></i>Added!';
-                    this.classList.replace('btn-success', 'btn-outline-success');
+        try {
+            const response = await fetch('/proxy/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type':     'application/json',
+                    'X-CSRF-TOKEN':     CSRF,
+                    'Accept':           'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                credentials: 'same-origin', // ← sends Laravel session cookie automatically
+                body: JSON.stringify({ product: productId, quantity: quantity }),
+            });
 
-                    // Notify cart widget if available
-                    if (window.showCartNotification) {
-                        window.showCartNotification(`${productName} added to cart!`, 'success');
-                    }
+            const data = await response.json();
 
-                    if (window.refreshCart) {
-                        window.refreshCart();
-                    }
+            if (response.ok) {
+                // ── ✅ Success — stay on page, user keeps shopping ──
+                btn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Added!';
+                btn.classList.replace('btn-primary', 'btn-success');
 
-                    setTimeout(() => {
-                        window.location.href = data.redirect || '{{ route("cart.view") }}';
-                    }, 1000);
+                showToast(`${productName} added to cart!`, 'success');
 
-                } else if (response.status === 401) {
-                    const currentUrl = encodeURIComponent(window.location.href);
-                    window.location.href = `/login?redirect=${currentUrl}`;
-                } else {
-                    showError(data.message || 'Failed to add to cart');
-                    this.innerHTML = originalHTML;
-                    this.disabled  = false;
+                // Update navbar cart badge if defined in layout
+                if (typeof window.refreshCart === 'function') {
+                    window.refreshCart();
                 }
 
-            } catch (error) {
-                console.error('Error adding to cart:', error);
-                showError('Error adding to cart. Please try again.');
-                this.innerHTML = originalHTML;
-                this.disabled  = false;
-            }
-        });
-    });
+                // Reset button after 2.5s — ready to add again
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="bi bi-cart-plus me-2"></i>Add to Cart';
+                    btn.classList.replace('btn-success', 'btn-primary');
+                    btn.disabled = false;
+                }, 2500);
 
-    function showError(message) {
-        const toast = document.createElement('div');
-        toast.className = 'alert alert-danger position-fixed top-0 end-0 m-3 shadow-lg';
-        toast.style.zIndex = '9999';
-        toast.style.maxWidth = '320px';
-        toast.innerHTML = `<i class="bi bi-exclamation-triangle me-2"></i>${message}`;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
+            } else if (response.status === 401) {
+                // ── Session expired — only redirect in this case ──
+                showToast('Session expired. Redirecting to login...', 'error');
+                setTimeout(() => {
+                    window.location.href = `/login?product_id=${productId}`;
+                }, 1200);
+
+            } else {
+                // ── Django returned a known error ──
+                const msg = data?.detail || data?.message || 'Could not add to cart. Try again.';
+                showToast(msg, 'error');
+                btn.innerHTML = originalHTML;
+                btn.disabled  = false;
+            }
+
+        } catch (err) {
+            // ── Network / connection error ──
+            console.error('[addItem] Error:', err);
+            showToast('Network error. Please check your connection.', 'error');
+            btn.innerHTML = originalHTML;
+            btn.disabled  = false;
+        }
+    };
+
+    /* ═══════════════════════════════════════════════════════════════
+       showToast()
+       Non-blocking bottom-right notification.
+       Does not navigate away — user stays on the products page.
+       Auto-hides after 3 seconds.
+    ═══════════════════════════════════════════════════════════════ */
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('cart-toast');
+        const msg   = document.getElementById('cart-toast-msg');
+
+        msg.textContent = message;
+        toast.className = 'cart-toast' + (type === 'error' ? ' error' : '');
+
+        const icon = toast.querySelector('i');
+        icon.className = type === 'error'
+            ? 'bi bi-exclamation-circle-fill me-2 text-danger'
+            : 'bi bi-check-circle-fill me-2 text-success';
+
+        toast.style.display = 'flex';
+
+        clearTimeout(toast._hideTimer);
+        toast._hideTimer = setTimeout(() => {
+            toast.style.display = 'none';
+        }, 3000);
     }
 
+    /* ── Auto-dismiss flash alerts after 5s ── */
     setTimeout(function () {
         document.querySelectorAll('.alert').forEach(function (alert) {
             const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
