@@ -4,11 +4,40 @@
 
 @section('content')
 
-{{-- ─────────────────────────── HERO ─────────────────────────── --}}
+{{-- ─────────────────────────── HERO WITH HORIZONTAL SLIDESHOW ─────────────────────────── --}}
 <section class="hero-section-products">
-    <video autoplay muted loop playsinline preload="metadata" class="hero-video">
-        <source src="{{ asset('videos/kkk.mp4') }}" type="video/mp4">
-    </video>
+    {{-- Image Slideshow Background --}}
+    <div class="hero-slideshow">
+        <div class="slideshow-container">
+            <div class="slides-track">
+                @php
+                    $images = [
+                        'images/swn.jpeg',
+                        'images/rbt.jpeg', 
+                        'images/pou.jpeg',
+                        'images/gt.jpeg',
+                        'images/dry.jpeg',
+                        'images/dg.jpeg'
+                    ];
+                @endphp
+                
+                {{-- Original images --}}
+                @foreach($images as $image)
+                    <div class="slide">
+                        <img src="{{ asset($image) }}" alt="Slide" class="slide-image">
+                    </div>
+                @endforeach
+                
+                {{-- Duplicate images for seamless loop --}}
+                @foreach($images as $image)
+                    <div class="slide">
+                        <img src="{{ asset($image) }}" alt="Slide" class="slide-image">
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        <div class="slideshow-overlay"></div>
+    </div>
 
     <div class="hero-overlay">
         <div class="container">
@@ -44,90 +73,94 @@
     </div>
 @endif
 
-{{-- ─────────────────────────── PRODUCTS ─────────────────────────── --}}
-<div class="container my-5" id="products">
-    <h2 class="mb-4 text-center section-title">Our Products</h2>
+{{-- ─────────────────────────── PRODUCTS SECTION (IMPROVED) ─────────────────────────── --}}
+<section class="products-section py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Our Products</h2>
+            <p class="section-subtitle">Discover our range of premium quality farming feeds</p>
+        </div>
 
-    @if(!empty($products) && count($products) > 0)
-        <div class="row">
-            @foreach($products as $product)
-                <div class="col-md-3 col-sm-6 mb-4">
-                    <div class="card h-100 shadow-sm product-card">
-
-                        {{-- Product image --}}
-                        <div class="card-img-top-container">
-                            <img
-                                class="card-img-top"
-                                src="{{ $product['image'] ?? $product['image_url'] ?? asset('images/no-image.png') }}"
-                                alt="{{ $product['name'] ?? $product['product_name'] ?? 'Product' }}"
-                                loading="lazy">
-                        </div>
-
-                        {{-- Card body --}}
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="fw-bold">
-                                {{ $product['name'] ?? $product['product_name'] ?? 'Unknown Product' }}
-                            </h5>
-
-                            <p class="price-tag text-success fw-bold">
-                                KES {{ number_format($product['unit_price'] ?? $product['price'] ?? $product['selling_price'] ?? 0, 2) }}
-                            </p>
-
-                            @if(!empty($product['sku'] ?? $product['sku_code'] ?? null))
-                                <small class="text-muted mb-2">
-                                    SKU: {{ $product['sku'] ?? $product['sku_code'] }}
-                                </small>
-                            @endif
-
-                            <div class="mt-auto">
-
-                                {{-- ✅ THE KEY FIX:
-                                     Use session('django_token') NOT @auth
-                                     @auth always returns false because we use Django auth, not Laravel auth
-                                     session('django_token') correctly tells us if the user is logged in
-                                     Once logged in → always sees "Add to Cart" → no repeated login --}}
-
-                                @if(session('django_token'))
-                                    {{-- User is logged in → Add to Cart directly, no redirect --}}
-                                    <button
-                                        class="btn btn-primary w-100 add-to-cart-btn"
-                                        data-product-id="{{ $product['id'] }}"
-                                        data-product-name="{{ $product['name'] ?? $product['product_name'] }}"
-                                        onclick="addItem(event, {{ $product['id'] }}, 1)">
-                                        <i class="bi bi-cart-plus me-2"></i>Add to Cart
+        @if(!empty($products) && count($products) > 0)
+            <div class="row g-4">
+                @foreach($products as $product)
+                    <div class="col-md-3 col-sm-6">
+                        <div class="product-card">
+                            <div class="product-image-wrapper">
+                                <div class="product-badge">New</div>
+                                <img
+                                    src="{{ $product['image'] ?? $product['image_url'] ?? asset('images/no-image.png') }}"
+                                    alt="{{ $product['name'] ?? $product['product_name'] ?? 'Product' }}"
+                                    class="product-image"
+                                    loading="lazy">
+                                <div class="product-overlay">
+                                    <button class="quick-view-btn" onclick="quickView({{ $product['id'] }})">
+                                        <i class="bi bi-eye"></i> Quick View
                                     </button>
-                                @else
-                                    {{-- Guest → redirect to login, saving product_id so it auto-adds after login --}}
-                                    <a href="{{ route('login') }}?product_id={{ $product['id'] }}"
-                                       class="btn btn-outline-success w-100">
-                                        <i class="bi bi-lock me-2"></i>Login to Purchase
-                                    </a>
-                                @endif
-
+                                </div>
+                            </div>
+                            
+                            <div class="product-content">
+                                <h3 class="product-title">
+                                    {{ $product['name'] ?? $product['product_name'] ?? 'Unknown Product' }}
+                                </h3>
+                                
+                                <div class="product-meta">
+                                    @if(!empty($product['sku'] ?? $product['sku_code'] ?? null))
+                                        <span class="product-sku">
+                                            <i class="bi bi-upc-scan"></i> SKU: {{ $product['sku'] ?? $product['sku_code'] }}
+                                        </span>
+                                    @endif
+                                </div>
+                                
+                                <div class="product-price">
+                                    <span class="currency">KES</span>
+                                    <span class="amount">{{ number_format($product['unit_price'] ?? $product['price'] ?? $product['selling_price'] ?? 0, 2) }}</span>
+                                </div>
+                                
+                                <div class="product-actions">
+                                    @if(session('django_token'))
+                                        <button
+                                            class="btn-add-to-cart"
+                                            data-product-id="{{ $product['id'] }}"
+                                            data-product-name="{{ $product['name'] ?? $product['product_name'] }}"
+                                            onclick="addItem(event, {{ $product['id'] }}, 1)">
+                                            <i class="bi bi-cart-plus"></i>
+                                            <span>Add to Cart</span>
+                                        </button>
+                                    @else
+                                        <a href="{{ route('login') }}?product_id={{ $product['id'] }}" class="btn-login-purchase">
+                                            <i class="bi bi-lock"></i>
+                                            <span>Login to Purchase</span>
+                                        </a>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
-        </div>
+                @endforeach
+            </div>
 
-        {{-- View Cart button — only shown when logged in --}}
-        @if(session('django_token'))
-            <div class="text-center mt-4 mb-2">
-                <a href="{{ route('cart.view') }}" class="btn btn-success px-5 btn-lg">
-                    <i class="bi bi-cart3 me-2"></i>View Cart
-                </a>
+            {{-- View Cart button --}}
+            @if(session('django_token'))
+                <div class="text-center mt-5">
+                    <a href="{{ route('cart.view') }}" class="btn-view-cart">
+                        <i class="bi bi-cart3 me-2"></i> View Cart
+                        <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            @endif
+        @else
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+                <h4>No products available</h4>
+                <p>Please check back later or contact us for assistance.</p>
             </div>
         @endif
-
-    @else
-        <div class="text-center py-5">
-            <i class="bi bi-box-seam display-1 text-muted mb-3 d-block"></i>
-            <h4 class="text-muted">No products available</h4>
-            <p class="text-muted">Please check back later or contact us for assistance.</p>
-        </div>
-    @endif
-</div>
+    </div>
+</section>
 
 {{-- ─────────────────────────── TOAST NOTIFICATION ─────────────────────────── --}}
 <div id="cart-toast" class="cart-toast" style="display:none;">
@@ -137,7 +170,7 @@
 
 
 <style>
-    /* ── Hero ── */
+    /* ── Hero with Horizontal Slideshow ── */
     .hero-section-products {
         position: relative;
         min-height: 60vh;
@@ -148,17 +181,70 @@
         margin-top: 76px;
     }
 
-    .hero-video {
+    .hero-slideshow {
         position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover;
-        filter: brightness(0.45);
+        z-index: 1;
+        overflow: hidden;
+    }
+
+    .slideshow-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .slides-track {
+        display: flex;
+        height: 100%;
+        width: fit-content;
+        animation: scrollSlides 60s linear infinite; /* Even slower for smoother effect */
+    }
+
+    .slide {
+        flex: 0 0 auto;
+        width: 25vw;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .slide-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Changed back to cover for better appearance */
+        display: block;
+        filter: brightness(0.9); /* Slightly brighten images */
+    }
+
+    @keyframes scrollSlides {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+
+    .hero-slideshow:hover .slides-track {
+        animation-play-state: paused;
+    }
+
+    .slideshow-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 2;
+        pointer-events: none;
     }
 
     .hero-overlay {
         position: relative;
-        z-index: 2;
+        z-index: 3;
         padding: 90px 0;
         width: 100%;
     }
@@ -166,49 +252,43 @@
     .hero-title {
         font-size: 2.8rem;
         font-weight: 800;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        animation: fadeInUp 1s ease;
     }
 
     .hero-subtitle {
         font-size: 1.2rem;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        animation: fadeInUp 1s ease 0.2s both;
     }
 
-    .product-card {
-        border-radius: 15px;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    .hero-overlay .btn-success {
+        animation: fadeInUp 1s ease 0.4s both;
     }
 
-    .product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
-    .card-img-top-container {
-        height: 200px;
-        overflow: hidden;
-        border-radius: 15px 15px 0 0;
-    }
-
-    .card-img-top {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.4s ease;
-    }
-
-    .product-card:hover .card-img-top {
-        transform: scale(1.05);
-    }
-
-    .price-tag {
-        font-size: 1.3rem;
-        margin: 0.5rem 0;
+    /* ── Improved Products Section Styling ── */
+    .products-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
     }
 
     .section-title {
         color: #2a6e3f;
         font-weight: 700;
+        font-size: 2.5rem;
         position: relative;
         padding-bottom: 15px;
+        margin-bottom: 15px;
     }
 
     .section-title::after {
@@ -223,49 +303,254 @@
         border-radius: 2px;
     }
 
-    .btn-primary {
-        background: linear-gradient(135deg, #1a6eb5, #2a8fd4);
-        border: none;
-        border-radius: 8px;
-        padding: 10px 20px;
-        font-weight: 600;
+    .section-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .product-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         transition: all 0.3s ease;
+        height: 100%;
+        position: relative;
     }
 
-    .btn-primary:hover {
-        background: linear-gradient(135deg, #155a9a, #1a6eb5);
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(26, 110, 181, 0.3);
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
     }
 
-    .btn-success {
+    .product-image-wrapper {
+        position: relative;
+        padding-top: 100%; /* 1:1 Aspect Ratio */
+        overflow: hidden;
+        background: #f8f9fa;
+    }
+
+    .product-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.1);
+    }
+
+    .product-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: linear-gradient(135deg, #ff6b6b, #ff4757);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 25px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 2;
+        box-shadow: 0 4px 10px rgba(255, 71, 87, 0.3);
+    }
+
+    .product-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 3;
+    }
+
+    .product-card:hover .product-overlay {
+        opacity: 1;
+    }
+
+    .quick-view-btn {
+        background: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 30px;
+        color: #2a6e3f;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transform: translateY(20px);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .product-card:hover .quick-view-btn {
+        transform: translateY(0);
+    }
+
+    .quick-view-btn:hover {
+        background: #2a6e3f;
+        color: white;
+    }
+
+    .product-content {
+        padding: 20px;
+    }
+
+    .product-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 10px;
+        line-height: 1.4;
+        height: 2.8em;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .product-meta {
+        margin-bottom: 15px;
+    }
+
+    .product-sku {
+        font-size: 0.8rem;
+        color: #999;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: #f8f9fa;
+        padding: 4px 10px;
+        border-radius: 15px;
+    }
+
+    .product-price {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: baseline;
+        gap: 5px;
+    }
+
+    .product-price .currency {
+        font-size: 0.9rem;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .product-price .amount {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2a6e3f;
+        line-height: 1;
+    }
+
+    .product-actions {
+        width: 100%;
+    }
+
+    .btn-add-to-cart {
+        width: 100%;
         background: linear-gradient(135deg, #2a6e3f, #3a8e5c);
+        color: white;
         border: none;
-        border-radius: 8px;
-        padding: 10px 20px;
+        padding: 12px;
+        border-radius: 12px;
         font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
         transition: all 0.3s ease;
-        text-shadow: none;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(42, 110, 63, 0.2);
     }
 
-    .btn-success:hover {
+    .btn-add-to-cart:hover {
         background: linear-gradient(135deg, #1e5a2f, #2a6e3f);
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(42, 110, 63, 0.3);
+        box-shadow: 0 8px 20px rgba(42, 110, 63, 0.3);
     }
 
-    .btn-outline-success {
-        border-radius: 8px;
-        padding: 10px 20px;
+    .btn-add-to-cart i {
+        font-size: 1.2rem;
+    }
+
+    .btn-login-purchase {
+        width: 100%;
+        background: white;
+        color: #2a6e3f;
+        border: 2px solid #2a6e3f;
+        padding: 12px;
+        border-radius: 12px;
         font-weight: 600;
-        border-width: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
         transition: all 0.3s ease;
+        text-decoration: none;
+        cursor: pointer;
     }
 
-    .btn-outline-success:hover {
+    .btn-login-purchase:hover {
         background: #2a6e3f;
         color: white;
         transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(42, 110, 63, 0.2);
+    }
+
+    .btn-view-cart {
+        display: inline-flex;
+        align-items: center;
+        padding: 15px 40px;
+        background: linear-gradient(135deg, #1a6eb5, #2a8fd4);
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 25px rgba(26, 110, 181, 0.3);
+    }
+
+    .btn-view-cart:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(26, 110, 181, 0.4);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .empty-state-icon {
+        font-size: 4rem;
+        color: #dee2e6;
+        margin-bottom: 20px;
+    }
+
+    .empty-state h4 {
+        color: #495057;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .empty-state p {
+        color: #868e96;
+        margin-bottom: 0;
     }
 
     /* ── Cart Toast Notification ── */
@@ -274,31 +559,37 @@
         bottom: 30px;
         right: 30px;
         background: #fff;
-        border: 1px solid #d4edda;
+        border: none;
         border-left: 5px solid #2a6e3f;
-        border-radius: 10px;
-        padding: 14px 20px;
+        border-radius: 15px;
+        padding: 16px 24px;
         font-size: 0.95rem;
         font-weight: 500;
         color: #1a1a1a;
-        box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
         z-index: 9999;
         display: flex;
         align-items: center;
         animation: slideInRight 0.3s ease;
-        max-width: 320px;
+        max-width: 380px;
     }
 
     .cart-toast.error {
         border-left-color: #dc3545;
-        border-color: #f5c6cb;
     }
 
     @keyframes slideInRight {
-        from { transform: translateX(100px); opacity: 0; }
-        to   { transform: translateX(0);     opacity: 1; }
+        from {
+            transform: translateX(100px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
     }
 
+    /* Responsive adjustments */
     @media (max-width: 768px) {
         .hero-section-products {
             min-height: 50vh;
@@ -306,12 +597,13 @@
         }
 
         .hero-overlay { padding: 60px 0; }
-        .hero-title   { font-size: 2.2rem; }
+        .hero-title { font-size: 2.2rem; }
         .hero-subtitle { font-size: 1rem; }
-
-        .card-img-top-container { height: 180px; }
-        .col-md-3 { margin-bottom: 1.5rem; }
-
+        
+        .section-title { font-size: 2rem; }
+        .section-subtitle { font-size: 1rem; }
+        
+        .slides-track { animation: scrollSlides 50s linear infinite; }
         .cart-toast {
             bottom: 15px;
             right: 15px;
@@ -324,6 +616,12 @@
         .hero-title { font-size: 1.8rem; }
         .hero-section-products { min-height: 40vh; }
         .hero-overlay { padding: 50px 0; }
+        
+        .section-title { font-size: 1.8rem; }
+        .product-title { font-size: 1rem; }
+        .product-price .amount { font-size: 1.3rem; }
+        
+        .slides-track { animation: scrollSlides 40s linear infinite; }
     }
 </style>
 
@@ -336,119 +634,98 @@
 
     const CSRF = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-    /* ═══════════════════════════════════════════════════════════════
-       addItem()
-
-       HOW IT WORKS:
-         1. User is already logged in (session has django_token)
-         2. Clicks "Add to Cart" on any product
-         3. POST /proxy/cart/add  ← Laravel route
-         4. CartProxyController reads session('django_token')
-         5. Forwards to Django: Authorization: Bearer <token>
-         6. Django adds item to cart ✅
-         7. Toast shows success
-         8. Button resets after 2.5s → user can keep shopping
-         9. NO login prompt unless session actually expires
-
-       SESSION EXPIRY HANDLING:
-         If Django returns 401 → session expired
-         → redirect to /login?product_id=X
-         → after login, item auto-adds, redirects back to cart
-    ═══════════════════════════════════════════════════════════════ */
     window.addItem = async function (event, productId, quantity) {
-        const btn          = event.currentTarget;
+        const btn = event.currentTarget;
         const originalHTML = btn.innerHTML;
-        const productName  = btn.getAttribute('data-product-name') || 'Item';
+        const productName = btn.getAttribute('data-product-name') || 'Item';
 
-        // ── Show loading spinner ──
+        // Show loading state
         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Adding...';
-        btn.disabled  = true;
+        btn.disabled = true;
 
         try {
             const response = await fetch('/proxy/cart/add', {
                 method: 'POST',
                 headers: {
-                    'Content-Type':     'application/json',
-                    'X-CSRF-TOKEN':     CSRF,
-                    'Accept':           'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': CSRF,
+                    'Accept': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest',
                 },
-                credentials: 'same-origin', // ← sends Laravel session cookie automatically
+                credentials: 'same-origin',
                 body: JSON.stringify({ product: productId, quantity: quantity }),
             });
 
             const data = await response.json();
 
             if (response.ok) {
-                // ── ✅ Success — stay on page, user keeps shopping ──
+                // Success
                 btn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Added!';
-                btn.classList.replace('btn-primary', 'btn-success');
-
+                btn.style.background = 'linear-gradient(135deg, #28a745, #34ce57)';
+                
                 showToast(`${productName} added to cart!`, 'success');
 
-                // Update navbar cart badge if defined in layout
                 if (typeof window.refreshCart === 'function') {
                     window.refreshCart();
                 }
 
-                // Reset button after 2.5s — ready to add again
+                // Reset button
                 setTimeout(() => {
-                    btn.innerHTML = '<i class="bi bi-cart-plus me-2"></i>Add to Cart';
-                    btn.classList.replace('btn-success', 'btn-primary');
+                    btn.innerHTML = '<i class="bi bi-cart-plus"></i><span>Add to Cart</span>';
+                    btn.style.background = 'linear-gradient(135deg, #2a6e3f, #3a8e5c)';
                     btn.disabled = false;
                 }, 2500);
 
             } else if (response.status === 401) {
-                // ── Session expired — only redirect in this case ──
                 showToast('Session expired. Redirecting to login...', 'error');
                 setTimeout(() => {
                     window.location.href = `/login?product_id=${productId}`;
                 }, 1200);
-
             } else {
-                // ── Django returned a known error ──
                 const msg = data?.detail || data?.message || 'Could not add to cart. Try again.';
                 showToast(msg, 'error');
                 btn.innerHTML = originalHTML;
-                btn.disabled  = false;
+                btn.disabled = false;
             }
-
         } catch (err) {
-            // ── Network / connection error ──
             console.error('[addItem] Error:', err);
             showToast('Network error. Please check your connection.', 'error');
             btn.innerHTML = originalHTML;
-            btn.disabled  = false;
+            btn.disabled = false;
         }
     };
 
-    /* ═══════════════════════════════════════════════════════════════
-       showToast()
-       Non-blocking bottom-right notification.
-       Does not navigate away — user stays on the products page.
-       Auto-hides after 3 seconds.
-    ═══════════════════════════════════════════════════════════════ */
+    window.quickView = function(productId) {
+        // Implement quick view functionality if needed
+        console.log('Quick view for product:', productId);
+    };
+
     function showToast(message, type = 'success') {
         const toast = document.getElementById('cart-toast');
-        const msg   = document.getElementById('cart-toast-msg');
+        const msg = document.getElementById('cart-toast-msg');
+        const icon = toast.querySelector('i');
 
         msg.textContent = message;
         toast.className = 'cart-toast' + (type === 'error' ? ' error' : '');
-
-        const icon = toast.querySelector('i');
+        
         icon.className = type === 'error'
             ? 'bi bi-exclamation-circle-fill me-2 text-danger'
             : 'bi bi-check-circle-fill me-2 text-success';
 
         toast.style.display = 'flex';
+        toast.style.opacity = '1';
 
         clearTimeout(toast._hideTimer);
         toast._hideTimer = setTimeout(() => {
-            toast.style.display = 'none';
+            toast.style.opacity = '0';
+            setTimeout(() => {
+                toast.style.display = 'none';
+                toast.style.opacity = '1';
+            }, 300);
         }, 3000);
     }
 
-    /* ── Auto-dismiss flash alerts after 5s ── */
+    // Auto-dismiss alerts
     setTimeout(function () {
         document.querySelectorAll('.alert').forEach(function (alert) {
             const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);

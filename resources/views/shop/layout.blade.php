@@ -4,6 +4,9 @@
     <title>Shop Panel</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
+        {{-- width: 100vw; /* Each slide takes full viewport width */
+        object-fit: contain;  /* Ensures entire image is visible */ --}}
+
 <body>
 
 <nav class="navbar navbar-dark bg-dark px-3">

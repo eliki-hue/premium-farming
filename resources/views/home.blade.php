@@ -30,7 +30,7 @@
         --shadow-dark: 0 10px 40px rgba(30, 66, 46, 0.2);
     }
 
-    /* Hero Section - Video Background */
+    /* Hero Section - Image Background */
     .hero-section {
         min-height: 90vh;
         position: relative;
@@ -40,39 +40,38 @@
         color: white;
     }
     
-    /* Video Background */
-    .hero-video-bg {
+    /* Image Background - Enhanced for clarity */
+    .hero-image-bg {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
         z-index: 0;
+        background-image: url('{{ asset('images/fl.jpeg') }}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        /* Enhanced image quality */
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+        -ms-interpolation-mode: bicubic;
+        /* Slight enhancement for better visibility */
+        filter: contrast(1.05) brightness(1.05) saturate(1.1);
+        -webkit-filter: contrast(1.05) brightness(1.05) saturate(1.1);
+        /* Add a very subtle gradient overlay to improve text readability */
     }
     
-    .hero-video-bg video {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        min-width: 100%;
-        min-height: 100%;
-        width: auto;
-        height: auto;
-        object-fit: cover;
-        filter: brightness(0.7);
-        -webkit-filter: brightness(0.7);
-    }
-    
-    /* Video Overlay - Classic Green Gradient */
-    .hero-video-overlay {
+    /* Subtle dark overlay for better text contrast - very light */
+    .hero-image-overlay {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(rgba(42, 110, 63, 0.95), rgba(30, 66, 46, 0.95));
+        background: rgba(0, 0, 0, 0.2); /* Very subtle dark overlay */
         z-index: 1;
+        pointer-events: none;
     }
     
     .hero-section::before {
@@ -84,12 +83,15 @@
         bottom: 0;
         background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
         z-index: 2;
+        pointer-events: none;
     }
     
     .hero-content {
         position: relative;
         z-index: 3;
         padding: 2rem 0;
+        /* Enhanced text shadow for better readability */
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     }
     
     .hero-logo-container {
@@ -117,6 +119,9 @@
         position: relative;
         z-index: 2;
         animation: logoPulse 2s ease-in-out infinite;
+        /* Enhance logo quality */
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
     }
 
     .hero-logo-glow {
@@ -149,20 +154,20 @@
         letter-spacing: 1px;
         line-height: 1.1;
         margin-bottom: 0.5rem;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
     }
     
     .hero-tagline {
         font-family: 'Inter', sans-serif;
         font-weight: 300;
         font-size: 1.2rem;
-        color: rgba(255, 255, 255, 0.95);
+        color: white;
         letter-spacing: 2px;
         text-transform: uppercase;
         position: relative;
         padding-bottom: 1rem;
         margin-bottom: 2rem;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
     }
 
     .hero-tagline::after {
@@ -179,11 +184,12 @@
     .hero-subtitle {
         font-family: 'Inter', sans-serif;
         font-size: 1.2rem;
-        opacity: 0.9;
+        color: white;
         max-width: 700px;
         margin: 2rem auto 3rem;
         font-weight: 300;
         line-height: 1.7;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
     }
     
     .hero-buttons {
@@ -200,6 +206,9 @@
         color: white;
         transition: all 0.3s ease;
         font-weight: 600;
+        padding: 0.75rem 2rem;
+        border-radius: 50px;
+        text-shadow: none;
     }
 
     .btn-premium:hover {
@@ -641,27 +650,23 @@
 @endpush
 
 @section('content')
-    <!-- Hero Section with Video Background -->
+    <!-- Hero Section with Image Background -->
     <section class="hero-section">
-        <!-- Video Background Added Here -->
-        <div class="hero-video-bg">
-            <video autoplay muted loop playsinline preload="metadata">
-                <source src="{{ asset('public/videos/recaphm.mp4') }}" type="video/mp4">
-                <!-- Fallback image if video doesn't load -->
-                <img src="https://images.unsplash.com/photo-1542838135-4b6e3f616300?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Premium Farming Feeds" style="width: 100%; height: 100%; object-fit: cover;">
-            </video>
-            <div class="hero-video-overlay"></div>
-        </div>
+        <!-- Image Background - Using fl.jpeg with enhanced clarity -->
+        <div class="hero-image-bg"></div>
+        <!-- Very subtle dark overlay for better text contrast -->
+        <div class="hero-image-overlay"></div>
         
         <div class="container">
             <div class="hero-content">
                 <div class="hero-logo-container animate__animated animate__fadeInDown">
-                    <div class="hero-logo-wrapper">
+                    {{-- <div class="hero-logo-wrapper">
+                        <!-- Logo remains unchanged - still using logo.jpeg -->
                         <img src="{{ asset('images/logo.jpeg') }}" alt="Premium Farming Feeds" class="hero-logo">
                         <div class="hero-logo-glow"></div>
                     </div>
                     <h1 class="hero-company-name animate__animated animate__fadeInUp">Premium Farming Feeds</h1>
-                    <div class="hero-tagline animate__animated animate__fadeInUp animate__delay-1s">Quality Livestock Nutrition</div>
+                    <div class="hero-tagline animate__animated animate__fadeInUp animate__delay-1s">Quality Livestock Nutrition</div> --}}
                 </div>
                 
                 <p class="hero-subtitle animate__animated animate__fadeInUp animate__delay-2s text-center">
@@ -670,7 +675,7 @@
                 </p>
                 
                 <div class="hero-buttons animate__animated animate__fadeInUp animate__delay-3s">
-                        <a href="{{ route('products') }}" class="btn btn-premium btn-lg">
+                    <a href="{{ route('shop.index') }}" class="btn btn-premium btn-lg">
                         <i class="bi bi-cart-plus me-2"></i>
                         Browse Products
                     </a>
@@ -812,7 +817,7 @@
                     Experience the difference in quality, yield, and profitability.
                 </p>
                 <div class="d-flex flex-wrap justify-content-center gap-3">
-                    <a href="{{ route('products') }}" class="btn btn-light btn-lg px-5 py-3 fw-bold text-green">
+                    <a href="{{ route('shop.index') }}" class="btn btn-light btn-lg px-5 py-3 fw-bold text-green">
                         <i class="bi bi-cart-check me-2"></i>
                         Start Buying Now
                     </a>

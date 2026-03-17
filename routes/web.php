@@ -3,7 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartProxyController;
 use App\Http\Controllers\CheckoutProxyController;
+use App\Http\Controllers\WhatsAppRedirectController;
+use App\Http\Controllers\CheckoutResumeController;
+use App\Http\Controllers\WhatsAppOrderController;
 
+// Fixed duplicate import - removed the duplicate WhatsAppRedirectController
 
 use App\Http\Controllers\{
     HomeController, ProfileController, ProductController, ShopController, TransactionController, ReportController, AccountController,
@@ -52,6 +56,31 @@ Route::get('/gallery', fn () => view('gallery'))->name('gallery');
 Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews');
 Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 
+// WhatsApp Routes
+Route::middleware(['web', 'auth'])->group(function () {
+    // WhatsApp redirect routes
+    Route::post('/whatsapp/redirect', [WhatsAppRedirectController::class, 'redirectToWhatsApp'])
+        ->name('whatsapp.redirect');
+    
+    Route::post('/api/whatsapp/redirect', [WhatsAppRedirectController::class, 'apiRedirect'])
+        ->name('api.whatsapp.redirect');
+    
+    // Checkout resume routes
+    Route::get('/checkout/resume/{orderId}', [CheckoutResumeController::class, 'resumeCheckout'])
+        ->name('checkout.resume');
+    
+    Route::post('/api/checkout/complete', [CheckoutResumeController::class, 'completeCheckout'])
+        ->name('api.checkout.complete');
+    
+    // Webhook for Django (no auth required)
+    Route::post('/api/webhook/update-delivery', [CheckoutResumeController::class, 'webhookUpdateDelivery'])
+        ->name('api.webhook.update-delivery');
+});
+
+// WhatsApp Order Routes (public routes)
+Route::post('/api/whatsapp/prepare-order', [WhatsAppOrderController::class, 'prepareWhatsAppOrder']);
+// Fixed duplicate route - removed the duplicate checkout.resume route
+Route::post('/api/checkout/complete-whatsapp', [WhatsAppOrderController::class, 'completeCheckout']);
 
 /*
 |--------------------------------------------------------------------------

@@ -273,6 +273,69 @@ class DjangoApiService
         return collect([]);
     }
 }
+public function getProductsByCategory($category)
+    {
+        try {
+            $response = Http::timeout($this->timeout)
+                ->get($this->baseUrl . '/api/public/categories/' . $category);
+
+            if ($response->successful()) {
+                return [
+                    'success' => true,
+                    'data' => $response->json()
+                ];
+            }
+
+            Log::error('Django API error: ' . $response->status(), [
+                'category' => $category,
+                'response' => $response->body()
+            ]);
+
+            return [
+                'success' => false,
+                'error' => 'Failed to fetch products',
+                'status' => $response->status()
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('Django API connection error: ' . $e->getMessage(), [
+                'category' => $category
+            ]);
+
+            return [
+                'success' => false,
+                'error' => 'Could not connect to Django backend',
+                'message' => $e->getMessage()
+            ];
+        }
+    }
+
+    public function getAllCategories()
+    {
+        try {
+            $response = Http::timeout($this->timeout)
+                ->get($this->baseUrl . '/api/public/categories');
+
+            if ($response->successful()) {
+                return [
+                    'success' => true,
+                    'data' => $response->json()
+                ];
+            }
+
+            return [
+                'success' => false,
+                'error' => 'Failed to fetch categories'
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('Django API connection error: ' . $e->getMessage());
+            return [
+                'success' => false,
+                'error' => 'Could not connect to Django backend'
+            ];
+        }
+    }
 
     /**
      * Make API request with automatic token refresh on failure

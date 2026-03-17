@@ -10,7 +10,6 @@
         <h3 class="mb-0 fw-bold" style="color:#2a6e3f;">
             <i class="bi bi-cart3 me-2"></i>Your Cart
         </h3>
-        {{-- ✅ Continue Shopping — always visible, never forces login --}}
         <a href="{{ route('products') }}" class="btn btn-outline-success">
             <i class="bi bi-arrow-left me-2"></i>Continue Shopping
         </a>
@@ -35,6 +34,62 @@
             <i class="bi bi-bag-check me-2"></i>Checkout
         </h4>
 
+        {{-- ─── WhatsApp INQUIRY SECTION ─── --}}
+        <div class="mb-5">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #dcf8c6, #e8f5e9);">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5 class="fw-bold mb-2" style="color: #075e54;">
+                                <i class="bi bi-whatsapp me-2" style="color: #25D366; font-size: 1.5rem;"></i>
+                                Order via WhatsApp
+                            </h5>
+                            <p class="mb-md-0 text-muted">
+                                Click the button below to send your order details directly to our WhatsApp.
+                                You can review and edit the message before sending.
+                            </p>
+                            <small class="text-muted d-block mt-1">
+                                <i class="bi bi-telephone me-1"></i>WhatsApp: 0700680017
+                            </small>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <button type="button" id="whatsappDirectBtn" class="btn btn-lg px-4" 
+                                    style="background: #25D366; color: white; border: none; font-weight: 600;">
+                                <i class="bi bi-whatsapp me-2"></i>
+                                Send to WhatsApp
+                                <span id="cartItemCount" class="badge bg-white text-dark ms-2">0</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    {{-- Message Preview Section --}}
+                    <div id="messagePreviewSection" class="mt-3 p-3 bg-white rounded-3 d-none">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <small class="text-success fw-bold">
+                                <i class="bi bi-whatsapp me-1"></i>Message Preview:
+                            </small>
+                            <button type="button" id="copyMessageBtn" class="btn btn-sm btn-outline-success">
+                                <i class="bi bi-clipboard"></i> Copy
+                            </button>
+                        </div>
+                        <div id="whatsappMessagePreview" class="p-3 bg-light rounded" style="font-family: 'Courier New', monospace; font-size: 0.9rem; white-space: pre-wrap;">
+                            Loading...
+                        </div>
+                        <small class="text-muted d-block mt-2">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Clicking the button will open WhatsApp with this message. You can edit it before sending.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Optional Divider --}}
+        <div class="text-center mb-4">
+            <span class="bg-white px-3 text-muted">OR Pay Directly with M-Pesa</span>
+            <hr class="my-3">
+        </div>
+
         <form id="checkoutForm">
             @csrf
 
@@ -47,7 +102,7 @@
                 </div>
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Phone Number *</label>
-                    <input type="tel" class="form-control" name="phone" placeholder="2547XXXXXXXX" required>
+                    <input type="tel" class="form-control" name="phone" placeholder="0700680017" required>
                 </div>
             </div>
 
@@ -103,7 +158,7 @@
                     <i class="bi bi-phone me-1 text-success"></i>M-Pesa Phone Number *
                 </label>
                 <input type="tel" class="form-control" name="mpesa_number"
-                       placeholder="2547XXXXXXXX" required>
+                       placeholder="0700680017" required>
                 <small class="text-muted">Enter the number that will receive the STK push prompt.</small>
             </div>
 
@@ -113,9 +168,6 @@
                 <button type="submit" class="btn btn-success btn-lg flex-grow-1">
                     <i class="bi bi-phone me-2"></i>Pay with M-Pesa
                 </button>
-                <!-- <a href="{{ route('products') }}" class="btn btn-outline-secondary btn-lg">
-                    <i class="bi bi-arrow-left me-2"></i>Continue Shopping
-                </a> -->
             </div>
         </form>
     </div>
@@ -144,10 +196,67 @@
         color: white;
     }
 
+    /* WhatsApp button styles */
+    #whatsappDirectBtn {
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+    }
+    #whatsappDirectBtn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+        background: #20b859 !important;
+    }
+
+    /* Message preview styles */
+    #whatsappMessagePreview {
+        border-left: 4px solid #25D366;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    /* Copy button styles */
+    #copyMessageBtn {
+        transition: all 0.2s ease;
+    }
+    #copyMessageBtn:hover {
+        background: #25D366;
+        color: white;
+        border-color: #25D366;
+    }
+
     /* Empty cart state */
     .empty-cart-icon {
         font-size: 4rem;
         color: #c8e6c9;
+    }
+
+    /* Toast notification */
+    .cart-toast {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: white;
+        border-left: 5px solid #25D366;
+        border-radius: 10px;
+        padding: 15px 25px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: slideInRight 0.3s ease;
+        max-width: 400px;
+    }
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
     }
 </style>
 
@@ -163,7 +272,74 @@
         remove: '/proxy/cart/remove',
     };
 
+    // WhatsApp configuration
+    const WHATSAPP_NUMBER = '0700680017'; // Your specific WhatsApp number
+    const WHATSAPP_COUNTRY_CODE = '254'; // Kenya country code
+
     let cart = { items: [], subtotal: 0, total_items: 0 };
+    let currentWhatsAppMessage = '';
+
+    /* ─── Format phone number for WhatsApp ─── */
+    function formatWhatsAppNumber(phone) {
+        // Remove any non-digit characters
+        let clean = phone.replace(/\D/g, '');
+        
+        // If starts with 0, replace with country code
+        if (clean.startsWith('0')) {
+            clean = WHATSAPP_COUNTRY_CODE + clean.substring(1);
+        }
+        
+        return clean;
+    }
+
+    /* ─── Generate Order Reference ─── */
+    function generateOrderRef() {
+        const prefix = 'ORD';
+        const random = Math.floor(1000 + Math.random() * 9000); // 4-digit random
+        return `${prefix}-${random}`;
+    }
+
+    /* ─── Format WhatsApp Message exactly as requested ─── */
+    function formatWhatsAppMessage(cartItems, subtotal, customerName = '') {
+        const orderRef = generateOrderRef();
+        
+        // Start with the greeting
+        let message = "Hello, I would like to order the following items:\n\n";
+        
+        // Add order reference
+        message += `Order Ref: ${orderRef}\n\n`;
+        
+        // Add items - format: 1. Dell Laptop – 1 pcs – KES 65,000
+        cartItems.forEach((item, index) => {
+            const itemNumber = index + 1;
+            const itemName = item.product_name;
+            const quantity = item.quantity;
+            const unitPrice = Number(item.unit_price);
+            const itemTotal = unitPrice * quantity;
+            
+            message += `${itemNumber}. ${itemName} – ${quantity} pcs – KES ${itemTotal.toLocaleString()}\n`;
+        });
+        
+        // Add total
+        message += `\nTotal: KES ${Number(subtotal).toLocaleString()}\n\n`;
+        
+        // Add customer name if provided
+        if (customerName) {
+            message += `Customer: ${customerName}\n\n`;
+        }
+        
+        // Add delivery inquiry
+        message += "Please advise on delivery and transport options.";
+        
+        return message;
+    }
+
+    /* ─── Generate WhatsApp URL with pre-filled message ─── */
+    function generateWhatsAppUrl(message) {
+        const formattedNumber = formatWhatsAppNumber(WHATSAPP_NUMBER);
+        const encodedMessage = encodeURIComponent(message);
+        return `https://wa.me/${formattedNumber}?text=${encodedMessage}`;
+    }
 
     /* ─── Notification ─── */
     function showAlert(message, type = 'danger') {
@@ -172,6 +348,70 @@
         el.textContent = message;
         el.classList.remove('d-none');
         setTimeout(() => el.classList.add('d-none'), 4000);
+    }
+
+    /* ─── Custom Toast Notification ─── */
+    function showToast(message, type = 'success', duration = 4000) {
+        // Remove existing toast
+        const existingToast = document.querySelector('.cart-toast');
+        if (existingToast) existingToast.remove();
+
+        // Create toast
+        const toast = document.createElement('div');
+        toast.className = 'cart-toast';
+        
+        const icon = document.createElement('i');
+        icon.className = type === 'success' ? 'bi bi-check-circle-fill text-success' : 'bi bi-exclamation-circle-fill text-danger';
+        
+        const text = document.createElement('span');
+        text.textContent = message;
+        
+        toast.appendChild(icon);
+        toast.appendChild(text);
+        
+        document.body.appendChild(toast);
+        
+        // Auto remove
+        setTimeout(() => {
+            toast.style.animation = 'slideInRight 0.3s reverse';
+            setTimeout(() => toast.remove(), 300);
+        }, duration);
+    }
+
+    /* ─── Update Message Preview ─── */
+    function updateMessagePreview() {
+        const previewSection = document.getElementById('messagePreviewSection');
+        const previewDiv = document.getElementById('whatsappMessagePreview');
+        const itemCount = document.getElementById('cartItemCount');
+        
+        if (!cart.items || cart.items.length === 0) {
+            previewSection.classList.add('d-none');
+            itemCount.textContent = '0';
+            return;
+        }
+        
+        // Get customer name from form if available
+        const customerName = document.querySelector('input[name="name"]')?.value || '';
+        
+        // Generate message
+        currentWhatsAppMessage = formatWhatsAppMessage(cart.items, cart.subtotal, customerName);
+        
+        // Update preview
+        previewDiv.textContent = currentWhatsAppMessage;
+        previewSection.classList.remove('d-none');
+        itemCount.textContent = cart.items.length;
+    }
+
+    /* ─── Copy message to clipboard ─── */
+    function copyMessageToClipboard() {
+        if (!currentWhatsAppMessage) return;
+        
+        navigator.clipboard.writeText(currentWhatsAppMessage).then(() => {
+            showToast('✅ Message copied to clipboard!', 'success');
+        }).catch(err => {
+            console.error('Failed to copy:', err);
+            showToast('Failed to copy message', 'error');
+        });
     }
 
     /* ─── Load Cart ─── */
@@ -185,8 +425,6 @@
                 credentials: 'same-origin',
             });
 
-            // ✅ If not authenticated (no active token), show empty cart
-            // gracefully — do NOT redirect to login
             if (res.status === 401) {
                 renderEmpty();
                 return;
@@ -202,6 +440,7 @@
             renderCart();
             renderCheckout();
             updateCartBadge();
+            updateMessagePreview();
 
         } catch (err) {
             console.error('[loadCart]', err);
@@ -345,6 +584,52 @@
         badge.style.display = cart.total_items ? 'flex' : 'none';
     }
 
+    /* ─── WhatsApp Direct Handler ─── */
+    document.getElementById('whatsappDirectBtn')?.addEventListener('click', function() {
+        const btn = this;
+        
+        // Check if cart has items
+        if (!cart.items || cart.items.length === 0) {
+            showToast('Your cart is empty. Add items first.', 'error');
+            return;
+        }
+        
+        // Check if we have a message
+        if (!currentWhatsAppMessage) {
+            // Regenerate message with current customer name
+            const customerName = document.querySelector('input[name="name"]')?.value || '';
+            currentWhatsAppMessage = formatWhatsAppMessage(cart.items, cart.subtotal, customerName);
+        }
+        
+        // Generate WhatsApp URL
+        const whatsappUrl = generateWhatsAppUrl(currentWhatsAppMessage);
+        
+        // Open WhatsApp in new tab - this will open with the message pre-filled
+        // User can edit before sending
+        window.open(whatsappUrl, '_blank');
+        
+        // Show success message
+        showToast(
+            `✅ WhatsApp opened with your order! You can review and edit the message before sending.`, 
+            'success',
+            5000
+        );
+        
+        // Store order info in session storage
+        const orderRef = currentWhatsAppMessage.match(/Order Ref: (ORD-\d+)/)?.[1] || 'Unknown';
+        const orderInfo = {
+            orderRef: orderRef,
+            items: cart.items.length,
+            total: cart.subtotal,
+            timestamp: new Date().toISOString(),
+            message: currentWhatsAppMessage
+        };
+        sessionStorage.setItem('last_whatsapp_order', JSON.stringify(orderInfo));
+    });
+
+    /* ─── Copy Message Button ─── */
+    document.getElementById('copyMessageBtn')?.addEventListener('click', copyMessageToClipboard);
+
     /* ─── Checkout Submit ─── */
     document.getElementById('checkoutForm').addEventListener('submit', async function (e) {
         e.preventDefault();
@@ -379,8 +664,39 @@
         }
     });
 
+    /* ─── Check for last order on page load ─── */
+    function checkLastOrder() {
+        const lastOrder = sessionStorage.getItem('last_whatsapp_order');
+        if (lastOrder) {
+            try {
+                const order = JSON.parse(lastOrder);
+                const timeDiff = (new Date() - new Date(order.timestamp)) / 1000 / 60; // minutes
+                
+                // Show reminder if less than 5 minutes ago
+                if (timeDiff < 5) {
+                    setTimeout(() => {
+                        showToast(`📱 Your order ${order.orderRef} is ready to send to WhatsApp`, 'info', 6000);
+                    }, 1000);
+                }
+            } catch (e) {
+                console.error('Error parsing last order', e);
+            }
+        }
+    }
+
+    /* ─── Update preview when name changes ─── */
+    document.querySelector('input[name="name"]')?.addEventListener('input', function() {
+        if (cart.items && cart.items.length > 0) {
+            currentWhatsAppMessage = formatWhatsAppMessage(cart.items, cart.subtotal, this.value);
+            document.getElementById('whatsappMessagePreview').textContent = currentWhatsAppMessage;
+        }
+    });
+
     /* ─── Boot ─── */
-    document.addEventListener('DOMContentLoaded', loadCart);
+    document.addEventListener('DOMContentLoaded', () => {
+        loadCart();
+        checkLastOrder();
+    });
 
 })();
 </script>
