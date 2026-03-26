@@ -6,6 +6,8 @@ use App\Http\Controllers\CheckoutProxyController;
 use App\Http\Controllers\WhatsAppRedirectController;
 use App\Http\Controllers\CheckoutResumeController;
 use App\Http\Controllers\WhatsAppOrderController;
+use App\Http\Controllers\PaymentController;
+
 
 // Fixed duplicate import - removed the duplicate WhatsAppRedirectController
 
@@ -41,7 +43,9 @@ Route::post('/proxy/signup', [RegisteredUserController::class, 'proxySignup'])->
 
 Route::get('/forgot-password', fn() => view('auth.forgot-password'))->name('password.request');
 Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
-
+// Route::get('/payment/{orderId}', [PaymentController::class, 'showPaymentPage'])->name('payment.page');
+Route::get('/payment/{orderId}', [PaymentController::class, 'showPaymentPage'])->name('payment.page');
+Route::get('/api/payment/status/{orderId}', [PaymentController::class, 'checkPaymentStatus'])->name('payment.status');
 /* ===== HOME ===== */
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', fn() => view('about'))->name('about');

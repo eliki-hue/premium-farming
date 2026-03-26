@@ -6,12 +6,14 @@
 <style>
     /* Hero Section - Updated with new background */
     .about-hero {
-        background: url('/images/abtus.png') center/cover;
+        background: url('/images/us6.png') center/cover;
         background-attachment: fixed;
-        padding: 8rem 0 5rem;
-        color: white;
+        padding: 18rem 0 5rem;
+        background-color: rgb(250, 242, 242);
+        color: rgb(9, 9, 9);
         text-align: center;
         position: relative;
+        font: 1000
     }
     
     /* Subtle overlay for text readability */
@@ -923,7 +925,7 @@
 <section class="about-hero">
     <div class="container">
         <h1>Premium Farming Feeds</h1>
-        <p>
+        <p style= "font- ">
             Since 2020, we've been providing quality animal feeds to farmers across Kenya. 
             Our commitment to excellence and customer satisfaction has made us the trusted choice 
             for livestock nutrition.
@@ -1059,7 +1061,7 @@
 
         <div class="story-content">
             <div class="story-image">
-                <img src="{{ asset('images/counter4.jpeg') }}" alt="Growth & Expansion" 
+                <img src="{{ asset('images/onl.jpeg') }}" alt="Growth & Expansion" 
                      onerror="this.src='https://images.unsplash.com/photo-1574943320219-553eb213f72d?q=80&w=2000'">
             </div>
             <div class="story-text">

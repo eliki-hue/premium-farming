@@ -1,4 +1,3 @@
-{{-- reviews.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'Customer Reviews | Premium Farming Feeds')
@@ -7,7 +6,10 @@
 <div class="min-h-screen pt-24">
     <!-- Reviews Hero -->
     <section class="reviews-hero" style="
-        background: linear-gradient(135deg, var(--primary-blue), var(--navy-blue));
+        background: url('/public/images/rvws1.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
         padding: 6rem 0 4rem;
         color: white;
         position: relative;
@@ -33,7 +35,7 @@
         </div>
     </section>
 
-    <!-- Featured Video Section -->
+    <!-- Featured Video Section - Using your first video as featured -->
     <section class="py-5 bg-white">
         <div class="container">
             <div class="row mb-4">
@@ -47,15 +49,15 @@
                 </div>
             </div>
             
-            <!-- Featured Video -->
+            <!-- Featured Video - First video as featured -->
             <div class="row justify-content-center">
                 <div class="col-lg-10">
                     <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden; border: 1px solid rgba(30, 58, 138, 0.1);">
                         <div class="card-body p-0">
                             <div class="ratio ratio-16x9">
                                 <iframe 
-                                    src="https://www.youtube.com/embed/bZhqqu566Ro?start=3&autoplay=0&rel=0&modestbranding=1" 
-                                    title="Poultry Farming Success Story"
+                                    src="https://www.youtube.com/embed/OSruP9B-_KA?autoplay=0&rel=0&modestbranding=1" 
+                                    title="Healthy livestock starts with the right feeds"
                                     frameborder="0" 
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                                     referrerpolicy="strict-origin-when-cross-origin" 
@@ -66,10 +68,10 @@
                             </div>
                             <div class="p-4">
                                 <h3 class="fw-bold mb-2" style="color: var(--navy-blue);">
-                                    <i class="bi bi-play-btn-fill me-2"></i>Poultry Farming Success with Premium Feeds
+                                    <i class="bi bi-play-btn-fill me-2"></i>Healthy Livestock Starts with the Right Feeds
                                 </h3>
                                 <p class="text-muted mb-3">
-                                    Watch how our specialized poultry feeds have transformed local farms, increasing egg production and broiler growth rates. This farmer shares their incredible journey with Premium Farming Feeds.
+                                    Discover how Premium Farming Feeds helps farmers achieve optimal animal health and productivity with our scientifically formulated feed solutions.
                                 </p>
                                 <div class="d-flex flex-wrap gap-3">
                                     <span class="badge" style="
@@ -77,21 +79,21 @@
                                         color: var(--primary-blue);
                                         border: 1px solid rgba(30, 58, 138, 0.2);
                                     ">
-                                        <i class="bi bi-egg-fried me-1"></i>Poultry Farming
+                                        <i class="bi bi-heart-pulse me-1"></i>Livestock Health
                                     </span>
                                     <span class="badge" style="
                                         background: rgba(212, 175, 55, 0.1);
                                         color: var(--accent-gold);
                                         border: 1px solid rgba(212, 175, 55, 0.2);
                                     ">
-                                        <i class="bi bi-graph-up-arrow me-1"></i>Success Story
+                                        <i class="bi bi-graph-up-arrow me-1"></i>Featured Story
                                     </span>
                                     <span class="badge" style="
                                         background: rgba(156, 163, 175, 0.1);
                                         color: #6b7280;
                                         border: 1px solid rgba(156, 163, 175, 0.2);
                                     ">
-                                        <i class="bi bi-calendar3 me-1"></i>Updated Recently
+                                        <i class="bi bi-calendar3 me-1"></i>Success Story
                                     </span>
                                 </div>
                             </div>
@@ -102,13 +104,13 @@
         </div>
     </section>
 
-    <!-- Video Reviews Section -->
+    <!-- Video Reviews Section - Using all your videos -->
     <section class="py-5 bg-light">
         <div class="container">
             <div class="row mb-4">
                 <div class="col-12">
                     <h2 class="fw-bold text-center mb-3" style="font-family: 'Cormorant Garamond', serif; color: var(--navy-blue);">
-                        <i class="bi bi-collection-play me-2"></i>More Video Testimonials
+                        <i class="bi bi-collection-play me-2"></i>Success Stories & Testimonials
                     </h2>
                     <p class="text-center text-muted mb-0">
                         Watch real farmers share their experiences with our products
@@ -116,98 +118,87 @@
                 </div>
             </div>
             
-            <!-- Video Cards Grid -->
+            <!-- Video Cards Grid - Using only your provided videos -->
             <div class="row g-4" id="videoReviewsContainer">
                 @php
                     $youtubeVideos = [
                         [
-                            'id' => 'poultry-success',
-                            'title' => 'Poultry Farming Transformation',
-                            'description' => 'See how our poultry feeds transformed this farm with better growth rates and egg production',
-                            'channel' => 'Premium Feeds Customer',
-                            'views' => '15K',
-                            'date' => '2 weeks ago',
+                            'id' => 'healthy-livestock',
+                            'title' => 'Healthy livestock starts with the right feeds',
+                            'description' => 'See how proper nutrition transforms livestock health and productivity with Premium Farming Feeds.',
+                            'embedId' => 'OSruP9B-_KA',
                             'duration' => '4:20',
-                            'thumbnail' => 'https://img.youtube.com/vi/bZhqqu566Ro/maxresdefault.jpg',
-                            'embedId' => 'bZhqqu566Ro',
-                            'startTime' => 3,
-                            'category' => 'Poultry',
+                            'category' => 'General',
                             'featured' => true
                         ],
                         [
-                            'id' => 'dairy-success',
-                            'title' => 'Dairy Cow Rationing Guide',
-                            'description' => 'Expert advice on proper dairy cow feeding for maximum milk production',
-                            'channel' => 'Dairy Farmers Kenya',
-                            'views' => '12K',
-                            'date' => '1 month ago',
-                            'duration' => '3:45',
-                            'thumbnail' => 'https://img.youtube.com/vi/OSruP9B-_KA/maxresdefault.jpg',
-                            'embedId' => 'OSruP9B-_KA',
-                            'startTime' => 17,
-                            'category' => 'Dairy',
-                            'featured' => false
-                        ],
-                        [
-                            'id' => 'farming-tips',
-                            'title' => 'Modern Farming Techniques',
-                            'description' => 'Learn modern farming techniques that maximize productivity with our feeds',
-                            'channel' => 'Agri Business Hub',
-                            'views' => '18K',
-                            'date' => '3 weeks ago',
-                            'duration' => '5:15',
-                            'thumbnail' => 'https://img.youtube.com/vi/z5nt5tkf0Z0/maxresdefault.jpg',
+                            'id' => 'poultry-success-story',
+                            'title' => "Poultry farmer's success story",
+                            'description' => 'Powered by Premium Farming Feeds Limited. You can be the next farmer!',
                             'embedId' => 'z5nt5tkf0Z0',
-                            'startTime' => 7,
-                            'category' => 'General',
-                            'featured' => false
+                            'duration' => '4:20',
+                            'category' => 'Poultry'
                         ],
                         [
-                            'id' => 'poultry-testimonial',
-                            'title' => 'Poultry Farmer Success Story',
-                            'description' => 'Local poultry farmer shares incredible results with our starter and grower feeds',
-                            'channel' => 'Kenya Farmers Network',
-                            'views' => '8.5K',
-                            'date' => '2 months ago',
-                            'duration' => '4:10',
-                            'thumbnail' => 'https://img.youtube.com/vi/bZhqqu566Ro/1.jpg',
-                            'embedId' => 'bZhqqu566Ro',
-                            'startTime' => 30,
-                            'category' => 'Poultry',
-                            'featured' => false
+                            'id' => 'dairy-success-story-1',
+                            'title' => "Dairy farmer's success story",
+                            'description' => 'Powered by Premium Farming Feeds Limited. You can be the next farmer!',
+                            'embedId' => 'OJCD1oF768M',
+                            'duration' => '4:20',
+                            'category' => 'Dairy'
                         ],
                         [
-                            'id' => 'dairy-testimonial',
-                            'title' => 'Dairy Farming Success',
-                            'description' => 'How our dairy concentrates helped increase milk production by 40%',
-                            'channel' => 'Dairy Innovation Hub',
-                            'views' => '11K',
-                            'date' => '1 month ago',
-                            'duration' => '6:30',
-                            'thumbnail' => 'https://img.youtube.com/vi/OSruP9B-_KA/1.jpg',
-                            'embedId' => 'OSruP9B-_KA',
-                            'startTime' => 45,
-                            'category' => 'Dairy',
-                            'featured' => false
+                            'id' => 'dairy-success-story-2',
+                            'title' => 'Another success story of a dairy farmer',
+                            'description' => 'Using Premium Farming Feeds Limited feeds. You can be next!',
+                            'embedId' => 'pFSdnNBOQhI',
+                            'duration' => '4:20',
+                            'category' => 'Dairy'
                         ],
                         [
-                            'id' => 'general-farming',
-                            'title' => 'Complete Farm Management',
-                            'description' => 'Comprehensive guide to modern farm management with our nutrition solutions',
-                            'channel' => 'Premium Farming Feeds',
-                            'views' => '22K',
-                            'date' => '3 months ago',
-                            'duration' => '7:45',
-                            'thumbnail' => 'https://img.youtube.com/vi/z5nt5tkf0Z0/2.jpg',
-                            'embedId' => 'z5nt5tkf0Z0',
-                            'startTime' => 60,
-                            'category' => 'General',
-                            'featured' => false
+                            'id' => 'dedicated-service',
+                            'title' => 'We are dedicated to serve you',
+                            'description' => 'Our commitment to quality and service for all our farmers.',
+                            'embedId' => 'ZMoeb2V6hOU',
+                            'duration' => '4:20',
+                            'category' => 'General'
+                        ],
+                        [
+                            'id' => 'swine-feeds',
+                            'title' => 'Quality and affordable swine feeds',
+                            'description' => 'Only in Premium Farming Feeds. Perfect for your pig farming needs.',
+                            'embedId' => 'P_zTr6FqCGc',
+                            'duration' => '4:20',
+                            'category' => 'Swine'
+                        ],
+                        [
+                            'id' => 'farming-highlight-1',
+                            'title' => '#farming #animalnutrition #agriculture',
+                            'description' => 'Life is but a dream with the right agricultural practices and nutrition.',
+                            'embedId' => 'VAJ2C0tck6Q',
+                            'duration' => '4:20',
+                            'category' => 'General'
+                        ],
+                        [
+                            'id' => 'farming-highlight-2',
+                            'title' => '#agriculture #farming #animalnutrition',
+                            'description' => 'The other side of make-believe - real farming success stories.',
+                            'embedId' => 'aS7F9JqKX40',
+                            'duration' => '4:20',
+                            'category' => 'General'
+                        ],
+                        [
+                            'id' => 'tides-and-smiles',
+                            'title' => 'Tides & Smiles by Moavii',
+                            'description' => 'Background music for farming inspiration and success stories.',
+                            'embedId' => 'mpX6mFLBPFY',
+                            'duration' => '4:20',
+                            'category' => 'Inspiration'
                         ]
                     ];
                 @endphp
                 
-                @foreach($youtubeVideos as $video)
+                @foreach($youtubeVideos as $index => $video)
                 <div class="col-lg-4 col-md-6">
                     <div class="video-card card border-0 shadow-sm h-100" style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(30, 58, 138, 0.1);">
                         <!-- Video Thumbnail with Play Button -->
@@ -215,12 +206,13 @@
                              data-bs-toggle="modal" 
                              data-bs-target="#videoModal" 
                              data-video-id="{{ $video['embedId'] }}" 
-                             data-video-title="{{ $video['title'] }}"
-                             data-start-time="{{ $video['startTime'] ?? 0 }}">
-                            <img src="{{ $video['thumbnail'] }}" alt="{{ $video['title'] }}" class="img-fluid w-100 lazy-load" 
-                                 data-src="{{ $video['thumbnail'] }}" 
+                             data-video-title="{{ $video['title'] }}">
+                            <img src="https://img.youtube.com/vi/{{ $video['embedId'] }}/maxresdefault.jpg" 
+                                 alt="{{ $video['title'] }}" 
+                                 class="img-fluid w-100 lazy-load" 
+                                 data-src="https://img.youtube.com/vi/{{ $video['embedId'] }}/maxresdefault.jpg" 
                                  style="height: 200px; object-fit: cover;"
-                                 onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070&auto=format&fit=crop'">
+                                 onerror="this.src='https://img.youtube.com/vi/{{ $video['embedId'] }}/hqdefault.jpg'">
                             <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,0.3);">
                                 <div class="play-button rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: var(--primary-blue); opacity: 0.9;">
                                     <i class="bi bi-play-fill text-white fs-3"></i>
@@ -231,7 +223,7 @@
                                     <i class="bi bi-clock me-1"></i>{{ $video['duration'] }}
                                 </span>
                             </div>
-                            @if($video['featured'] ?? false)
+                            @if($index === 0)
                             <div class="position-absolute top-0 start-0 m-2">
                                 <span class="badge py-1 px-2" style="
                                     background: linear-gradient(135deg, var(--accent-gold), var(--warm-gold));
@@ -261,11 +253,11 @@
                                         border: 1px solid rgba(30, 58, 138, 0.2);
                                         font-size: 0.75rem;
                                     ">
-                                        <i class="bi bi-person-circle me-1"></i>{{ $video['channel'] }}
+                                        <i class="bi bi-tag me-1"></i>{{ $video['category'] }}
                                     </span>
                                 </div>
                                 <div class="text-muted small">
-                                    <i class="bi bi-eye me-1"></i>{{ $video['views'] }}
+                                    <i class="bi bi-play-circle me-1"></i>Testimonial
                                 </div>
                             </div>
                         </div>
@@ -274,14 +266,13 @@
                         <div class="card-footer bg-white border-0 pt-0 pb-3 px-3">
                             <div class="d-flex justify-content-between align-items-center">
                                 <small class="text-muted">
-                                    <i class="bi bi-calendar3 me-1"></i>{{ $video['date'] }}
+                                    <i class="bi bi-youtube me-1" style="color: #ff0000;"></i>YouTube
                                 </small>
                                 <button class="btn btn-sm watch-btn" 
                                         data-bs-toggle="modal" 
                                         data-bs-target="#videoModal" 
                                         data-video-id="{{ $video['embedId'] }}" 
                                         data-video-title="{{ $video['title'] }}"
-                                        data-start-time="{{ $video['startTime'] ?? 0 }}"
                                         style="
                                     background: var(--primary-blue);
                                     color: white;
@@ -298,17 +289,13 @@
                 @endforeach
             </div>
             
-            <!-- Load More Button (Optional) -->
+            <!-- Note: All videos from Premium Farming Feeds -->
             <div class="row mt-4">
                 <div class="col-12 text-center">
-                    <button id="loadMoreVideos" class="btn" style="
-                        border: 1px solid var(--primary-blue);
-                        color: var(--primary-blue);
-                        background: transparent;
-                        padding: 0.5rem 2rem;
-                    ">
-                        <i class="bi bi-plus-circle me-2"></i>Load More Videos
-                    </button>
+                    <p class="text-muted small">
+                        <i class="bi bi-youtube me-1" style="color: #ff0000;"></i>
+                        All videos are official testimonials from Premium Farming Feeds Limited
+                    </p>
                 </div>
             </div>
         </div>
@@ -319,7 +306,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content border-0" style="border-radius: 8px; overflow: hidden;">
                 <div class="modal-header border-0" style="background: var(--navy-blue);">
-                    <h5 class="modal-title text-white" id="videoModalLabel" style="font-family: 'Cormorant Garamond', serif;">Customer Review</h5>
+                    <h5 class="modal-title text-white" id="videoModalLabel" style="font-family: 'Cormorant Garamond', serif;">Customer Testimonial</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-0" style="background: #000;">
@@ -1062,10 +1049,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const button = event.relatedTarget;
             const videoId = button.getAttribute('data-video-id');
             const videoTitle = button.getAttribute('data-video-title');
-            const startTime = button.getAttribute('data-start-time') || 0;
             
-            // Set the YouTube embed URL with start time
-            youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?start=${startTime}&autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+            // Set the YouTube embed URL
+            youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
             
             // Update modal title
             if (videoTitle) {
@@ -1073,153 +1059,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Update watch on YouTube button
-            watchOnYoutubeBtn.href = `https://www.youtube.com/watch?v=${videoId}&t=${startTime}s`;
+            watchOnYoutubeBtn.href = `https://www.youtube.com/watch?v=${videoId}`;
         });
         
         videoModal.addEventListener('hidden.bs.modal', function() {
             // Stop the video when modal is closed
             youtubePlayer.src = '';
-        });
-    }
-    
-    // Load More Videos Functionality
-    const loadMoreBtn = document.getElementById('loadMoreVideos');
-    if (loadMoreBtn) {
-        loadMoreBtn.addEventListener('click', function() {
-            const container = document.getElementById('videoReviewsContainer');
-            const loadingText = this.innerHTML;
-            
-            // Show loading state
-            this.disabled = true;
-            this.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Loading...';
-            
-            // Simulate loading more videos (in real app, this would be an AJAX call)
-            setTimeout(() => {
-                // Example additional videos
-                const additionalVideos = [
-                    {
-                        'id': 'poultry-extra1',
-                        'title': 'Advanced Poultry Nutrition',
-                        'description': 'Expert guide to maximizing broiler growth with our premium feeds',
-                        'channel': 'Poultry Experts',
-                        'views': '9.2K',
-                        'date': '1 week ago',
-                        'duration': '6:20',
-                        'thumbnail': 'https://img.youtube.com/vi/bZhqqu566Ro/3.jpg',
-                        'embedId': 'bZhqqu566Ro',
-                        'startTime': 90,
-                        'category': 'Poultry'
-                    },
-                    {
-                        'id': 'dairy-extra1',
-                        'title': 'Dairy Herd Management',
-                        'description': 'Complete guide to managing dairy cows for maximum productivity',
-                        'channel': 'Dairy Masters',
-                        'views': '14K',
-                        'date': '2 weeks ago',
-                        'duration': '8:15',
-                        'thumbnail': 'https://img.youtube.com/vi/OSruP9B-_KA/2.jpg',
-                        'embedId': 'OSruP9B-_KA',
-                        'startTime': 120,
-                        'category': 'Dairy'
-                    }
-                ];
-                
-                // Add new videos to container
-                additionalVideos.forEach(video => {
-                    const videoCard = document.createElement('div');
-                    videoCard.className = 'col-lg-4 col-md-6';
-                    videoCard.innerHTML = `
-                        <div class="video-card card border-0 shadow-sm h-100" style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(30, 58, 138, 0.1);">
-                            <div class="video-thumbnail position-relative" style="cursor: pointer;" 
-                                 data-bs-toggle="modal" 
-                                 data-bs-target="#videoModal" 
-                                 data-video-id="${video.embedId}" 
-                                 data-video-title="${video.title}"
-                                 data-start-time="${video.startTime}">
-                                <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070&auto=format&fit=crop" alt="${video.title}" class="img-fluid w-100 lazy-load" 
-                                     data-src="${video.thumbnail}" 
-                                     style="height: 200px; object-fit: cover;"
-                                     onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070&auto=format&fit=crop'">
-                                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,0.3);">
-                                    <div class="play-button rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: var(--primary-blue); opacity: 0.9;">
-                                        <i class="bi bi-play-fill text-white fs-3"></i>
-                                    </div>
-                                </div>
-                                <div class="position-absolute bottom-0 end-0 m-2">
-                                    <span class="badge bg-dark bg-opacity-75 py-1 px-2" style="font-size: 0.7rem;">
-                                        <i class="bi bi-clock me-1"></i>${video.duration}
-                                    </span>
-                                </div>
-                            </div>
-                            
-                            <div class="card-body p-3">
-                                <h6 class="card-title fw-bold mb-2 text-dark" style="font-size: 0.95rem; line-height: 1.3;">
-                                    ${video.title}
-                                </h6>
-                                <p class="card-text text-muted small mb-2" style="font-size: 0.85rem;">
-                                    ${video.description}
-                                </p>
-                                
-                                <div class="video-meta d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <span class="badge" style="
-                                            background: rgba(30, 58, 138, 0.1);
-                                            color: var(--primary-blue);
-                                            border: 1px solid rgba(30, 58, 138, 0.2);
-                                            font-size: 0.75rem;
-                                        ">
-                                            <i class="bi bi-person-circle me-1"></i>${video.channel}
-                                        </span>
-                                    </div>
-                                    <div class="text-muted small">
-                                        <i class="bi bi-eye me-1"></i>${video.views}
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="card-footer bg-white border-0 pt-0 pb-3 px-3">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">
-                                        <i class="bi bi-calendar3 me-1"></i>${video.date}
-                                    </small>
-                                    <button class="btn btn-sm watch-btn" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#videoModal" 
-                                            data-video-id="${video.embedId}" 
-                                            data-video-title="${video.title}"
-                                            data-start-time="${video.startTime}"
-                                            style="
-                                        background: var(--primary-blue);
-                                        color: white;
-                                        padding: 0.25rem 0.75rem;
-                                        font-size: 0.8rem;
-                                        border: none;
-                                    ">
-                                        <i class="bi bi-play-circle me-1"></i>Watch
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    container.appendChild(videoCard);
-                    
-                    // Initialize lazy loading for the new image
-                    const img = videoCard.querySelector('img.lazy-load');
-                    if (img && img.dataset.src) {
-                        img.src = img.dataset.src;
-                    }
-                });
-                
-                // Hide load more button if we have enough videos
-                if (container.children.length >= 8) {
-                    loadMoreBtn.style.display = 'none';
-                } else {
-                    // Reset button state
-                    this.disabled = false;
-                    this.innerHTML = loadingText;
-                }
-            }, 1000);
         });
     }
     

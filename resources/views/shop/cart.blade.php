@@ -1,3 +1,4 @@
+{{-- resources/views/shop/cart.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'Cart')
@@ -96,7 +97,7 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Full Name *</label>
-                    <input type="text" class="form-control" name="name"
+                    <input type="text" class="form-control" name="name" id="customerName"
                            value="{{ session('django_user.full_name') ?? session('django_user.username') ?? '' }}"
                            required>
                 </div>
@@ -162,10 +163,14 @@
                 <small class="text-muted">Enter the number that will receive the STK push prompt.</small>
             </div>
 
+            {{-- Hidden fields for cart ID and customer name --}}
+            <input type="hidden" name="cart_id" id="cartId" value="">
+            <input type="hidden" name="customer_name" id="customerNameHidden" value="">
+
             <input type="hidden" name="total" id="checkoutTotal">
 
             <div class="d-flex gap-3 flex-wrap">
-                <button type="submit" class="btn btn-success btn-lg flex-grow-1">
+                <button type="submit" class="btn btn-success btn-lg flex-grow-1" id="checkoutSubmitBtn">
                     <i class="bi bi-phone me-2"></i>Pay with M-Pesa
                 </button>
             </div>
@@ -181,10 +186,15 @@
         background: linear-gradient(135deg, #2a6e3f, #3a8e5c);
         border: none;
         font-weight: 600;
+        transition: all 0.3s ease;
     }
-    .btn-success:hover {
+    .btn-success:hover:not(:disabled) {
         background: linear-gradient(135deg, #1e5a2f, #2a6e3f);
         transform: translateY(-1px);
+    }
+    .btn-success:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
     }
     .btn-outline-success {
         border-color: #2a6e3f;
@@ -196,41 +206,11 @@
         color: white;
     }
 
-    /* WhatsApp button styles */
-    #whatsappDirectBtn {
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
-    }
-    #whatsappDirectBtn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
-        background: #20b859 !important;
-    }
-
-    /* Message preview styles */
-    #whatsappMessagePreview {
-        border-left: 4px solid #25D366;
-        max-height: 300px;
-        overflow-y: auto;
-    }
-
-    /* Copy button styles */
-    #copyMessageBtn {
-        transition: all 0.2s ease;
-    }
-    #copyMessageBtn:hover {
-        background: #25D366;
-        color: white;
-        border-color: #25D366;
-    }
-
-    /* Empty cart state */
     .empty-cart-icon {
         font-size: 4rem;
         color: #c8e6c9;
     }
 
-    /* Toast notification */
     .cart-toast {
         position: fixed;
         bottom: 30px;
@@ -258,6 +238,33 @@
             opacity: 1;
         }
     }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        backdrop-filter: blur(3px);
+    }
+    
+    .loading-spinner {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    
+    .loading-spinner .spinner-border {
+        width: 3rem;
+        height: 3rem;
+    }
 </style>
 
 <script>
@@ -270,78 +277,59 @@
         load:   '/proxy/cart',
         update: '/proxy/cart/update',
         remove: '/proxy/cart/remove',
+        checkout: '/proxy/checkout/mpesa',
     };
 
-    // WhatsApp configuration
-    const WHATSAPP_NUMBER = '0700680017'; // Your specific WhatsApp number
-    const WHATSAPP_COUNTRY_CODE = '254'; // Kenya country code
+    const WHATSAPP_NUMBER = '0700680017';
+    const WHATSAPP_COUNTRY_CODE = '254';
 
-    let cart = { items: [], subtotal: 0, total_items: 0 };
+    let cart = { id: null, items: [], subtotal: 0, total_items: 0 };
     let currentWhatsAppMessage = '';
 
-    /* ─── Format phone number for WhatsApp ─── */
     function formatWhatsAppNumber(phone) {
-        // Remove any non-digit characters
         let clean = phone.replace(/\D/g, '');
-        
-        // If starts with 0, replace with country code
         if (clean.startsWith('0')) {
             clean = WHATSAPP_COUNTRY_CODE + clean.substring(1);
         }
-        
         return clean;
     }
 
-    /* ─── Generate Order Reference ─── */
     function generateOrderRef() {
         const prefix = 'ORD';
-        const random = Math.floor(1000 + Math.random() * 9000); // 4-digit random
+        const random = Math.floor(1000 + Math.random() * 9000);
         return `${prefix}-${random}`;
     }
 
-    /* ─── Format WhatsApp Message exactly as requested ─── */
     function formatWhatsAppMessage(cartItems, subtotal, customerName = '') {
         const orderRef = generateOrderRef();
-        
-        // Start with the greeting
         let message = "Hello, I would like to order the following items:\n\n";
-        
-        // Add order reference
         message += `Order Ref: ${orderRef}\n\n`;
         
-        // Add items - format: 1. Dell Laptop – 1 pcs – KES 65,000
         cartItems.forEach((item, index) => {
             const itemNumber = index + 1;
             const itemName = item.product_name;
             const quantity = item.quantity;
             const unitPrice = Number(item.unit_price);
             const itemTotal = unitPrice * quantity;
-            
             message += `${itemNumber}. ${itemName} – ${quantity} pcs – KES ${itemTotal.toLocaleString()}\n`;
         });
         
-        // Add total
         message += `\nTotal: KES ${Number(subtotal).toLocaleString()}\n\n`;
         
-        // Add customer name if provided
         if (customerName) {
             message += `Customer: ${customerName}\n\n`;
         }
         
-        // Add delivery inquiry
         message += "Please advise on delivery and transport options.";
-        
         return message;
     }
 
-    /* ─── Generate WhatsApp URL with pre-filled message ─── */
     function generateWhatsAppUrl(message) {
         const formattedNumber = formatWhatsAppNumber(WHATSAPP_NUMBER);
         const encodedMessage = encodeURIComponent(message);
         return `https://wa.me/${formattedNumber}?text=${encodedMessage}`;
     }
 
-    /* ─── Notification ─── */
     function showAlert(message, type = 'danger') {
         const el = document.getElementById('notificationAlert');
         el.className = `alert alert-${type}`;
@@ -350,35 +338,53 @@
         setTimeout(() => el.classList.add('d-none'), 4000);
     }
 
-    /* ─── Custom Toast Notification ─── */
     function showToast(message, type = 'success', duration = 4000) {
-        // Remove existing toast
         const existingToast = document.querySelector('.cart-toast');
         if (existingToast) existingToast.remove();
 
-        // Create toast
         const toast = document.createElement('div');
         toast.className = 'cart-toast';
         
         const icon = document.createElement('i');
-        icon.className = type === 'success' ? 'bi bi-check-circle-fill text-success' : 'bi bi-exclamation-circle-fill text-danger';
+        icon.className = type === 'success' ? 'bi bi-check-circle-fill text-success' : 
+                        type === 'error' ? 'bi bi-exclamation-circle-fill text-danger' : 
+                        'bi bi-info-circle-fill text-info';
         
         const text = document.createElement('span');
         text.textContent = message;
         
         toast.appendChild(icon);
         toast.appendChild(text);
-        
         document.body.appendChild(toast);
         
-        // Auto remove
         setTimeout(() => {
             toast.style.animation = 'slideInRight 0.3s reverse';
             setTimeout(() => toast.remove(), 300);
         }, duration);
     }
 
-    /* ─── Update Message Preview ─── */
+    function showLoadingOverlay(message = 'Processing your order...') {
+        const overlay = document.createElement('div');
+        overlay.className = 'loading-overlay';
+        overlay.id = 'checkoutLoadingOverlay';
+        overlay.innerHTML = `
+            <div class="loading-spinner">
+                <div class="spinner-border text-success mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mb-0 text-muted">${message}</p>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    }
+
+    function hideLoadingOverlay() {
+        const overlay = document.getElementById('checkoutLoadingOverlay');
+        if (overlay) {
+            overlay.remove();
+        }
+    }
+
     function updateMessagePreview() {
         const previewSection = document.getElementById('messagePreviewSection');
         const previewDiv = document.getElementById('whatsappMessagePreview');
@@ -390,19 +396,14 @@
             return;
         }
         
-        // Get customer name from form if available
         const customerName = document.querySelector('input[name="name"]')?.value || '';
-        
-        // Generate message
         currentWhatsAppMessage = formatWhatsAppMessage(cart.items, cart.subtotal, customerName);
         
-        // Update preview
         previewDiv.textContent = currentWhatsAppMessage;
         previewSection.classList.remove('d-none');
         itemCount.textContent = cart.items.length;
     }
 
-    /* ─── Copy message to clipboard ─── */
     function copyMessageToClipboard() {
         if (!currentWhatsAppMessage) return;
         
@@ -414,12 +415,11 @@
         });
     }
 
-    /* ─── Load Cart ─── */
     async function loadCart() {
         try {
             const res = await fetch(API.load, {
                 headers: {
-                    'Accept':       'application/json',
+                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': CSRF,
                 },
                 credentials: 'same-origin',
@@ -437,6 +437,12 @@
             }
 
             cart = await res.json();
+            
+            // Store cart ID in hidden field
+            if (cart.id) {
+                document.getElementById('cartId').value = cart.id;
+            }
+            
             renderCart();
             renderCheckout();
             updateCartBadge();
@@ -449,7 +455,6 @@
         }
     }
 
-    /* ─── Render: Empty State ─── */
     function renderEmpty() {
         document.getElementById('cart').innerHTML = `
             <div class="text-center py-5">
@@ -464,7 +469,6 @@
         document.getElementById('checkoutSection').classList.add('d-none');
     }
 
-    /* ─── Render: Cart Table ─── */
     function renderCart() {
         const container = document.getElementById('cart');
 
@@ -477,7 +481,7 @@
         cart.items.forEach(item => {
             rows += `
                 <tr>
-                    <td>${item.product_name}</td>
+                    <td>${escapeHtml(item.product_name)}</td>
                     <td>
                         <div class="d-flex align-items-center gap-1">
                             <button class="btn btn-sm btn-outline-secondary"
@@ -495,14 +499,14 @@
                         </div>
                     </td>
                     <td>KES ${Number(item.unit_price).toLocaleString()}</td>
-                    <td class="fw-semibold">KES ${(item.unit_price * item.quantity).toLocaleString(undefined, {minimumFractionDigits:2})}</td>
+                    <td class="fw-semibold">KES ${(item.unit_price * item.quantity).toLocaleString()}</td>
                     <td>
                         <button class="btn btn-sm btn-outline-danger"
                             onclick="removeItem(${item.product})">
                             <i class="bi bi-trash"></i>
                         </button>
                     </td>
-                </tr>
+                 </tr>
             `;
         });
 
@@ -523,13 +527,12 @@
             </div>
             <div class="text-end mt-2">
                 <span class="fs-5 fw-bold" style="color:#2a6e3f;">
-                    Subtotal: KES ${Number(cart.subtotal).toLocaleString(undefined, {minimumFractionDigits:2})}
+                    Subtotal: KES ${Number(cart.subtotal).toLocaleString()}
                 </span>
             </div>
         `;
     }
 
-    /* ─── Render: Show Checkout Section ─── */
     function renderCheckout() {
         if (cart.items && cart.items.length > 0) {
             document.getElementById('checkoutSection').classList.remove('d-none');
@@ -539,7 +542,6 @@
         }
     }
 
-    /* ─── Change Quantity ─── */
     window.changeQuantity = async function (productId, quantity) {
         if (quantity <= 0) {
             removeItem(productId);
@@ -551,7 +553,7 @@
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': CSRF,
-                'Accept':       'application/json',
+                'Accept': 'application/json',
             },
             credentials: 'same-origin',
             body: JSON.stringify({ product: productId, quantity: Number(quantity) }),
@@ -560,14 +562,13 @@
         loadCart();
     };
 
-    /* ─── Remove Item ─── */
     window.removeItem = async function (productId) {
         await fetch(API.remove, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': CSRF,
-                'Accept':       'application/json',
+                'Accept': 'application/json',
             },
             credentials: 'same-origin',
             body: JSON.stringify({ product: productId }),
@@ -576,126 +577,133 @@
         loadCart();
     };
 
-    /* ─── Cart Badge in Navbar ─── */
     function updateCartBadge() {
         const badge = document.querySelector('.cart-badge');
         if (!badge) return;
-        badge.textContent   = cart.total_items;
+        badge.textContent = cart.total_items;
         badge.style.display = cart.total_items ? 'flex' : 'none';
     }
 
-    /* ─── WhatsApp Direct Handler ─── */
     document.getElementById('whatsappDirectBtn')?.addEventListener('click', function() {
-        const btn = this;
-        
-        // Check if cart has items
         if (!cart.items || cart.items.length === 0) {
             showToast('Your cart is empty. Add items first.', 'error');
             return;
         }
         
-        // Check if we have a message
         if (!currentWhatsAppMessage) {
-            // Regenerate message with current customer name
             const customerName = document.querySelector('input[name="name"]')?.value || '';
             currentWhatsAppMessage = formatWhatsAppMessage(cart.items, cart.subtotal, customerName);
         }
         
-        // Generate WhatsApp URL
         const whatsappUrl = generateWhatsAppUrl(currentWhatsAppMessage);
-        
-        // Open WhatsApp in new tab - this will open with the message pre-filled
-        // User can edit before sending
         window.open(whatsappUrl, '_blank');
         
-        // Show success message
-        showToast(
-            `✅ WhatsApp opened with your order! You can review and edit the message before sending.`, 
-            'success',
-            5000
-        );
-        
-        // Store order info in session storage
-        const orderRef = currentWhatsAppMessage.match(/Order Ref: (ORD-\d+)/)?.[1] || 'Unknown';
-        const orderInfo = {
-            orderRef: orderRef,
-            items: cart.items.length,
-            total: cart.subtotal,
-            timestamp: new Date().toISOString(),
-            message: currentWhatsAppMessage
-        };
-        sessionStorage.setItem('last_whatsapp_order', JSON.stringify(orderInfo));
+        showToast('✅ WhatsApp opened with your order!', 'success', 5000);
     });
 
-    /* ─── Copy Message Button ─── */
     document.getElementById('copyMessageBtn')?.addEventListener('click', copyMessageToClipboard);
 
-    /* ─── Checkout Submit ─── */
     document.getElementById('checkoutForm').addEventListener('submit', async function (e) {
         e.preventDefault();
 
-        const btn = this.querySelector('button[type="submit"]');
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing…';
-        btn.disabled  = true;
+        const submitBtn = document.getElementById('checkoutSubmitBtn');
+        const originalBtnHtml = submitBtn.innerHTML;
+        
+        // Validate M-Pesa number
+        const mpesaNumber = document.querySelector('input[name="mpesa_number"]').value;
+        if (!mpesaNumber || mpesaNumber.trim() === '') {
+            showToast('Please enter your M-Pesa phone number', 'error');
+            return;
+        }
+
+        // Get customer name and set in hidden field
+        const customerName = document.querySelector('input[name="name"]').value;
+        if (!customerName || customerName.trim() === '') {
+            showToast('Please enter your full name', 'error');
+            return;
+        }
+        document.getElementById('customerNameHidden').value = customerName;
+
+        // Validate cart ID exists
+        if (!cart.id) {
+            showToast('Cart ID not found. Please refresh the page.', 'error');
+            return;
+        }
+
+        showLoadingOverlay('Processing your order...');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
 
         try {
-            const res = await fetch('/proxy/checkout/mpesa', {
+            const formData = new FormData(this);
+            
+            // Add cart data to form data
+            formData.append('cart_id', cart.id);
+            formData.append('customer_name', customerName);
+            formData.append('cart_items', JSON.stringify(cart.items));
+            
+            const res = await fetch(API.checkout, {
                 method: 'POST',
-                headers: { 'X-CSRF-TOKEN': CSRF },
+                headers: { 
+                    'X-CSRF-TOKEN': CSRF,
+                    'Accept': 'application/json'
+                },
                 credentials: 'same-origin',
-                body: new FormData(this),
+                body: formData,
             });
 
+            const data = await res.json();
+
             if (!res.ok) {
-                const err = await res.json().catch(() => ({}));
-                showAlert(err.message || 'Checkout failed. Please try again.', 'danger');
-                btn.innerHTML = '<i class="bi bi-phone me-2"></i>Pay with M-Pesa';
-                btn.disabled  = false;
-                return;
+                throw new Error(data.message || 'Checkout failed. Please try again.');
             }
 
-            window.location.href = '/orders';
+            if (data.order_id && data.token) {
+                showToast('✅ Order created! Redirecting to payment...', 'success', 2000);
+                setTimeout(() => {
+                    window.location.href = `/payment/${data.order_id}?token=${data.token}`;
+                }, 1500);
+            } else {
+                showToast('Order created! Redirecting...', 'success', 2000);
+                setTimeout(() => {
+                    window.location.href = '/orders';
+                }, 2000);
+            }
 
         } catch (err) {
             console.error('[checkout]', err);
-            showAlert('Network error during checkout.', 'danger');
-            btn.innerHTML = '<i class="bi bi-phone me-2"></i>Pay with M-Pesa';
-            btn.disabled  = false;
+            showAlert(err.message || 'Network error during checkout.', 'danger');
+            showToast('❌ ' + (err.message || 'Checkout failed.'), 'error', 5000);
+            
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnHtml;
+            hideLoadingOverlay();
         }
     });
 
-    /* ─── Check for last order on page load ─── */
-    function checkLastOrder() {
-        const lastOrder = sessionStorage.getItem('last_whatsapp_order');
-        if (lastOrder) {
-            try {
-                const order = JSON.parse(lastOrder);
-                const timeDiff = (new Date() - new Date(order.timestamp)) / 1000 / 60; // minutes
-                
-                // Show reminder if less than 5 minutes ago
-                if (timeDiff < 5) {
-                    setTimeout(() => {
-                        showToast(`📱 Your order ${order.orderRef} is ready to send to WhatsApp`, 'info', 6000);
-                    }, 1000);
-                }
-            } catch (e) {
-                console.error('Error parsing last order', e);
-            }
-        }
-    }
-
-    /* ─── Update preview when name changes ─── */
+    // Update customer name hidden field when name input changes
     document.querySelector('input[name="name"]')?.addEventListener('input', function() {
+        const customerName = this.value;
+        document.getElementById('customerNameHidden').value = customerName;
+        
         if (cart.items && cart.items.length > 0) {
-            currentWhatsAppMessage = formatWhatsAppMessage(cart.items, cart.subtotal, this.value);
+            currentWhatsAppMessage = formatWhatsAppMessage(cart.items, cart.subtotal, customerName);
             document.getElementById('whatsappMessagePreview').textContent = currentWhatsAppMessage;
         }
     });
 
-    /* ─── Boot ─── */
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         loadCart();
-        checkLastOrder();
     });
 
 })();

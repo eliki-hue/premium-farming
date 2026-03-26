@@ -870,7 +870,7 @@
 
                 <div class="gallery-card" data-category="facility">
                     <div class="gallery-card-image">
-                        <img src="{{ asset('images/space.jpeg') }}" alt="Warehouse" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1592595896616-c37162298647?q=80&w=2070'">
+                        <img src="{{ asset('images/stk.png') }}" alt="Warehouse" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1592595896616-c37162298647?q=80&w=2070'">
                         <span class="gallery-card-badge">Facility</span>
                         <div class="quick-view-overlay">
                             <button class="quick-view-btn" onclick="openLightboxFromCard(1)">
@@ -893,7 +893,7 @@
 
                 <div class="gallery-card" data-category="facility">
                     <div class="gallery-card-image">
-                        <img src="{{ asset('images/comp.jpeg') }}" alt="Production Line" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1560493676-04071c5f467b?q=80&w=2000'">
+                        <img src="{{ asset('images/mash.png') }}" alt="Production Line" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1560493676-04071c5f467b?q=80&w=2000'">
                         <span class="gallery-card-badge">Facility</span>
                         <div class="quick-view-overlay">
                             <button class="quick-view-btn" onclick="openLightboxFromCard(2)">
@@ -973,6 +973,7 @@
                     <div class="gallery-card-content">
                         <h4>Pig Feeds</h4>
                         <p>Balanced nutrition for healthy growth</p>
+                        <span><i class="bi bi-basket"></i> 70kg</span>
                         <div class="gallery-card-meta">
                             <span><i class="bi bi-flower1"></i> Starter</span>
                             <span><i class="bi bi-flower1"></i> Grower</span>
@@ -1000,7 +1001,7 @@
                         <p>Complete nutrition for healthy dogs</p>
                         <div class="gallery-card-meta">
                             <span><i class="bi bi-heart"></i> High Protein</span>
-                            <span><i class="bi bi-basket"></i> 20kg</span>
+                            <span><i class="bi bi-basket"></i> 70kg</span>
                         </div>
                         <button class="gallery-card-btn" onclick="openLightboxFromCard(21)">
                             View <i class="bi bi-arrow-right"></i>
@@ -1023,7 +1024,7 @@
                         <p>For healthy growth and milk production</p>
                         <div class="gallery-card-meta">
                             <span><i class="bi bi-droplet"></i> High Fiber</span>
-                            <span><i class="bi bi-basket"></i> 50kg</span>
+                            <span><i class="bi bi-basket"></i> 70kg</span>
                         </div>
                         <button class="gallery-card-btn" onclick="openLightboxFromCard(22)">
                             View <i class="bi bi-arrow-right"></i>
@@ -1046,7 +1047,7 @@
                         <p>Balanced nutrition for healthy rabbits</p>
                         <div class="gallery-card-meta">
                             <span><i class="bi bi-leaf"></i> High Fiber</span>
-                            <span><i class="bi bi-basket"></i> 25kg</span>
+                            <span><i class="bi bi-basket"></i> 70kg</span>
                         </div>
                         <button class="gallery-card-btn" onclick="openLightboxFromCard(23)">
                             View <i class="bi bi-arrow-right"></i>
@@ -1197,7 +1198,7 @@
 
                 <div class="gallery-card" data-category="team">
                     <div class="gallery-card-image">
-                        <img src="{{ asset('images/mary1.jpeg') }}" alt="Mary - Accountant" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2000'">
+                        <img src="{{ asset('images/mj1.jpeg') }}" alt="Mary - Accountant" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2000'">
                         <span class="gallery-card-badge">Finance</span>
                         <div class="quick-view-overlay">
                             <button class="quick-view-btn" onclick="openLightboxFromCard(12)">
