@@ -164,7 +164,7 @@
                             <p class="mb-2" style="color: #6b6b6b; font-size: 14px;">
                                 New to Premium Farming Feeds?
                             </p>
-                           <a href="/register" 
+                           <a href="{{ env('DJANGO_API_URL') }}/api/auth/customer/signup/" 
                             class="btn btn-outline-success w-100">
                                 Create Account
                             </a>

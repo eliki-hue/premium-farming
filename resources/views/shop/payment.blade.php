@@ -1,424 +1,787 @@
-{{-- resources/views/payment.blade.php --}}
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Complete Payment - Your Order #{{order_id}}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-@section('title', 'Payment Processing')
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-@section('content')
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            {{-- Payment Card --}}
-            <div class="card border-0 shadow-lg">
-                <div class="card-body p-5 text-center">
-                    {{-- Logo/Icon --}}
-                    <div class="mb-4">
-                        <i class="bi bi-credit-card-2-front" style="font-size: 4rem; color: #2a6e3f;"></i>
-                    </div>
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
 
-                    {{-- Order Info --}}
-                    <h3 class="fw-bold mb-3" style="color: #2a6e3f;">Complete Your Payment</h3>
-                    <p class="text-muted mb-4">Order #{{ $orderId }}</p>
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px 0;
+        }
 
-                    {{-- Status Messages --}}
-                    <div id="statusContainer" class="mb-4">
-                        <div id="loadingState">
-                            <div class="spinner-border text-success mb-3" role="status">
-                                <span class="visually-hidden">Processing...</span>
-                            </div>
-                            <p class="text-muted">Initializing payment...</p>
-                        </div>
-                        
-                        <div id="successState" class="d-none">
-                            <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
-                            <h5 class="mt-2 text-success">Payment Initiated!</h5>
-                            <p id="successMessage" class="text-muted"></p>
-                        </div>
-                        
-                        <div id="errorState" class="d-none">
-                            <i class="bi bi-x-circle-fill text-danger" style="font-size: 3rem;"></i>
-                            <h5 class="mt-2 text-danger">Payment Failed</h5>
-                            <p id="errorMessage" class="text-muted"></p>
-                        </div>
-                    </div>
+        .header h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 8px;
+        }
 
-                    {{-- Action Buttons --}}
-                    <div id="actionButtons" class="d-none">
-                        <div class="d-grid gap-3">
-                            <button id="retryPaymentBtn" class="btn btn-success btn-lg">
-                                <i class="bi bi-arrow-repeat me-2"></i>Retry Payment
-                            </button>
-                            <a href="{{ route('orders') }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-box-arrow-right me-2"></i>View My Orders
-                            </a>
-                            <a href="{{ route('products') }}" class="btn btn-link text-muted">
-                                <i class="bi bi-shop me-2"></i>Continue Shopping
-                            </a>
-                        </div>
-                    </div>
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
 
-                    {{-- Info Note --}}
-                    <div class="mt-4 pt-3 border-top">
-                        <small class="text-muted">
-                            <i class="bi bi-info-circle me-1"></i>
-                            An M-Pesa STK push will be sent to your registered phone number.
-                            Please check your phone and enter your PIN to complete the payment.
-                        </small>
+        /* Payment Card */
+        .payment-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        /* Order Summary Section */
+        .order-summary {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .order-summary h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .order-id-badge {
+            background: #f0f0f0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-family: monospace;
+            color: #666;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .summary-value {
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .total-row {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 2px solid #e0e0e0;
+            font-weight: 600;
+        }
+
+        .total-row .summary-label,
+        .total-row .summary-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            padding: 20px;
+        }
+
+        .payment-methods h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .method-option {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .method-option:hover {
+            border-color: #25D366;
+            background: #f0fdf4;
+        }
+
+        .method-option.selected {
+            border-color: #25D366;
+            background: #f0fdf4;
+        }
+
+        .method-radio {
+            width: 20px;
+            height: 20px;
+            accent-color: #25D366;
+        }
+
+        .method-icon {
+            font-size: 28px;
+        }
+
+        .method-info {
+            flex: 1;
+        }
+
+        .method-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .method-description {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* M-Pesa Phone Input */
+        .phone-section {
+            padding: 0 20px 20px 20px;
+            display: none;
+        }
+
+        .phone-section.show {
+            display: block;
+        }
+
+        .phone-input-group {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .phone-input-group label {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .phone-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .country-code {
+            background: white;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .phone-input-wrapper input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: monospace;
+        }
+
+        .phone-input-wrapper input:focus {
+            outline: none;
+            border-color: #25D366;
+        }
+
+        .phone-hint {
+            font-size: 11px;
+            color: #999;
+            margin-top: 6px;
+        }
+
+        /* Pay Button */
+        .pay-button-container {
+            padding: 20px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .pay-btn {
+            width: 100%;
+            padding: 16px;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .pay-btn:hover:not(:disabled) {
+            background: #128C7E;
+            transform: translateY(-1px);
+        }
+
+        .pay-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert.show {
+            display: flex;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            color: #dc2626;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            color: #16a34a;
+        }
+
+        .alert-info {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            color: #2563eb;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-size: 12px;
+        }
+
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-2 {
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💳 Complete Payment</h1>
+            <p>Review your order and complete payment</p>
+        </div>
+
+        <div class="payment-card">
+            <!-- Alert Container -->
+            <div id="alertContainer" style="padding: 0 20px; margin-top: 20px;"></div>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h3>
+                    📋 Order Summary
+                    <span id="orderIdBadge" class="order-id-badge">Loading...</span>
+                </h3>
+                <div id="orderSummaryContent">
+                    <div class="summary-row">
+                        <span class="summary-label">Loading order details...</span>
                     </div>
                 </div>
             </div>
 
-            {{-- Instructions Card --}}
-            <div class="card border-0 mt-4 bg-light">
-                <div class="card-body p-4">
-                    <h6 class="fw-bold mb-3">
-                        <i class="bi bi-telephone me-2 text-success"></i>What to expect:
-                    </h6>
-                    <ul class="text-muted mb-0">
-                        <li class="mb-2">📱 You'll receive a payment request on your M-Pesa phone</li>
-                        <li class="mb-2">🔢 Enter your M-Pesa PIN to authorize the payment</li>
-                        <li class="mb-2">✅ Payment confirmation will be sent via SMS</li>
-                        <li>🔄 The page will redirect to your orders once complete</li>
-                    </ul>
+            <!-- Payment Methods -->
+            <div class="payment-methods">
+                <h3>💰 Select Payment Method</h3>
+                
+                <div class="method-option" data-method="mpesa">
+                    <input type="radio" name="paymentMethod" value="mpesa" id="mpesa" class="method-radio" checked>
+                    <div class="method-icon">📱</div>
+                    <div class="method-info">
+                        <div class="method-name">M-Pesa</div>
+                        <div class="method-description">Pay using M-Pesa STK Push</div>
+                    </div>
                 </div>
+
+                <div class="method-option" data-method="card">
+                    <input type="radio" name="paymentMethod" value="card" id="card" class="method-radio">
+                    <div class="method-icon">💳</div>
+                    <div class="method-info">
+                        <div class="method-name">Card Payment</div>
+                        <div class="method-description">Visa, Mastercard, American Express</div>
+                    </div>
+                </div>
+
+                <div class="method-option" data-method="bank">
+                    <input type="radio" name="paymentMethod" value="bank" id="bank" class="method-radio">
+                    <div class="method-icon">🏦</div>
+                    <div class="method-info">
+                        <div class="method-name">Bank Transfer</div>
+                        <div class="method-description">Direct bank transfer</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- M-Pesa Phone Input -->
+            <div id="phoneSection" class="phone-section">
+                <div class="phone-input-group">
+                    <label>📞 M-Pesa Phone Number</label>
+                    <div class="phone-input-wrapper">
+                        <span class="country-code">+254</span>
+                        <input type="tel" id="phoneNumber" placeholder="712 345 678" autocomplete="off">
+                    </div>
+                    <div class="phone-hint">Enter the phone number registered with M-Pesa</div>
+                </div>
+            </div>
+
+            <!-- Pay Button -->
+            <div class="pay-button-container">
+                <button id="payButton" class="pay-btn">
+                    💳 Pay Now
+                </button>
             </div>
         </div>
+
+        <div class="footer">
+            🔒 Secure payment powered by M-Pesa
+        </div>
     </div>
-</div>
 
-<style>
-    .card {
-        border-radius: 20px;
-        transition: transform 0.2s;
-    }
-    
-    .card:hover {
-        transform: translateY(-5px);
-    }
-    
-    .btn-success {
-        background: linear-gradient(135deg, #2a6e3f, #3a8e5c);
-        border: none;
-        font-weight: 600;
-        padding: 12px;
-    }
-    
-    .btn-success:hover {
-        background: linear-gradient(135deg, #1e5a2f, #2a6e3f);
-        transform: translateY(-1px);
-    }
-    
-    .btn-outline-secondary:hover {
-        transform: translateY(-1px);
-    }
-    
-    /* Animation for success icon */
-    @keyframes bounce {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-    }
-    
-    .bi-check-circle-fill {
-        animation: bounce 0.5s ease;
-    }
-    
-    /* Spinner animation */
-    .spinner-border {
-        width: 3rem;
-        height: 3rem;
-    }
-</style>
-
-<script>
-(function() {
-    'use strict';
-
-    // Get order details from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const orderId = {{ $orderId }};
-    const token = '{{ $token }}';
-    
-    // API endpoint
-    const API_URL = `/api/ecommerce/pay/${orderId}`;
-    
-    // DOM elements
-    const loadingState = document.getElementById('loadingState');
-    const successState = document.getElementById('successState');
-    const errorState = document.getElementById('errorState');
-    const actionButtons = document.getElementById('actionButtons');
-    const retryBtn = document.getElementById('retryPaymentBtn');
-    const successMessage = document.getElementById('successMessage');
-    const errorMessage = document.getElementById('errorMessage');
-    
-    // Polling interval for checking payment status
-    let pollingInterval = null;
-    let pollCount = 0;
-    const MAX_POLLS = 20;
-    
-    /**
-     * Show notification toast
-     */
-    function showToast(message, type = 'info', duration = 5000) {
-        const existingToast = document.querySelector('.payment-toast');
-        if (existingToast) existingToast.remove();
+    <script>
+        // Get order ID and token from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('order_id');
+        const token = urlParams.get('token');
         
-        const toast = document.createElement('div');
-        toast.className = `payment-toast position-fixed bottom-0 end-0 m-3 p-3 bg-white rounded-3 shadow-lg`;
-        toast.style.zIndex = '9999';
-        toast.style.minWidth = '300px';
-        toast.style.borderLeft = `4px solid ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#17a2b8'}`;
+        // Use order_id if available, otherwise use token
+        const orderIdentifier = orderId || token;
         
-        const icon = document.createElement('i');
-        icon.className = type === 'success' ? 'bi bi-check-circle-fill text-success me-2' : 
-                        type === 'error' ? 'bi bi-exclamation-circle-fill text-danger me-2' : 
-                        'bi bi-info-circle-fill text-info me-2';
+        // State
+        let orderData = null;
+        let selectedMethod = 'mpesa';
+        let isProcessing = false;
         
-        const text = document.createElement('span');
-        text.textContent = message;
+        // DOM Elements
+        const alertContainer = document.getElementById('alertContainer');
+        const orderIdBadge = document.getElementById('orderIdBadge');
+        const orderSummaryContent = document.getElementById('orderSummaryContent');
+        const phoneSection = document.getElementById('phoneSection');
+        const phoneNumberInput = document.getElementById('phoneNumber');
+        const payButton = document.getElementById('payButton');
+        const methodOptions = document.querySelectorAll('.method-option');
         
-        toast.appendChild(icon);
-        toast.appendChild(text);
-        document.body.appendChild(toast);
-        
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transition = 'opacity 0.3s';
-            setTimeout(() => toast.remove(), 300);
-        }, duration);
-    }
-    
-    /**
-     * Initialize STK Push
-     */
-    async function initiatePayment() {
-        try {
-            loadingState.classList.remove('d-none');
-            successState.classList.add('d-none');
-            errorState.classList.add('d-none');
-            actionButtons.classList.add('d-none');
+        // Show alert message
+        function showAlert(message, type = 'error') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} show`;
             
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-                },
-                credentials: 'same-origin',
-                body: JSON.stringify({
-                    token: token,
-                    order_id: orderId
-                })
-            });
+            const icon = type === 'success' ? '✅' : (type === 'info' ? 'ℹ️' : '⚠️');
+            alertDiv.innerHTML = `${icon} ${message}`;
             
-            const data = await response.json();
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alertDiv);
             
-            if (!response.ok) {
-                throw new Error(data.message || 'Failed to initiate payment');
-            }
-            
-            loadingState.classList.add('d-none');
-            successState.classList.remove('d-none');
-            
-            let message = data.message || 'Payment prompt has been sent to your phone.';
-            if (data.checkout_request_id) {
-                message += ` Check your phone and enter your PIN to complete the payment.`;
-            }
-            successMessage.textContent = message;
-            actionButtons.classList.remove('d-none');
-            
-            showToast('✅ STK push sent! Check your phone to complete payment.', 'success', 6000);
-            
-            startPollingPaymentStatus();
-            
-        } catch (error) {
-            console.error('Payment initiation error:', error);
-            
-            loadingState.classList.add('d-none');
-            errorState.classList.remove('d-none');
-            
-            let message = error.message || 'Failed to initiate payment. Please try again.';
-            if (message.includes('timeout') || message.includes('network')) {
-                message = 'Network error. Please check your connection and try again.';
-            }
-            errorMessage.textContent = message;
-            actionButtons.classList.remove('d-none');
-            
-            showToast('❌ ' + message, 'error', 8000);
+            setTimeout(() => {
+                alertDiv.classList.remove('show');
+                setTimeout(() => {
+                    if (alertContainer.contains(alertDiv)) {
+                        alertContainer.removeChild(alertDiv);
+                    }
+                }, 300);
+            }, 5000);
         }
-    }
-    
-    /**
-     * Poll for payment status
-     */
-    async function checkPaymentStatus() {
-        if (!pollingInterval) return;
         
-        pollCount++;
+        // Format currency
+        function formatCurrency(amount) {
+            return `KES ${parseFloat(amount).toLocaleString('en-KE')}`;
+        }
         
-        try {
-            const response = await fetch(`/api/payment/status/${orderId}`, {
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-                },
-                credentials: 'same-origin'
-            });
-            
-            const data = await response.json();
-            
-            if (data.status === 'completed' || data.status === 'paid') {
-                stopPolling();
-                
-                successState.classList.add('d-none');
-                errorState.classList.add('d-none');
-                loadingState.classList.add('d-none');
-                
-                const statusContainer = document.getElementById('statusContainer');
-                statusContainer.innerHTML = `
-                    <div class="text-center">
-                        <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
-                        <h5 class="mt-2 text-success">Payment Successful!</h5>
-                        <p class="text-muted">Your payment has been confirmed. Redirecting to orders...</p>
+        // Format phone number for display
+        function formatPhoneNumber(phone) {
+            if (!phone) return '';
+            let cleaned = phone.replace(/\D/g, '');
+            if (cleaned.startsWith('0')) {
+                cleaned = '254' + cleaned.substring(1);
+            }
+            if (!cleaned.startsWith('254')) {
+                cleaned = '254' + cleaned;
+            }
+            return cleaned;
+        }
+        
+        // Load order details
+        async function loadOrderDetails() {
+            if (!orderIdentifier) {
+                showAlert('Order ID not found. Please check your payment link.', 'error');
+                orderIdBadge.textContent = 'Error';
+                orderSummaryContent.innerHTML = `
+                    <div class="summary-row">
+                        <span class="summary-label" style="color: #ef4444;">Invalid payment link</span>
                     </div>
                 `;
-                
-                showToast('✅ Payment successful! Redirecting...', 'success', 3000);
-                
-                setTimeout(() => {
-                    window.location.href = '/orders';
-                }, 3000);
-                
-            } else if (data.status === 'failed' || data.status === 'cancelled') {
-                stopPolling();
-                
-                errorState.classList.remove('d-none');
-                errorMessage.textContent = 'Payment failed or was cancelled. Please try again.';
-                showToast('❌ Payment failed. Please try again.', 'error', 5000);
-                
-            } else if (pollCount >= MAX_POLLS) {
-                stopPolling();
-                
-                errorState.classList.remove('d-none');
-                errorMessage.textContent = 'Payment is taking longer than expected. Please check your phone or try again.';
-                showToast('⏱️ Payment timeout. Please check your phone or retry.', 'warning', 8000);
+                payButton.disabled = true;
+                return;
             }
             
-        } catch (error) {
-            console.error('Error checking payment status:', error);
+            orderIdBadge.textContent = `#${orderIdentifier}`;
             
-            if (pollCount >= MAX_POLLS) {
-                stopPolling();
-                errorState.classList.remove('d-none');
-                errorMessage.textContent = 'Unable to verify payment status. Please check your orders page.';
+            try {
+                // Fetch order details from your backend
+                // Replace this URL with your actual API endpoint
+                const response = await fetch(`/api/orders/${orderIdentifier}/`);
+                
+                if (!response.ok) {
+                    throw new Error('Order not found');
+                }
+                
+                orderData = await response.json();
+                displayOrderSummary();
+                
+                // Pre-fill phone if available
+                if (orderData.customer_phone) {
+                    let phone = orderData.customer_phone.replace(/\D/g, '');
+                    if (phone.startsWith('254')) {
+                        phone = phone.substring(3);
+                    }
+                    phoneNumberInput.value = phone;
+                }
+                
+            } catch (error) {
+                console.error('Error loading order:', error);
+                showAlert('Unable to load order details. Please try again.', 'error');
+                orderIdBadge.textContent = '#Error';
+                orderSummaryContent.innerHTML = `
+                    <div class="summary-row">
+                        <span class="summary-label" style="color: #ef4444;">Failed to load order details</span>
+                    </div>
+                `;
+                payButton.disabled = true;
             }
         }
-    }
-    
-    /**
-     * Start polling for payment status
-     */
-    function startPollingPaymentStatus() {
-        if (pollingInterval) {
-            clearInterval(pollingInterval);
+        
+        // Display order summary
+        function displayOrderSummary() {
+            if (!orderData) return;
+            
+            let itemsHtml = '';
+            
+            // Display items
+            if (orderData.items && orderData.items.length > 0) {
+                orderData.items.forEach(item => {
+                    const itemTotal = (item.price || 0) * (item.quantity || 1);
+                    itemsHtml += `
+                        <div class="summary-row">
+                            <span class="summary-label">${item.name || 'Item'} x ${item.quantity || 1}</span>
+                            <span class="summary-value">${formatCurrency(itemTotal)}</span>
+                        </div>
+                    `;
+                });
+            }
+            
+            // Subtotal
+            const subtotal = orderData.subtotal || orderData.total_amount || 0;
+            itemsHtml += `
+                <div class="summary-row">
+                    <span class="summary-label">Subtotal</span>
+                    <span class="summary-value">${formatCurrency(subtotal)}</span>
+                </div>
+            `;
+            
+            // Delivery fee
+            const deliveryFee = orderData.delivery_fee || 0;
+            if (deliveryFee > 0) {
+                itemsHtml += `
+                    <div class="summary-row">
+                        <span class="summary-label">Delivery Fee</span>
+                        <span class="summary-value">${formatCurrency(deliveryFee)}</span>
+                    </div>
+                `;
+            }
+            
+            // Total
+            const total = orderData.total || orderData.total_amount || subtotal + deliveryFee;
+            itemsHtml += `
+                <div class="summary-row total-row">
+                    <span class="summary-label">Total Amount</span>
+                    <span class="summary-value">${formatCurrency(total)}</span>
+                </div>
+            `;
+            
+            // Customer info
+            if (orderData.customer_name) {
+                itemsHtml = `
+                    <div class="summary-row">
+                        <span class="summary-label">Customer</span>
+                        <span class="summary-value">${orderData.customer_name}</span>
+                    </div>
+                ` + itemsHtml;
+            }
+            
+            orderSummaryContent.innerHTML = itemsHtml;
         }
         
-        pollCount = 0;
-        pollingInterval = setInterval(() => {
-            checkPaymentStatus();
-        }, 3000);
-    }
-    
-    /**
-     * Stop polling
-     */
-    function stopPolling() {
-        if (pollingInterval) {
-            clearInterval(pollingInterval);
-            pollingInterval = null;
-        }
-    }
-    
-    /**
-     * Retry payment
-     */
-    function retryPayment() {
-        pollCount = 0;
-        initiatePayment();
-    }
-    
-    /**
-     * Validate token before proceeding
-     */
-    function validateToken() {
-        if (!token || token === '') {
-            errorState.classList.remove('d-none');
-            loadingState.classList.add('d-none');
-            errorMessage.textContent = 'Invalid or missing payment token. Please contact support.';
-            actionButtons.classList.remove('d-none');
-            retryBtn.disabled = true;
-            retryBtn.style.opacity = '0.5';
-            retryBtn.title = 'Invalid token - cannot retry';
-            return false;
-        }
-        return true;
-    }
-    
-    /**
-     * Handle page visibility change
-     */
-    function handleVisibilityChange() {
-        if (!document.hidden && pollingInterval === null && 
-            !loadingState.classList.contains('d-none') === false &&
-            successState.classList.contains('d-none') === false) {
-            startPollingPaymentStatus();
-        }
-    }
-    
-    /**
-     * Initialize page
-     */
-    function init() {
-        if (!validateToken()) {
-            return;
+        // Handle payment method selection
+        function initPaymentMethods() {
+            methodOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    const radio = option.querySelector('.method-radio');
+                    radio.checked = true;
+                    selectedMethod = radio.value;
+                    
+                    // Update selected style
+                    methodOptions.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    
+                    // Show/hide phone section
+                    if (selectedMethod === 'mpesa') {
+                        phoneSection.classList.add('show');
+                    } else {
+                        phoneSection.classList.remove('show');
+                    }
+                });
+            });
         }
         
-        retryBtn.addEventListener('click', retryPayment);
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-        initiatePayment();
-    }
-    
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
+        // Validate phone number
+        function validatePhoneNumber(phone) {
+            const cleaned = phone.replace(/\D/g, '');
+            if (cleaned.length === 9) {
+                return `254${cleaned}`;
+            } else if (cleaned.length === 10 && cleaned.startsWith('0')) {
+                return `254${cleaned.substring(1)}`;
+            } else if (cleaned.length === 12 && cleaned.startsWith('254')) {
+                return cleaned;
+            }
+            return null;
+        }
+        
+        // Process payment
+        async function processPayment() {
+            if (isProcessing) return;
+            
+            // Validate based on payment method
+            if (selectedMethod === 'mpesa') {
+                const phoneRaw = phoneNumberInput.value.trim();
+                if (!phoneRaw) {
+                    showAlert('Please enter your M-Pesa phone number', 'error');
+                    phoneNumberInput.focus();
+                    return;
+                }
+                
+                const formattedPhone = validatePhoneNumber(phoneRaw);
+                if (!formattedPhone) {
+                    showAlert('Please enter a valid phone number (e.g., 712345678 or 0712345678)', 'error');
+                    phoneNumberInput.focus();
+                    return;
+                }
+                
+                // Store formatted phone for API call
+                var mpesaPhone = formattedPhone;
+            }
+            
+            isProcessing = true;
+            payButton.disabled = true;
+            const originalButtonText = payButton.innerHTML;
+            payButton.innerHTML = '<span class="spinner"></span> Processing...';
+            
+            try {
+                // Prepare payment data
+                const paymentData = {
+                    order_id: orderIdentifier,
+                    token: token,
+                    payment_method: selectedMethod,
+                    amount: orderData?.total || orderData?.total_amount || 0
+                };
+                
+                // Add phone number for M-Pesa
+                if (selectedMethod === 'mpesa') {
+                    paymentData.phone_number = mpesaPhone;
+                }
+                
+                // Send payment request to your backend
+                // Replace this URL with your actual API endpoint
+                const response = await fetch('/api/ecommerce/pay/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(paymentData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    showAlert(result.message || 'Payment initiated successfully!', 'success');
+                    
+                    // Handle based on payment method response
+                    if (selectedMethod === 'mpesa' && result.checkout_request_id) {
+                        // Poll for payment status
+                        pollPaymentStatus(result.checkout_request_id);
+                    } else if (result.redirect_url) {
+                        // Redirect to payment gateway
+                        setTimeout(() => {
+                            window.location.href = result.redirect_url;
+                        }, 1500);
+                    } else {
+                        // Payment completed or waiting for confirmation
+                        showAlert('Please check your phone to complete the payment', 'info');
+                        setTimeout(() => {
+                            window.location.href = `/payment-status.html?order_id=${orderIdentifier}&status=processing`;
+                        }, 3000);
+                    }
+                } else {
+                    showAlert(result.message || 'Payment failed. Please try again.', 'error');
+                    resetPayButton(originalButtonText);
+                }
+                
+            } catch (error) {
+                console.error('Payment error:', error);
+                showAlert('Network error. Please check your connection and try again.', 'error');
+                resetPayButton(originalButtonText);
+            }
+        }
+        
+        // Poll payment status for M-Pesa STK Push
+        async function pollPaymentStatus(checkoutRequestId) {
+            let attempts = 0;
+            const maxAttempts = 30; // 30 seconds
+            const interval = setInterval(async () => {
+                attempts++;
+                
+                try {
+                    // Replace with your actual status check endpoint
+                    const response = await fetch(`/api/ecommerce/payment-status/${checkoutRequestId}/`);
+                    const result = await response.json();
+                    
+                    if (result.status === 'completed') {
+                        clearInterval(interval);
+                        showAlert('✅ Payment successful! Redirecting...', 'success');
+                        setTimeout(() => {
+                            window.location.href = `/payment-success.html?order_id=${orderIdentifier}`;
+                        }, 1500);
+                    } else if (result.status === 'failed') {
+                        clearInterval(interval);
+                        showAlert('❌ Payment failed. Please try again.', 'error');
+                        resetPayButton('Pay Now');
+                    }
+                    
+                    if (attempts >= maxAttempts) {
+                        clearInterval(interval);
+                        showAlert('Payment confirmation timeout. Please check your payment status later.', 'info');
+                        resetPayButton('Check Status');
+                        payButton.onclick = () => {
+                            window.location.href = `/order-status.html?order_id=${orderIdentifier}`;
+                        };
+                    }
+                    
+                } catch (error) {
+                    console.error('Error checking payment status:', error);
+                }
+            }, 1000);
+        }
+        
+        // Reset pay button state
+        function resetPayButton(text = 'Pay Now') {
+            isProcessing = false;
+            payButton.disabled = false;
+            payButton.innerHTML = text;
+        }
+        
+        // Initialize page
+        function init() {
+            initPaymentMethods();
+            
+            // Set default selected method
+            document.querySelector('[data-method="mpesa"]').classList.add('selected');
+            phoneSection.classList.add('show');
+            
+            // Load order details
+            loadOrderDetails();
+            
+            // Pay button click handler
+            payButton.addEventListener('click', processPayment);
+            
+            // Enter key in phone input
+            phoneNumberInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    processPayment();
+                }
+            });
+        }
+        
+        // Start the app
         init();
-    }
-    
-    window.addEventListener('beforeunload', function() {
-        if (pollingInterval) {
-            clearInterval(pollingInterval);
-        }
-    });
-})();
-</script>
-
-@push('styles')
-<style>
-    .payment-toast {
-        animation: slideInRight 0.3s ease;
-        transition: opacity 0.3s ease;
-    }
-    
-    @keyframes slideInRight {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-</style>
-@endpush
-
-@endsection
+    </script>
+</body>
+</html>

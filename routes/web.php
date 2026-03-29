@@ -7,6 +7,8 @@ use App\Http\Controllers\WhatsAppRedirectController;
 use App\Http\Controllers\CheckoutResumeController;
 use App\Http\Controllers\WhatsAppOrderController;
 use App\Http\Controllers\PaymentController;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Session;
 
 
 // Fixed duplicate import - removed the duplicate WhatsAppRedirectController
@@ -150,11 +152,56 @@ Route::post('/cart/add', [CartController::class, 'add']);
 Route::patch('/cart/update', [CartController::class, 'update']);
 Route::delete('/cart/remove', [CartController::class, 'remove']);
 
-/*
-|--------------------------------------------------------------------------
-| SHOP & PRODUCTS
-|--------------------------------------------------------------------------
-*/
+// Step 3: Customer details submission
+Route::post('/api/ecommerce/place-order/', [OrderController::class, 'createOrder']);
+
+// Step 4: Order confirmation page
+Route::get('/order/confirmation/{orderId}', [OrderController::class, 'showConfirmation']);
+
+// Step 5: WhatsApp preparation
+Route::post('/api/order/whatsapp', [OrderController::class, 'prepareWhatsApp']);
+
+// Step 9: Payment initiation
+Route::post('/api/ecommerce/pay/', [OrderController::class, 'initiatePayment']);
+
+// Step 10: Payment status check
+Route::get('/api/payment/status/{orderId}', [OrderController::class, 'checkPaymentStatus']);
+// Checkout details page with guest cart middleware
+Route::get('/checkout/details', function() {
+    return view('checkout.details');
+})->name('checkout.details')->middleware('guest.cart');
+// Step 3: Customer Details Form
+Route::get('/checkout/details', function() {
+    $cartId = session('cart_id');
+    return view('checkout.details', compact('cartId'));
+})->name('checkout.details');
+
+// Step 3: Submit Customer Details (API)
+Route::post('/api/ecommerce/place-order/', [OrderController::class, 'createOrder'])->name('api.place.order');
+
+// Step 4: Order Confirmation Page
+Route::get('/order/confirmation/{orderId}', [OrderController::class, 'showConfirmation'])->name('order.confirmation');
+
+// Step 5: Prepare WhatsApp Message (API)
+Route::post('/api/order/whatsapp', [OrderController::class, 'prepareWhatsApp'])->name('api.order.whatsapp');
+
+// Payment page
+Route::get('/payment/{orderId}', [PaymentController::class, 'showPaymentPage'])->name('payment.page');
+
+// Step 9: Initiate payment
+Route::post('/api/ecommerce/pay/', [PaymentController::class, 'initiatePayment'])->name('api.pay');
+
+// Step 10 & 11: Check payment status
+Route::get('/api/payment/status/{orderId}', [PaymentController::class, 'checkPaymentStatus'])->name('payment.status');
+
+// M-Pesa callback webhook
+Route::post('/api/mpesa/callback', [PaymentController::class, 'paymentCallback'])->name('mpesa.callback');
+// Final order confirmation page
+Route::get('/order/confirmed/{orderId}', [OrderController::class, 'finalConfirmation'])->name('order.confirmed');
+// CSRF token endpoint
+Route::get('/ecommerce/csrf-token/', [OrderController::class, 'getCsrfToken']);
+Route::post('/ecommerce/place-order/', [OrderController::class, 'createOrder']);
+
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/shop/products', [ShopController::class, 'products'])->name('shop.products');
 Route::get('/shop/product/{id}', [ShopController::class, 'show'])->name('shop.show');

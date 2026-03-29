@@ -2,91 +2,79 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
-use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
+    protected $djangoBase = 'http://127.0.0.1:8000';
 
-  public function index(Request $request)
+    /**
+     * GET CSRF TOKEN FROM DJANGO
+     */
+    public function getCsrfToken()
     {
-        $mpesa = $request->query('mpesa');
+        try {
+            $response = Http::withOptions([
+                'verify' => false,
+            ])->get($this->djangoBase . '/api/ecommerce/csrf-token/');
 
-        $response = Http::get(env('DJANGO_API_URL').'/api/ecommerce/orders', [
-            'mpesa' => $mpesa
-        ]);
-
-        if(!$response->ok()){
-            abort(500, 'Failed to fetch orders');
-        }
-
-        $orders = $response->json();
-
-        return view('orders.index', compact('orders'));
-    }
-
-    public function create()
-    {
-        $products = Product::where('quantity', '>', 0)->get();
-        return view('orders.create', compact('products'));
-
-         $customers = Customer::all();
-          return view('shop.orders.store', compact('customers'));
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'customer_name' => 'required|string|max:255',
-            'customer_phone' => 'required|string|max:100',
-            'items' => 'required|array|min:1',
-            'items.*.product_id' => 'required|exists:products,id',
-            'items.*.quantity' => 'required|integer|min:1',
-            'delivery_address' => 'nullable|string',
-            'delivery_date' => 'nullable|date',
-        ]);
-
-        DB::transaction(function () use ($request) {
-            $order = Order::create([
-                'customer_name' => $request->customer_name,
-                'customer_phone' => $request->customer_phone,
-                'delivery_address' => $request->delivery_address,
-                'delivery_date' => $request->delivery_date ? Carbon::parse($request->delivery_date) : null,
-                'status' => 'pending',
-                'total' => 0,
-            ]);
-
-            $total = 0;
-            foreach ($request->items as $item) {
-                $product = Product::findOrFail($item['product_id']);
-                $qty = (int) $item['quantity'];
-
-                // decrease stock
-                if ($product->quantity < $qty) {
-                    throw new \Exception("Insufficient stock for {$product->name}");
-                }
-                $product->quantity -= $qty;
-                $product->save();
-
-                $lineTotal = $product->price * $qty;
-                $order->orderItems()->create([
-                    'product_id' => $product->id,
-                    'quantity' => $qty,
-                    'price' => $product->price,
-                    'line_total' => $lineTotal,
-                ]);
-                $total += $lineTotal;
+            if (!$response->successful()) {
+                return response()->json([
+                    'error' => 'Failed to fetch token'
+                ], 500);
             }
 
-            $order->total = $total;
-            $order->save();
-        });
+            return response()->json($response->json())
+                ->withHeaders([
+                    'Set-Cookie' => $response->header('Set-Cookie')
+                ]);
 
-        return redirect()->route('orders.index')->with('success', 'Order placed successfully.');
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
-    
+    /**
+     * CREATE ORDER
+     */
+    public function createOrder(Request $request)
+    {
+        try {
+            $csrfToken = $request->header('X-CSRFToken');
+
+            if (!$csrfToken) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'CSRF token missing'
+                ], 400);
+            }
+
+            $data = $request->validate([
+                'cart_id' => 'required|string',
+                'customer_name' => 'required|string',
+                'phone_number' => 'required|string'
+            ]);
+
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'X-CSRFToken' => $csrfToken,
+                'X-Session-ID' => Session::getId()
+            ])->post($this->djangoBase . '/api/ecommerce/place-order/', $data);
+
+            return response()->json($response->json(), $response->status());
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

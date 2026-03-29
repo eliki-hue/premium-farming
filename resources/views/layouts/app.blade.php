@@ -778,6 +778,7 @@
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('reviews') ? 'active' : '' }}" href="/reviews">Reviews</a>
                     </li>
+                    
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('orders') ? 'active' : '' }}" href="/orders">My Orders</a>
                     </li>

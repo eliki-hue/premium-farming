@@ -66,6 +66,10 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+         cart' => \App\Http\Middleware\EnsureCartExists::class,
+        'guest.cart' => \App\Http\Middleware\EnsureGuestCart::class,
+
+
 
         // ✅ Your custom middleware
         'sync-django' => \App\Http\Middleware\SyncDjangoAuth::class,
