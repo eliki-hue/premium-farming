@@ -177,7 +177,6 @@ Route::get('/checkout/details', function() {
 })->name('checkout.details');
 
 // Step 3: Submit Customer Details (API)
-Route::post('/api/ecommerce/place-order/', [OrderController::class, 'createOrder'])->name('api.place.order');
 
 // Step 4: Order Confirmation Page
 Route::get('/order/confirmation/{orderId}', [OrderController::class, 'showConfirmation'])->name('order.confirmation');
@@ -200,7 +199,6 @@ Route::post('/api/mpesa/callback', [PaymentController::class, 'paymentCallback']
 Route::get('/order/confirmed/{orderId}', [OrderController::class, 'finalConfirmation'])->name('order.confirmed');
 // CSRF token endpoint
 Route::get('/ecommerce/csrf-token/', [OrderController::class, 'getCsrfToken']);
-Route::post('/ecommerce/place-order/', [OrderController::class, 'createOrder']);
 
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/shop/products', [ShopController::class, 'products'])->name('shop.products');
