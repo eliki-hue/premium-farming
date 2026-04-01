@@ -12,6 +12,13 @@ class CheckoutProxyController extends Controller
 
     public function __construct()
     {
+async function getCSRF() {
+    const res = await fetch('/api/ecommerce/csrf-token', {
+        credentials: 'same-origin'  // same-origin, not include
+    });
+    const data = await res.json();
+    csrfToken = data.csrf_token;
+}
         $this->djangoBase = config('services.django_api.url');
     }
 
