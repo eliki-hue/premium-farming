@@ -32,7 +32,6 @@
                     <!-- FORM -->
                     <form id="orderForm" class="d-none">
                         <input type="hidden" id="cartId">
-                        <input type="hidden" id="csrfToken">
 
                         <div id="orderSummary" class="alert alert-info d-none">
                             <div id="summaryContent"></div>
@@ -49,7 +48,7 @@
                         </div>
 
                         <button class="btn btn-success w-100" id="submitBtn">
-                            Place Order
+                            Checkout via Watsup
                         </button>
                     </form>
 
@@ -60,60 +59,78 @@
 </div>
 
 <script>
-let cartDataGlobal = null;
-let csrfToken = null;
+// ✅ No BASE_URL — all calls go to Laravel which proxies to Django server-side
+// ✅ No CORS issues — browser only ever talks to http://127.0.0.1:8000
+const LARAVEL_CSRF = "{{ csrf_token() }}";
+let djangoCsrfToken = null;
 
-document.addEventListener('DOMContentLoaded', function() {
-    loadCSRFToken();
+document.addEventListener('DOMContentLoaded', function () {
+    init();
 });
 
 async function init() {
     try {
-        await getCSRF();   // 🔥 FIRST GET TOKEN
-        await loadCart();  // 🔥 THEN LOAD CART
+        await getDjangoCsrf();  // GET /ecommerce/csrf-token/  → OrderController
+        await loadCart();       // GET /cart/load              → CartController
     } catch (e) {
         console.error(e);
-        showError("Initialization failed");
+        showError("Initialization failed: " + e.message);
     }
 }
 
 /**
- * GET CSRF TOKEN (FROM LARAVEL → DJANGO)
+ * GET DJANGO CSRF TOKEN via Laravel proxy
+ * Route: GET /ecommerce/csrf-token/ → OrderController@getCsrfToken
  */
-async function getCSRF() {
-    const res = await fetch(`${BASE_URL}/api/ecommerce/csrf-token/`, {
+async function getDjangoCsrf() {
+    const res = await fetch('/ecommerce/csrf-token/', {
         method: 'GET',
-        credentials: 'include'
+        credentials: 'same-origin',
+        headers: {
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': LARAVEL_CSRF
+        }
     });
 
     const text = await res.text();
-    console.log("CSRF RAW:", text);
+    console.log("Django CSRF RAW:", text);
 
     let data;
     try {
         data = JSON.parse(text);
     } catch {
-        throw new Error("Backend not returning JSON (wrong URL or CORS)");
+        throw new Error("CSRF endpoint not returning JSON");
     }
 
-    csrfToken = data.csrf_token;
+    djangoCsrfToken = data.csrfToken;
 
-    if (!csrfToken) {
-        throw new Error("CSRF token missing");
+
+    if (!djangoCsrfToken) {
+        throw new Error("Django CSRF token missing from response");
     }
 
-    console.log("CSRF OK:", csrfToken);
+    console.log("Django CSRF OK:", djangoCsrfToken);
 }
 
 /**
- * LOAD CART
+ * LOAD CART via Laravel proxy
+ * Route: GET /cart/load → CartController@load
  */
 async function loadCart() {
-    const res = await fetch(`${BASE_URL}/api/cart/`, {
-        credentials: 'include'
+    const res = await fetch('/cart/load', {
+        credentials: 'same-origin',
+        headers: {
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': LARAVEL_CSRF
+        }
     });
 
+    if (!res.ok) {
+        throw new Error(`Cart load failed: ${res.status}`);
+    }
+
     const data = await res.json();
+    console.log("Cart data:", data);
 
     if (!data.items || data.items.length === 0) {
         hideLoading();
@@ -122,31 +139,28 @@ async function loadCart() {
     }
 
     document.getElementById('cartId').value = data.id;
-
     renderSummary(data);
-
     hideLoading();
     document.getElementById('orderForm').classList.remove('d-none');
 }
 
 /**
- * SUMMARY
+ * RENDER ORDER SUMMARY
  */
 function renderSummary(data) {
     let html = "";
     data.items.forEach(item => {
-        const total = (item.price || item.unit_price) * item.quantity;
-        html += `• ${item.name || item.product_name} x ${item.quantity} = KES ${total}<br>`;
+        const unitPrice = item.price || item.unit_price || 0;
+        const total = unitPrice * item.quantity;
+        const name = item.name || item.product_name || 'Item';
+        html += `• ${name} x ${item.quantity} = KES ${total}<br>`;
     });
-    html += `<hr>Total: KES ${data.subtotal}`;
+    html += `<hr><strong>Total: KES ${data.subtotal}</strong>`;
     document.getElementById('summaryContent').innerHTML = html;
     document.getElementById('orderSummary').classList.remove('d-none');
 }
 
 
-/**
- * SUBMIT ORDER
- */
 document.getElementById('orderForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -155,29 +169,30 @@ document.getElementById('orderForm').addEventListener('submit', async (e) => {
     btn.innerText = "Processing...";
 
     const payload = {
-        cart_id: document.getElementById('cartId').value,
+        cart_id:       document.getElementById('cartId').value,
         customer_name: document.getElementById('customerName').value,
-        phone_number: document.getElementById('phoneNumber').value
+        phone_number:  document.getElementById('phoneNumber').value,
+        django_csrf:   djangoCsrfToken  
     };
 
     try {
-        const res = await fetch(`${BASE_URL}/api/ecommerce/place-order/`, {
+        const res = await fetch('/api/ecommerce/place-order/', {
             method: 'POST',
-            credentials: 'include',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': LARAVEL_CSRF  
             },
             body: JSON.stringify(payload)
         });
 
         const text = await res.text();
-        console.log("ORDER RAW:", text);
+        console.log("Order response RAW:", text);
 
         const data = JSON.parse(text);
 
         if (data.success) {
-            alert("Order created!");
             window.location.href = '/order/confirmation/' + data.order_id;
         } else {
             throw new Error(data.message || "Order failed");
@@ -190,7 +205,6 @@ document.getElementById('orderForm').addEventListener('submit', async (e) => {
         btn.innerText = "Place Order";
     }
 });
-
 
 /**
  * HELPERS
