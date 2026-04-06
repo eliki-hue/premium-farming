@@ -1,56 +1,102 @@
-{{-- resources/views/checkout/details.blade.php --}}
 @extends('layouts.app')
 
-@section('title', 'Customer Details')
+@section('title', 'Complete Your Order | Premium Farming Feeds')
 
 @section('content')
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">Complete Your Order</h4>
+
+            {{-- ─── Back link ─── --}}
+            <a href="{{ route('cart.view') }}" class="d-inline-flex align-items-center gap-2 text-success mb-4 text-decoration-none fw-semibold">
+                <i class="bi bi-arrow-left"></i> Back to Cart
+            </a>
+
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                <div class="card-header py-3" style="background: linear-gradient(135deg, #2a6e3f, #3a8e5c);">
+                    <h4 class="mb-0 text-white fw-semibold">
+                        <i class="bi bi-bag-check me-2"></i>Complete Your Order
+                    </h4>
                 </div>
-                <div class="card-body">
 
-                    <!-- LOADING -->
-                    <div id="loadingCart" class="text-center py-3">
-                        <div class="spinner-border text-success"></div>
-                        <p class="mt-2 text-muted">Loading your cart...</p>
+                <div class="card-body p-4">
+� *New Order — Premium Farming Feeds*
+
+� *Order Ref:* ORD-20260406-0003
+� *Name:* MARY NJOKI
+� *Phone:* +254741243693
+
+*Items:*
+  • cow salt × 1 — KES 1.00
+
+� *Total: KES 1.00*
+
+Kindly confirm my order. Thank you! �
+                    {{-- ─── Loading ─── --}}
+                    <div id="loadingCart" class="text-center py-4">
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Loading…</span>
+                        </div>
+                        <p class="mt-2 text-muted small">Loading your cart…</p>
                     </div>
 
-                    <!-- EMPTY -->
-                    <div id="cartEmpty" class="alert alert-warning d-none">
-                        Your cart is empty. <a href="/products">Add items</a>.
+                    {{-- ─── Empty ─── --}}
+                    <div id="cartEmpty" class="alert alert-warning d-none rounded-3">
+                        <i class="bi bi-cart-x me-2"></i>
+                        Your cart is empty. <a href="{{ route('products') }}" class="alert-link">Browse products</a>.
                     </div>
 
-                    <!-- ERROR -->
-                    <div id="cartError" class="alert alert-danger d-none">
-                        Something went wrong. Refresh page.
+                    {{-- ─── Error ─── --}}
+                    <div id="cartError" class="alert alert-danger d-none rounded-3">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <span id="cartErrorMsg">Something went wrong. Please refresh and try again.</span>
                     </div>
 
-                    <!-- FORM -->
-                    <form id="orderForm" class="d-none">
-                        <input type="hidden" id="cartId">
+                    {{-- ─── Order Form ─── --}}
+                    <div id="orderForm" class="d-none">
 
-                        <div id="orderSummary" class="alert alert-info d-none">
-                            <div id="summaryContent"></div>
+                        {{-- Cart summary --}}
+                        <div class="mb-4 p-3 rounded-3" style="background:#f8fdf9; border:1px solid #c8e6c9;">
+                            <h6 class="fw-semibold mb-3" style="color:#2a6e3f;">
+                                <i class="bi bi-receipt me-2"></i>Order Summary
+                            </h6>
+                            <div id="summaryContent" class="small text-muted"></div>
+                            <hr class="my-2">
+                            <div class="d-flex justify-content-between fw-bold">
+                                <span>Total</span>
+                                <span id="summaryTotal" style="color:#2a6e3f;"></span>
+                            </div>
                         </div>
 
+                        {{-- Customer details --}}
                         <div class="mb-3">
-                            <label>Full Name</label>
-                            <input type="text" id="customerName" class="form-control" required>
+                            <label class="form-label fw-semibold">Full Name</label>
+                            <input type="text" id="customerName" class="form-control rounded-3"
+                                placeholder="e.g. Jane Wanjiku" required>
+                            <div class="invalid-feedback">Please enter your full name.</div>
                         </div>
 
-                        <div class="mb-3">
-                            <label>Phone</label>
-                            <input type="text" id="phoneNumber" class="form-control" required>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Phone Number</label>
+                            <div class="input-group">
+                                <span class="input-group-text rounded-start-3 bg-light text-muted">
+                                    <i class="bi bi-phone me-1"></i>+254
+                                </span>
+                                <input type="tel" id="phoneNumber" class="form-control rounded-end-3"
+                                    placeholder="7XX XXX XXX" required>
+                            </div>
+                            <div class="form-text">We'll contact you on this number to confirm your order.</div>
                         </div>
 
-                        <button class="btn btn-success w-100" id="submitBtn">
-                            Checkout via Watsup
+                        <button class="btn btn-success w-100 py-3 rounded-3 fw-semibold fs-5"
+                            id="submitBtn" onclick="submitOrder()">
+                            <i class="bi bi-whatsapp me-2"></i>Place Order via WhatsApp
                         </button>
-                    </form>
+
+                        <p class="text-center text-muted small mt-3 mb-0">
+                            <i class="bi bi-lock-fill me-1"></i>Your details are only used to process this order.
+                        </p>
+                    </div>
 
                 </div>
             </div>
@@ -58,166 +104,295 @@
     </div>
 </div>
 
+{{-- ─── Full-screen redirect overlay ─── --}}
+<div id="redirectOverlay" style="
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+">
+    <div style="background:#fff; border-radius:20px; padding:36px 32px; text-align:center; max-width:380px; margin:0 16px;">
+        <div style="font-size:3.5rem; margin-bottom:12px;">✅</div>
+        <h5 style="color:#2a6e3f; font-weight:700; margin-bottom:8px;">Order Placed!</h5>
+        <p style="color:#555; font-size:0.95rem; margin-bottom:6px;">
+            Opening WhatsApp to confirm your order…
+        </p>
+        <p style="color:#888; font-size:0.85rem; margin-bottom:24px;">
+            If it doesn't open, <a id="waFallbackLink" href="#" target="_blank"
+                style="color:#2a6e3f; font-weight:600;">tap here</a>.
+        </p>
+        <a href="{{ route('products') }}"
+            style="display:inline-block; background:linear-gradient(135deg,#2a6e3f,#3a8e5c);
+                   color:#fff; padding:11px 30px; border-radius:10px;
+                   text-decoration:none; font-weight:600; font-size:0.95rem;">
+            Continue Shopping
+        </a>
+    </div>
+</div>
+
+<style>
+    .form-control:focus {
+        border-color: #2a6e3f;
+        box-shadow: 0 0 0 0.2rem rgba(42, 110, 63, 0.15);
+    }
+    .input-group-text { border-color: #dee2e6; }
+    .btn-success {
+        background: linear-gradient(135deg, #2a6e3f, #3a8e5c);
+        border: none;
+        transition: all 0.3s ease;
+        letter-spacing: 0.3px;
+    }
+    .btn-success:hover:not(:disabled) {
+        background: linear-gradient(135deg, #1e5a2f, #2a6e3f);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(42, 110, 63, 0.3);
+    }
+    .btn-success:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        padding: 5px 0;
+        border-bottom: 1px dashed #e0f2e9;
+    }
+    .summary-item:last-child { border-bottom: none; }
+</style>
+
 <script>
-// ✅ No BASE_URL — all calls go to Laravel which proxies to Django server-side
-// ✅ No CORS issues — browser only ever talks to http://127.0.0.1:8000
-const LARAVEL_CSRF = "{{ csrf_token() }}";
-let djangoCsrfToken = null;
+(function () {
+    'use strict';
 
-document.addEventListener('DOMContentLoaded', function () {
-    init();
-});
+    const WHATSAPP_NUMBER = '254741243693';
 
-async function init() {
-    try {
-        await getDjangoCsrf();  // GET /ecommerce/csrf-token/  → OrderController
-        await loadCart();       // GET /cart/load              → CartController
-    } catch (e) {
-        console.error(e);
-        showError("Initialization failed: " + e.message);
-    }
-}
+    const CSRF = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-/**
- * GET DJANGO CSRF TOKEN via Laravel proxy
- * Route: GET /ecommerce/csrf-token/ → OrderController@getCsrfToken
- */
-async function getDjangoCsrf() {
-    const res = await fetch('/ecommerce/csrf-token/', {
-        method: 'GET',
-        credentials: 'same-origin',
-        headers: {
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': LARAVEL_CSRF
+    let cartData        = null;
+    let djangoCsrfToken = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        const [, cartResult] = await Promise.allSettled([
+            loadDjangoCsrf(),
+            loadCart(),
+        ]);
+        if (cartResult.status === 'rejected') {
+            showError(cartResult.reason?.message || 'Could not load your cart. Please refresh.');
         }
     });
 
-    const text = await res.text();
-    console.log("Django CSRF RAW:", text);
-
-    let data;
-    try {
-        data = JSON.parse(text);
-    } catch {
-        throw new Error("CSRF endpoint not returning JSON");
-    }
-
-    djangoCsrfToken = data.csrfToken;
-
-
-    if (!djangoCsrfToken) {
-        throw new Error("Django CSRF token missing from response");
-    }
-
-    console.log("Django CSRF OK:", djangoCsrfToken);
-}
-
-/**
- * LOAD CART via Laravel proxy
- * Route: GET /cart/load → CartController@load
- */
-async function loadCart() {
-    const res = await fetch('/cart/load', {
-        credentials: 'same-origin',
-        headers: {
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': LARAVEL_CSRF
+    async function loadDjangoCsrf() {
+        try {
+            const res = await fetch('/ecommerce/csrf-token/', {
+                credentials: 'same-origin',
+                headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': CSRF },
+            });
+            if (!res.ok) return;
+            const data      = await res.json();
+            djangoCsrfToken = data.csrfToken ?? null;
+        } catch (err) {
+            console.warn('[loadDjangoCsrf] Non-fatal:', err.message);
         }
-    });
-
-    if (!res.ok) {
-        throw new Error(`Cart load failed: ${res.status}`);
     }
 
-    const data = await res.json();
-    console.log("Cart data:", data);
-
-    if (!data.items || data.items.length === 0) {
-        hideLoading();
-        document.getElementById('cartEmpty').classList.remove('d-none');
-        return;
-    }
-
-    document.getElementById('cartId').value = data.id;
-    renderSummary(data);
-    hideLoading();
-    document.getElementById('orderForm').classList.remove('d-none');
-}
-
-/**
- * RENDER ORDER SUMMARY
- */
-function renderSummary(data) {
-    let html = "";
-    data.items.forEach(item => {
-        const unitPrice = item.price || item.unit_price || 0;
-        const total = unitPrice * item.quantity;
-        const name = item.name || item.product_name || 'Item';
-        html += `• ${name} x ${item.quantity} = KES ${total}<br>`;
-    });
-    html += `<hr><strong>Total: KES ${data.subtotal}</strong>`;
-    document.getElementById('summaryContent').innerHTML = html;
-    document.getElementById('orderSummary').classList.remove('d-none');
-}
-
-
-document.getElementById('orderForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.innerText = "Processing...";
-
-    const payload = {
-        cart_id:       document.getElementById('cartId').value,
-        customer_name: document.getElementById('customerName').value,
-        phone_number:  document.getElementById('phoneNumber').value,
-        django_csrf:   djangoCsrfToken  
-    };
-
-    try {
-        const res = await fetch('/api/ecommerce/place-order/', {
-            method: 'POST',
+    // ─── Load Cart ─────────────────────────────────────────────────────────────
+    async function loadCart() {
+        const res = await fetch('/proxy/cart', {
             credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': LARAVEL_CSRF  
-            },
-            body: JSON.stringify(payload)
+            headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': CSRF },
         });
 
-        const text = await res.text();
-        console.log("Order response RAW:", text);
-
-        const data = JSON.parse(text);
-
-        if (data.success) {
-            window.location.href = '/order/confirmation/' + data.order_id;
-        } else {
-            throw new Error(data.message || "Order failed");
+        if (!res.ok) {
+            throw new Error(`Could not load cart (HTTP ${res.status}). Please go back and try again.`);
         }
 
-    } catch (err) {
-        console.error(err);
-        alert(err.message);
-        btn.disabled = false;
-        btn.innerText = "Place Order";
+        const data = await res.json();
+        hideLoading();
+
+        if (!data.items || data.items.length === 0) {
+            document.getElementById('cartEmpty').classList.remove('d-none');
+            return;
+        }
+
+        cartData = data;
+        if (data.id) sessionStorage.setItem('cart_id', String(data.id));
+
+        renderSummary(data);
+        document.getElementById('orderForm').classList.remove('d-none');
     }
-});
 
-/**
- * HELPERS
- */
-function hideLoading() {
-    document.getElementById('loadingCart').classList.add('d-none');
-}
+    // ─── Render Summary ────────────────────────────────────────────────────────
+    function renderSummary(data) {
+        let html = '';
+        data.items.forEach(item => {
+            const unitPrice = Number(item.unit_price ?? item.price ?? 0);
+            const lineTotal = (unitPrice * item.quantity).toLocaleString('en-KE', {
+                minimumFractionDigits: 2, maximumFractionDigits: 2,
+            });
+            html += `
+                <div class="summary-item">
+                    <span>${escapeHtml(item.product_name ?? item.name ?? 'Item')}
+                        <span class="text-muted">× ${item.quantity}</span>
+                    </span>
+                    <span class="fw-semibold">KES ${lineTotal}</span>
+                </div>`;
+        });
+        document.getElementById('summaryContent').innerHTML = html;
+        document.getElementById('summaryTotal').textContent = 'KES ' +
+            Number(data.subtotal).toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
 
-function showError(msg) {
-    hideLoading();
-    const el = document.getElementById('cartError');
-    el.innerText = msg;
-    el.classList.remove('d-none');
-}
+    // ─── Place Order ───────────────────────────────────────────────────────────
+    window.submitOrder = async function () {
+        const nameInput  = document.getElementById('customerName');
+        const phoneInput = document.getElementById('phoneNumber');
+        const btn        = document.getElementById('submitBtn');
+
+        const name  = nameInput.value.trim();
+        const phone = phoneInput.value.trim();
+
+        let hasError = false;
+        [{ el: nameInput, val: name }, { el: phoneInput, val: phone }].forEach(({ el, val }) => {
+            if (!val) { el.classList.add('is-invalid'); hasError = true; }
+            else        el.classList.remove('is-invalid');
+        });
+        if (hasError) return;
+
+        if (!cartData?.items?.length) {
+            showError('Your cart appears to be empty. Please go back and add items.');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Placing order…';
+
+        const payload = {
+            cart_id:       String(cartData.id ?? sessionStorage.getItem('cart_id') ?? ''),
+            customer_name: name,
+            phone_number:  phone,
+        };
+        if (djangoCsrfToken) payload.django_csrf = djangoCsrfToken;
+
+        try {
+            const res = await fetch('/api/ecommerce/place-order/', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept':       'application/json',
+                    'X-CSRF-TOKEN': CSRF,
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const orderResponse = await res.json();
+            console.log('[submitOrder] Order response:', orderResponse);
+
+            
+            const orderObj   = orderResponse.order ?? {};
+            const orderNumber = orderObj.order_number ?? orderResponse.order_number ?? null;
+
+            if (!res.ok || !orderNumber) {
+                if (orderResponse.errors) {
+                    const msgs = Object.entries(orderResponse.errors)
+                        .map(([f, e]) => `${f}: ${[].concat(e).join(', ')}`)
+                        .join(' | ');
+                    throw new Error(msgs);
+                }
+                throw new Error(
+                    orderResponse.message || orderResponse.detail || 'Order could not be placed. Please try again.'
+                );
+            }
+
+            // ── Order confirmed ✓ — build WhatsApp URL from order response ─────
+            const waUrl = buildWhatsAppUrl({
+                orderNumber,
+                name:     orderResponse.customer?.name  ?? name,
+                phone:    orderResponse.customer?.phone ?? phone,
+                items:    orderResponse.items           ?? cartData.items,
+                total:    orderObj.total                ?? orderObj.subtotal ?? cartData.subtotal,
+            });
+
+            openWhatsApp(waUrl);
+
+        } catch (err) {
+            console.error('[submitOrder]', err);
+            showError(err.message);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-whatsapp me-2"></i>Place Order via WhatsApp';
+        }
+    };
+
+    // ─── Build WhatsApp message from ORDER data ────────────────────────────────
+    function buildWhatsAppUrl({ orderNumber, name, phone, items, total }) {
+        const lines = [
+            `🛒 *New Order — Premium Farming Feeds*`,
+            ``,
+            `📋 *Order Ref:* ${orderNumber}`,
+            `👤 *Name:* ${name}`,
+            `📞 *Phone:* +254${phone}`,
+            ``,
+            `*Items:*`,
+        ];
+
+        (items ?? []).forEach(item => {
+            const unitPrice = Number(item.unit_price ?? item.price ?? 0);
+            const qty       = item.quantity ?? item.qty ?? 1;
+            const lineTotal = (unitPrice * qty).toLocaleString('en-KE', {
+                minimumFractionDigits: 2, maximumFractionDigits: 2,
+            });
+            lines.push(`  • ${escapeHtml(item.product_name ?? item.name ?? 'Item')} × ${qty} — KES ${lineTotal}`);
+        });
+
+        lines.push(
+            ``,
+            `💰 *Total: KES ${Number(total).toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}*`,
+            ``,
+            `Kindly confirm my order. Thank you! 🙏`
+        );
+
+        return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join('\n'))}`;
+    }
+
+    function openWhatsApp(waUrl) {
+        document.getElementById('waFallbackLink').href = waUrl;
+
+        document.getElementById('redirectOverlay').style.display = 'flex';
+
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        if (isMobile) {
+            window.location.href = waUrl;
+        } else {
+            window.open(waUrl, '_blank');
+        }
+    }
+
+    // ─── Helpers ───────────────────────────────────────────────────────────────
+    function hideLoading() {
+        document.getElementById('loadingCart').classList.add('d-none');
+    }
+
+    function showError(msg) {
+        hideLoading();
+        document.getElementById('orderForm').classList.add('d-none');
+        document.getElementById('cartEmpty').classList.add('d-none');
+        document.getElementById('cartErrorMsg').textContent = msg;
+        document.getElementById('cartError').classList.remove('d-none');
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+                  .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    ['customerName', 'phoneNumber'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', function () {
+            this.classList.remove('is-invalid');
+        });
+    });
+
+})();
 </script>
+
 @endsection

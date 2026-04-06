@@ -73,8 +73,8 @@
     </div>
 @endif
 
-{{-- ─────────────────────────── PRODUCTS SECTION (IMPROVED) ─────────────────────────── --}}
-<section class="products-section py-5">
+{{-- ─────────────────────────── PRODUCTS SECTION ─────────────────────────── --}}
+<section class="products-section py-5" id="products">
     <div class="container">
         <div class="text-center mb-5">
             <h2 class="section-title">Our Products</h2>
@@ -118,22 +118,16 @@
                                     <span class="amount">{{ number_format($product['unit_price'] ?? $product['price'] ?? $product['selling_price'] ?? 0, 2) }}</span>
                                 </div>
                                 
+                                {{-- ── Add to Cart: available to ALL users (guests + logged-in) ── --}}
                                 <div class="product-actions">
-                                    @if(session('django_token'))
-                                        <button
-                                            class="btn-add-to-cart"
-                                            data-product-id="{{ $product['id'] }}"
-                                            data-product-name="{{ $product['name'] ?? $product['product_name'] }}"
-                                            onclick="addItem(event, {{ $product['id'] }}, 1)">
-                                            <i class="bi bi-cart-plus"></i>
-                                            <span>Add to Cart</span>
-                                        </button>
-                                    @else
-                                        <a href="{{ route('login') }}?product_id={{ $product['id'] }}" class="btn-login-purchase">
-                                            <i class="bi bi-lock"></i>
-                                            <span>Login to Purchase</span>
-                                        </a>
-                                    @endif
+                                    <button
+                                        class="btn-add-to-cart"
+                                        data-product-id="{{ $product['id'] }}"
+                                        data-product-name="{{ $product['name'] ?? $product['product_name'] }}"
+                                        onclick="addItem(event, {{ $product['id'] }}, 1)">
+                                        <i class="bi bi-cart-plus"></i>
+                                        <span>Add to Cart</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -141,15 +135,13 @@
                 @endforeach
             </div>
 
-            {{-- View Cart button --}}
-            @if(session('django_token'))
-                <div class="text-center mt-5">
-                    <a href="{{ route('cart.view') }}" class="btn-view-cart">
-                        <i class="bi bi-cart3 me-2"></i> View Cart
-                        <i class="bi bi-arrow-right ms-2"></i>
-                    </a>
-                </div>
-            @endif
+            {{-- View Cart button — visible to all users --}}
+            <div class="text-center mt-5">
+                <a href="{{ route('cart.view') }}" class="btn-view-cart">
+                    <i class="bi bi-cart3 me-2"></i> View Cart
+                    <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
         @else
             <div class="empty-state">
                 <div class="empty-state-icon">
@@ -170,7 +162,6 @@
 
 
 <style>
-    /* ── Hero with Horizontal Slideshow ── */
     .hero-section-products {
         position: relative;
         min-height: 60vh;
@@ -202,7 +193,7 @@
         display: flex;
         height: 100%;
         width: fit-content;
-        animation: scrollSlides 60s linear infinite; /* Even slower for smoother effect */
+        animation: scrollSlides 60s linear infinite;
     }
 
     .slide {
@@ -217,9 +208,9 @@
     .slide-image {
         width: 100%;
         height: 100%;
-        object-fit: cover; /* Changed back to cover for better appearance */
+        object-fit: cover;
         display: block;
-        filter: brightness(0.9); /* Slightly brighten images */
+        filter: brightness(0.9);
     }
 
     @keyframes scrollSlides {
@@ -277,7 +268,7 @@
         }
     }
 
-    /* ── Improved Products Section Styling ── */
+    /* ── Products Section ── */
     .products-section {
         background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
     }
@@ -327,7 +318,7 @@
 
     .product-image-wrapper {
         position: relative;
-        padding-top: 100%; /* 1:1 Aspect Ratio */
+        padding-top: 100%;
         overflow: hidden;
         background: #f8f9fa;
     }
@@ -475,38 +466,20 @@
         box-shadow: 0 5px 15px rgba(42, 110, 63, 0.2);
     }
 
-    .btn-add-to-cart:hover {
+    .btn-add-to-cart:hover:not(:disabled) {
         background: linear-gradient(135deg, #1e5a2f, #2a6e3f);
         transform: translateY(-2px);
         box-shadow: 0 8px 20px rgba(42, 110, 63, 0.3);
     }
 
+    .btn-add-to-cart:disabled {
+        opacity: 0.75;
+        cursor: not-allowed;
+        transform: none;
+    }
+
     .btn-add-to-cart i {
         font-size: 1.2rem;
-    }
-
-    .btn-login-purchase {
-        width: 100%;
-        background: white;
-        color: #2a6e3f;
-        border: 2px solid #2a6e3f;
-        padding: 12px;
-        border-radius: 12px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-    .btn-login-purchase:hover {
-        background: #2a6e3f;
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(42, 110, 63, 0.2);
     }
 
     .btn-view-cart {
@@ -524,6 +497,7 @@
     }
 
     .btn-view-cart:hover {
+        color: white;
         transform: translateY(-3px);
         box-shadow: 0 15px 35px rgba(26, 110, 181, 0.4);
     }
@@ -589,7 +563,7 @@
         }
     }
 
-    /* Responsive adjustments */
+    /* ── Responsive ── */
     @media (max-width: 768px) {
         .hero-section-products {
             min-height: 50vh;
@@ -634,12 +608,12 @@
 
     const CSRF = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
+   
     window.addItem = async function (event, productId, quantity) {
         const btn = event.currentTarget;
         const originalHTML = btn.innerHTML;
         const productName = btn.getAttribute('data-product-name') || 'Item';
 
-        // Show loading state
         btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Adding...';
         btn.disabled = true;
 
@@ -659,51 +633,55 @@
             const data = await response.json();
 
             if (response.ok) {
-                // Success
                 btn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Added!';
                 btn.style.background = 'linear-gradient(135deg, #28a745, #34ce57)';
                 
                 showToast(`${productName} added to cart!`, 'success');
+                updateCartBadge(data.total_items ?? null);
 
-                if (typeof window.refreshCart === 'function') {
-                    window.refreshCart();
-                }
-
-                // Reset button
                 setTimeout(() => {
                     btn.innerHTML = '<i class="bi bi-cart-plus"></i><span>Add to Cart</span>';
-                    btn.style.background = 'linear-gradient(135deg, #2a6e3f, #3a8e5c)';
+                    btn.style.background = '';
                     btn.disabled = false;
                 }, 2500);
 
             } else if (response.status === 401) {
-                showToast('Session expired. Redirecting to login...', 'error');
-                setTimeout(() => {
-                    window.location.href = `/login?product_id=${productId}`;
-                }, 1200);
+                
+                showToast('Could not add to cart. Please refresh and try again.', 'error');
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+
             } else {
                 const msg = data?.detail || data?.message || 'Could not add to cart. Try again.';
                 showToast(msg, 'error');
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;
             }
+
         } catch (err) {
-            console.error('[addItem] Error:', err);
+            console.error('[addItem] Network error:', err);
             showToast('Network error. Please check your connection.', 'error');
             btn.innerHTML = originalHTML;
             btn.disabled = false;
         }
     };
 
-    window.quickView = function(productId) {
-        // Implement quick view functionality if needed
+    function updateCartBadge(count) {
+        if (count === null || count === undefined) return;
+        const badge = document.querySelector('.cart-badge');
+        if (!badge) return;
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'flex' : 'none';
+    }
+
+    window.quickView = function (productId) {
         console.log('Quick view for product:', productId);
     };
 
     function showToast(message, type = 'success') {
         const toast = document.getElementById('cart-toast');
-        const msg = document.getElementById('cart-toast-msg');
-        const icon = toast.querySelector('i');
+        const msg   = document.getElementById('cart-toast-msg');
+        const icon  = toast.querySelector('i');
 
         msg.textContent = message;
         toast.className = 'cart-toast' + (type === 'error' ? ' error' : '');
@@ -725,7 +703,6 @@
         }, 3000);
     }
 
-    // Auto-dismiss alerts
     setTimeout(function () {
         document.querySelectorAll('.alert').forEach(function (alert) {
             const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
