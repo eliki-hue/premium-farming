@@ -34,9 +34,7 @@ class CartController extends Controller
         return view('shop.cart');
     }
 
-    /* =========================
-       LOAD CART
-    ========================== */
+   
     public function load()
     {
         try {

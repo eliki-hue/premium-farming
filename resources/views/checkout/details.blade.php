@@ -308,7 +308,6 @@
         }
     };
 
-    // ─── Build WhatsApp message from ORDER data ────────────────────────────────
     function buildWhatsAppUrl({ orderNumber, name, phone, items, total }) {
         const fmt = (n) => Number(n).toLocaleString('en-KE', {
             minimumFractionDigits: 2, maximumFractionDigits: 2,
@@ -355,7 +354,6 @@
         }
     }
 
-    // ─── Helpers ───────────────────────────────────────────────────────────────
     function hideLoading() {
         document.getElementById('loadingCart').classList.add('d-none');
     }
