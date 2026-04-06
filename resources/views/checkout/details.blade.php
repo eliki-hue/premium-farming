@@ -20,18 +20,7 @@
                 </div>
 
                 <div class="card-body p-4">
-� *New Order — Premium Farming Feeds*
 
-� *Order Ref:* ORD-20260406-0003
-� *Name:* MARY NJOKI
-� *Phone:* +254741243693
-
-*Items:*
-  • cow salt × 1 — KES 1.00
-
-� *Total: KES 1.00*
-
-Kindly confirm my order. Thank you! �
                     {{-- ─── Loading ─── --}}
                     <div id="loadingCart" class="text-center py-4">
                         <div class="spinner-border text-success" role="status">
@@ -195,7 +184,6 @@ Kindly confirm my order. Thank you! �
         }
     }
 
-    // ─── Load Cart ─────────────────────────────────────────────────────────────
     async function loadCart() {
         const res = await fetch('/proxy/cart', {
             credentials: 'same-origin',
@@ -221,7 +209,6 @@ Kindly confirm my order. Thank you! �
         document.getElementById('orderForm').classList.remove('d-none');
     }
 
-    // ─── Render Summary ────────────────────────────────────────────────────────
     function renderSummary(data) {
         let html = '';
         data.items.forEach(item => {
@@ -242,7 +229,6 @@ Kindly confirm my order. Thank you! �
             Number(data.subtotal).toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    // ─── Place Order ───────────────────────────────────────────────────────────
     window.submitOrder = async function () {
         const nameInput  = document.getElementById('customerName');
         const phoneInput = document.getElementById('phoneNumber');
@@ -288,7 +274,7 @@ Kindly confirm my order. Thank you! �
             const orderResponse = await res.json();
             console.log('[submitOrder] Order response:', orderResponse);
 
-            
+         
             const orderObj   = orderResponse.order ?? {};
             const orderNumber = orderObj.order_number ?? orderResponse.order_number ?? null;
 
@@ -304,7 +290,6 @@ Kindly confirm my order. Thank you! �
                 );
             }
 
-            // ── Order confirmed ✓ — build WhatsApp URL from order response ─────
             const waUrl = buildWhatsAppUrl({
                 orderNumber,
                 name:     orderResponse.customer?.name  ?? name,
@@ -325,33 +310,36 @@ Kindly confirm my order. Thank you! �
 
     // ─── Build WhatsApp message from ORDER data ────────────────────────────────
     function buildWhatsAppUrl({ orderNumber, name, phone, items, total }) {
-        const lines = [
-            `🛒 *New Order — Premium Farming Feeds*`,
-            ``,
-            `📋 *Order Ref:* ${orderNumber}`,
-            `👤 *Name:* ${name}`,
-            `📞 *Phone:* +254${phone}`,
-            ``,
-            `*Items:*`,
-        ];
-
-        (items ?? []).forEach(item => {
-            const unitPrice = Number(item.unit_price ?? item.price ?? 0);
-            const qty       = item.quantity ?? item.qty ?? 1;
-            const lineTotal = (unitPrice * qty).toLocaleString('en-KE', {
-                minimumFractionDigits: 2, maximumFractionDigits: 2,
-            });
-            lines.push(`  • ${escapeHtml(item.product_name ?? item.name ?? 'Item')} × ${qty} — KES ${lineTotal}`);
+        const fmt = (n) => Number(n).toLocaleString('en-KE', {
+            minimumFractionDigits: 2, maximumFractionDigits: 2,
         });
 
-        lines.push(
-            ``,
-            `💰 *Total: KES ${Number(total).toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}*`,
-            ``,
-            `Kindly confirm my order. Thank you! 🙏`
-        );
+        const itemLines = (items ?? []).map(item => {
+            const unitPrice = Number(item.unit_price ?? item.price ?? 0);
+            const qty       = item.quantity ?? item.qty ?? 1;
+            return `• ${item.product_name ?? item.name ?? 'Item'} × ${qty} — KES ${fmt(unitPrice * qty)}`;
+        }).join('\n');
 
-        return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join('\n'))}`;
+        const message = [
+            `Hello,`,
+            ``,
+            `I would like to place a new order with the following details:`,
+            ``,
+            `Order Reference: ${orderNumber}`,
+            `Name: ${name}`,
+            `Phone: +254${phone}`,
+            ``,
+            `Items Ordered:`,
+            itemLines,
+            ``,
+            `Total Amount: KES ${fmt(total)}`,
+            ``,
+            `Kindly confirm receipt of this order.`,
+            ``,
+            `Thank you.`,
+        ].join('\n');
+
+        return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
     }
 
     function openWhatsApp(waUrl) {
