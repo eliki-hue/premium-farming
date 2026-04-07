@@ -12,19 +12,10 @@ class CheckoutProxyController extends Controller
 
     public function __construct()
     {
-async function getCSRF() {
-    const res = await fetch('/api/ecommerce/csrf-token', {
-        credentials: 'same-origin'  // same-origin, not include
-    });
-    const data = await res.json();
-    csrfToken = data.csrf_token;
-}
+        // ✅ ONLY PHP HERE
         $this->djangoBase = config('services.django_api.url');
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       getJwt() — reads JWT from Laravel session
-    ═══════════════════════════════════════════════════════════ */
     protected function getJwt(Request $request): string
     {
         $token = $request->session()->get('django_token');
@@ -32,9 +23,6 @@ async function getCSRF() {
         return $token;
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       refreshAccessToken() — silently refreshes expired JWT
-    ═══════════════════════════════════════════════════════════ */
     protected function refreshAccessToken(Request $request): ?string
     {
         $refreshToken = $request->session()->get('django_refresh');
@@ -57,9 +45,6 @@ async function getCSRF() {
         return null;
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       proxyRequest() — auto-retry on 401 with refreshed token
-    ═══════════════════════════════════════════════════════════ */
     protected function proxyRequest(Request $request, callable $makeRequest)
     {
         $response = $makeRequest($this->getJwt($request));
@@ -82,45 +67,43 @@ async function getCSRF() {
         return response()->json($retry->json(), $retry->status());
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       mpesa() — trigger M-Pesa STK Push
-       Laravel:  POST /proxy/checkout/mpesa
-       Django:   POST /api/ecommerce/checkout/mpesa/
-       Returns:  { checkout_request_id, order_id, message }
-    ═══════════════════════════════════════════════════════════ */
+    /**
+     * ✅ ADD THIS (FOR YOUR WHATSAPP FLOW)
+     */
+    public function placeOrder(Request $request)
+    {
+        $validated = $request->validate([
+            'cart_id' => 'required',
+            'customer_name' => 'required|string',
+            'phone_number' => 'required|string',
+        ]);
+
+        return $this->proxyRequest($request, function (string $token) use ($validated) {
+            return Http::withToken($token)
+                ->acceptJson()
+                ->post("{$this->djangoBase}/api/ecommerce/place-order/", [
+                    'cart_id' => $validated['cart_id'],
+                    'customer_name' => $validated['customer_name'],
+                    'phone_number' => $validated['phone_number'],
+                ]);
+        });
+    }
+
     public function mpesa(Request $request)
     {
         $validated = $request->validate([
             'mpesa_number'  => 'required|string',
-            'name'          => 'nullable|string',
-            'email'         => 'nullable|email',
-            'phone'         => 'nullable|string',
-            'address'       => 'nullable|string',
-            'county'        => 'nullable|string',
-            'town'          => 'nullable|string',
-            'delivery_type' => 'nullable|string',
         ]);
 
         return $this->proxyRequest($request, function (string $token) use ($validated) {
             return Http::withToken($token)
                 ->acceptJson()
                 ->post("{$this->djangoBase}/api/ecommerce/checkout/mpesa/", [
-                    'phone_number'  => $validated['mpesa_number'],
-                    'delivery_type' => $validated['delivery_type'] ?? 'farm_delivery',
-                    'address'       => $validated['address'] ?? '',
-                    'county'        => $validated['county'] ?? '',
-                    'town'          => $validated['town'] ?? '',
+                    'phone_number' => $validated['mpesa_number'],
                 ]);
         });
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       paymentStatus() — poll for M-Pesa payment confirmation
-       Laravel:  GET /proxy/checkout/status/{checkoutRequestId}
-       Django:   GET /api/ecommerce/confirm-payment/
-                     ?checkout_request_id={id}
-       Django returns: { status: "Paid" | "Pending" | "Failed" }
-    ═══════════════════════════════════════════════════════════ */
     public function paymentStatus(Request $request, string $checkoutRequestId)
     {
         return $this->proxyRequest($request, function (string $token) use ($checkoutRequestId) {
@@ -132,13 +115,6 @@ async function getCSRF() {
         });
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       orders() — fetch all orders for the logged-in user
-       Laravel:  GET /proxy/orders
-       Django:   GET /api/ecommerce/orders/
-       Returns:  [{ id, order_number, customer, branch,
-                    status, total, created_at }]
-    ═══════════════════════════════════════════════════════════ */
     public function orders(Request $request)
     {
         return $this->proxyRequest($request, function (string $token) {
@@ -148,14 +124,6 @@ async function getCSRF() {
         });
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       orderDetail() — fetch single order with its items
-       Laravel:  GET /proxy/orders/{id}        ← numeric Django PK
-       Django:   GET /api/ecommerce/orders/<id>/
-       Returns:  { id, order_number, customer, branch, status,
-                   total, created_at,
-                   items: [{ product, quantity, unit_price, subtotal }] }
-    ═══════════════════════════════════════════════════════════ */
     public function orderDetail(Request $request, string $id)
     {
         return $this->proxyRequest($request, function (string $token) use ($id) {

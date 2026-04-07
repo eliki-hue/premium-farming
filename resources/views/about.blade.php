@@ -6,7 +6,7 @@
 <style>
     /* Hero Section - Updated with new background */
     .about-hero {
-        background: url('/images/us6.png') center/cover;
+        background: url('/images/banner.jpeg') center/cover;
         background-attachment: fixed;
         padding: 18rem 0 5rem;
         background-color: rgb(250, 242, 242);

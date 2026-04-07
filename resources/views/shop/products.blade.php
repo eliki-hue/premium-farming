@@ -6,40 +6,13 @@
 
 {{-- ─────────────────────────── HERO WITH HORIZONTAL SLIDESHOW ─────────────────────────── --}}
 <section class="hero-section-products">
-    {{-- Image Slideshow Background --}}
-    <div class="hero-slideshow">
-        <div class="slideshow-container">
-            <div class="slides-track">
-                @php
-                    $images = [
-                        'images/swn.jpeg',
-                        'images/rbt.jpeg', 
-                        'images/pou.jpeg',
-                        'images/gt.jpeg',
-                        'images/dry.jpeg',
-                        'images/dg.jpeg'
-                    ];
-                @endphp
-                
-                {{-- Original images --}}
-                @foreach($images as $image)
-                    <div class="slide">
-                        <img src="{{ asset($image) }}" alt="Slide" class="slide-image">
-                    </div>
-                @endforeach
-                
-                {{-- Duplicate images for seamless loop --}}
-                @foreach($images as $image)
-                    <div class="slide">
-                        <img src="{{ asset($image) }}" alt="Slide" class="slide-image">
-                    </div>
-                @endforeach
-            </div>
-        </div>
-        <div class="slideshow-overlay"></div>
+    {{-- Single Background Image Banner --}}
+    <div class="hero-banner">
+        <img src="{{ asset('images/banner1.jpeg') }}" alt="Premium Farming Feeds Banner" class="banner-image">
+        <div class="banner-overlay"></div>
     </div>
 
-    <div class="hero-overlay">
+    {{-- <div class="hero-overlay">
         <div class="container">
             <div class="row align-items-center min-vh-50">
                 <div class="col-lg-12 text-center">
@@ -51,7 +24,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 </section>
 
 {{-- ─────────────────────────── FLASH MESSAGES ─────────────────────────── --}}
@@ -172,7 +145,8 @@
         margin-top: 76px;
     }
 
-    .hero-slideshow {
+    /* Single Banner Background */
+    .hero-banner {
         position: absolute;
         top: 0;
         left: 0;
@@ -182,53 +156,20 @@
         overflow: hidden;
     }
 
-    .slideshow-container {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-    }
-
-    .slides-track {
-        display: flex;
-        height: 100%;
-        width: fit-content;
-        animation: scrollSlides 60s linear infinite;
-    }
-
-    .slide {
-        flex: 0 0 auto;
-        width: 25vw;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .slide-image {
+    .banner-image {
         width: 100%;
         height: 100%;
         object-fit: cover;
         display: block;
-        filter: brightness(0.9);
     }
 
-    @keyframes scrollSlides {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
-    }
-
-    .hero-slideshow:hover .slides-track {
-        animation-play-state: paused;
-    }
-
-    .slideshow-overlay {
+    .banner-overlay {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.4);
+        background: rgba(0, 0, 0, 0.45);
         z-index: 2;
         pointer-events: none;
     }
@@ -243,18 +184,27 @@
     .hero-title {
         font-size: 2.8rem;
         font-weight: 800;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
         animation: fadeInUp 1s ease;
     }
 
     .hero-subtitle {
         font-size: 1.2rem;
-        text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
         animation: fadeInUp 1s ease 0.2s both;
     }
 
     .hero-overlay .btn-success {
         animation: fadeInUp 1s ease 0.4s both;
+        background: linear-gradient(135deg, #2a6e3f, #3a8e5c);
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .hero-overlay .btn-success:hover {
+        background: linear-gradient(135deg, #1e5a2f, #2a6e3f);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }
 
     @keyframes fadeInUp {
@@ -577,7 +527,6 @@
         .section-title { font-size: 2rem; }
         .section-subtitle { font-size: 1rem; }
         
-        .slides-track { animation: scrollSlides 50s linear infinite; }
         .cart-toast {
             bottom: 15px;
             right: 15px;
@@ -594,8 +543,6 @@
         .section-title { font-size: 1.8rem; }
         .product-title { font-size: 1rem; }
         .product-price .amount { font-size: 1.3rem; }
-        
-        .slides-track { animation: scrollSlides 40s linear infinite; }
     }
 </style>
 

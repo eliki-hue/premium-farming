@@ -5,12 +5,11 @@
 
 @section('content')
 <div class="min-h-screen pt-24">
-    <!-- Contact Hero - Updated with new background -->
+    <!-- Contact Hero - Clean image background only (no color overlay) -->
     <section class="contact-hero" style="
-        background: linear-gradient(rgba(42, 110, 63, 0.85), rgba(30, 82, 46, 0.85)),
-                    url('/images/contacts.png') center/cover;
+        background: url('/images/conta.jpeg') center/cover no-repeat;
         background-attachment: fixed;
-        padding: 6rem 0 4rem;
+        padding: 20rem 0 8rem;
         color: white;
         position: relative;
         overflow: hidden;
@@ -19,22 +18,24 @@
             background: linear-gradient(45deg, transparent 50%, rgba(212, 175, 55, 0.1) 50%);
         "></div>
         
-        <div class="container position-relative z-1">
+        {{-- <div class="container position-relative z-1">
             <div class="row justify-content-center">
                 <div class="col-lg-8 text-center">
                     <h1 class="display-4 fw-bold mb-3 animate__animated animate__fadeInDown" 
-                        style="font-family: 'Cormorant Garamond', serif;">
+                        style="font-family: 'Cormorant Garamond', serif; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
                         Contact Premium Farming Feeds
                     </h1>
                     <p class="lead mb-0 animate__animated animate__fadeInUp animate__delay-1s" 
-                       style="font-size: 1.2rem;">
+                       style="font-size: 1.2rem; text-shadow: 0 1px 5px rgba(0,0,0,0.5);">
                         Expert agricultural support and premium quality feeds
                     </p>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </section>
 
+
+    
     <!-- Contact Information -->
     <section class="py-5 bg-light" id="contactInfo">
         <div class="container">
@@ -512,6 +513,25 @@
     .contact-hero {
         position: relative;
         overflow: hidden;
+    }
+    
+    /* Optional: Add a very subtle dark overlay for better text readability if needed */
+    /* Remove this block if you don't want any overlay */
+    .contact-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        pointer-events: none;
+    }
+    
+    .contact-hero .container {
+        position: relative;
+        z-index: 2;
     }
     
     .premium-card {

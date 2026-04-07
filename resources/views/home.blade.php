@@ -7,40 +7,33 @@
 <style>
     /* CSS Variables for Green Theme */
     :root {
-        /* Green Color Palette */
-        --primary-green: #2a6e3f;        /* Deep Forest Green */
-        --secondary-green: #38a169;      /* Vibrant Green */
-        --light-green: #68d391;          /* Light Mint Green */
-        --dark-green: #22543d;           /* Dark Forest Green */
-        --accent-green: #10b981;         /* Accent Emerald Green */
-        --navy-green: #1e422e;           /* Dark Navy Green */
-        --gold-green: #d4af37;           /* Accent Gold */
-        --text-light: #4a5568;           /* Gray for text */
-        --off-white: #f7fafc;            /* Light background */
-        --card-bg: #ffffff;              /* White for cards */
+        --primary-green: #2a6e3f;
+        --secondary-green: #38a169;
+        --light-green: #68d391;
+        --dark-green: #22543d;
+        --accent-green: #10b981;
+        --navy-green: #1e422e;
+        --gold-green: #d4af37;
+        --text-light: #4a5568;
+        --off-white: #f7fafc;
+        --card-bg: #ffffff;
         
-        /* Gradients */
         --gradient-green: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
         --gradient-dark-green: linear-gradient(135deg, var(--navy-green), var(--primary-green));
-        --gradient-light-green: linear-gradient(135deg, var(--light-green), var(--accent-green));
         
-        /* Shadows */
         --shadow-soft: 0 4px 20px rgba(42, 110, 63, 0.1);
         --shadow-medium: 0 8px 30px rgba(42, 110, 63, 0.15);
-        --shadow-dark: 0 10px 40px rgba(30, 66, 46, 0.2);
     }
 
-    /* Hero Section - Image Background */
+    /* Hero Section */
     .hero-section {
         min-height: 90vh;
         position: relative;
         display: flex;
         align-items: center;
         overflow: hidden;
-        color: white;
     }
     
-    /* Image Background - Enhanced for clarity */
     .hero-image-bg {
         position: absolute;
         top: 0;
@@ -48,158 +41,44 @@
         width: 100%;
         height: 100%;
         z-index: 0;
-        background-image: url('{{ asset('images/fl.jpeg') }}');
+        background-image: url('{{ asset('images/Website Banner.png') }}');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        /* Enhanced image quality */
         image-rendering: -webkit-optimize-contrast;
         image-rendering: crisp-edges;
-        -ms-interpolation-mode: bicubic;
-        /* Slight enhancement for better visibility */
         filter: contrast(1.05) brightness(1.05) saturate(1.1);
-        -webkit-filter: contrast(1.05) brightness(1.05) saturate(1.1);
-        /* Add a very subtle gradient overlay to improve text readability */
     }
     
-    /* Subtle dark overlay for better text contrast - very light */
     .hero-image-overlay {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.2); /* Very subtle dark overlay */
+        background: rgba(0, 0, 0, 0.15);
         z-index: 1;
         pointer-events: none;
     }
     
-    .hero-section::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
-        z-index: 2;
-        pointer-events: none;
-    }
-    
+    /* Hero Content - Button at Bottom Left */
     .hero-content {
         position: relative;
         z-index: 3;
-        padding: 2rem 0;
-        /* Enhanced text shadow for better readability */
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    }
-    
-    .hero-logo-container {
-        text-align: center;
-        margin-bottom: 2.5rem;
-    }
-
-    .hero-logo-wrapper {
-        position: relative;
-        display: inline-block;
-    }
-    
-    .hero-logo {
-        width: 140px;
-        height: 140px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 4px solid var(--gold-green);
-        padding: 4px;
-        background: linear-gradient(135deg, #ffffff, #f8f9fa);
-        box-shadow: 
-            0 10px 30px rgba(0, 0, 0, 0.3),
-            0 0 0 10px rgba(212, 175, 55, 0.1),
-            0 0 0 20px rgba(212, 175, 55, 0.05);
-        position: relative;
-        z-index: 2;
-        animation: logoPulse 2s ease-in-out infinite;
-        /* Enhance logo quality */
-        image-rendering: -webkit-optimize-contrast;
-        image-rendering: crisp-edges;
-    }
-
-    .hero-logo-glow {
-        position: absolute;
-        top: -15px;
-        left: -15px;
-        right: -15px;
-        bottom: -15px;
-        border-radius: 50%;
-        background: radial-gradient(circle at center, rgba(212, 175, 55, 0.4), transparent 70%);
-        z-index: 1;
-        animation: glowPulse 3s ease-in-out infinite;
-    }
-
-    @keyframes logoPulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.02); }
-    }
-
-    @keyframes glowPulse {
-        0%, 100% { opacity: 0.4; transform: scale(1); }
-        50% { opacity: 0.6; transform: scale(1.05); }
-    }
-    
-    .hero-company-name {
-        font-family: 'Cormorant Garamond', serif;
-        font-weight: 700;
-        font-size: 3.5rem;
-        color: white;
-        letter-spacing: 1px;
-        line-height: 1.1;
-        margin-bottom: 0.5rem;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
-    }
-    
-    .hero-tagline {
-        font-family: 'Inter', sans-serif;
-        font-weight: 300;
-        font-size: 1.2rem;
-        color: white;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        position: relative;
-        padding-bottom: 1rem;
-        margin-bottom: 2rem;
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
-    }
-
-    .hero-tagline::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80px;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, var(--gold-green), transparent);
-    }
-    
-    .hero-subtitle {
-        font-family: 'Inter', sans-serif;
-        font-size: 1.2rem;
-        color: white;
-        max-width: 700px;
-        margin: 2rem auto 3rem;
-        font-weight: 300;
-        line-height: 1.7;
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+        height: 90vh;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-start;
+        padding-bottom: 5rem;
     }
     
     .hero-buttons {
         display: flex;
         gap: 1rem;
         flex-wrap: wrap;
-        justify-content: center;
+        justify-content: flex-start;
     }
-
-    /* Button Styles */
+    
     .btn-premium {
         background: var(--gradient-green);
         border: none;
@@ -208,30 +87,17 @@
         font-weight: 600;
         padding: 0.75rem 2rem;
         border-radius: 50px;
-        text-shadow: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
 
     .btn-premium:hover {
         background: linear-gradient(135deg, var(--dark-green), var(--primary-green));
         color: white;
         transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(42, 110, 63, 0.3);
+        box-shadow: 0 10px 25px rgba(42, 110, 63, 0.4);
     }
 
-    .btn-outline-green {
-        border: 2px solid var(--primary-green);
-        color: var(--primary-green);
-        background: transparent;
-        transition: all 0.3s ease;
-        font-weight: 600;
-    }
-
-    .btn-outline-green:hover {
-        background: var(--primary-green);
-        color: white;
-    }
-
-    /* Stats Section - All Green */
+    /* Stats Section */
     .stats-section {
         background: var(--off-white);
         padding: 5rem 0;
@@ -373,79 +239,6 @@
         transform: scale(1.2);
     }
     
-    /* Testimonials */
-    .testimonial-card {
-        background: var(--card-bg);
-        border-radius: 8px;
-        padding: 2.5rem;
-        box-shadow: var(--shadow-soft);
-        position: relative;
-        border: 1px solid rgba(42, 110, 63, 0.08);
-        height: 100%;
-        transition: all 0.3s ease;
-    }
-
-    .testimonial-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-medium);
-    }
-    
-    .testimonial-card::before {
-        content: '"';
-        position: absolute;
-        top: 20px;
-        left: 25px;
-        font-size: 5rem;
-        color: var(--light-green);
-        opacity: 0.1;
-        font-family: 'Cormorant Garamond', serif;
-        line-height: 1;
-    }
-    
-    .testimonial-text {
-        font-style: italic;
-        color: var(--text-light);
-        margin-bottom: 2rem;
-        position: relative;
-        z-index: 1;
-        line-height: 1.7;
-        font-size: 1.05rem;
-    }
-    
-    .client-info {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        border-top: 1px solid rgba(42, 110, 63, 0.08);
-        padding-top: 1.5rem;
-    }
-    
-    .client-avatar {
-        width: 55px;
-        height: 55px;
-        border-radius: 50%;
-        background: var(--gradient-green);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
-        font-size: 1.2rem;
-        flex-shrink: 0;
-    }
-    
-    .client-name {
-        font-family: 'Cormorant Garamond', serif;
-        font-weight: 600;
-        color: var(--navy-green);
-        margin-bottom: 0.2rem;
-    }
-    
-    .client-role {
-        color: var(--text-light);
-        font-size: 0.9rem;
-    }
-    
     /* CTA Section */
     .cta-section {
         background: var(--gradient-dark-green);
@@ -537,7 +330,6 @@
         z-index: 2;
     }
 
-    /* Text colors */
     .text-green {
         color: var(--primary-green) !important;
     }
@@ -546,92 +338,32 @@
         color: var(--navy-green) !important;
     }
 
-    /* Progress bars */
-    .progress-bar-green {
-        background-color: var(--primary-green) !important;
-    }
-
-    .progress-bar-light-green {
-        background-color: var(--light-green) !important;
-    }
-
-    /* Badge styles */
-    .badge-green {
-        background-color: rgba(56, 161, 105, 0.1) !important;
-        color: var(--primary-green) !important;
-        border: 1px solid rgba(56, 161, 105, 0.2);
-    }
-
-    /* Border colors */
     .border-green {
         border-color: rgba(42, 110, 63, 0.1) !important;
     }
 
-    /* Responsive */
-    @media (max-width: 992px) {
-        .hero-logo {
-            width: 120px;
-            height: 120px;
-        }
-        
-        .hero-company-name {
-            font-size: 2.8rem;
-        }
-    }
-    
     @media (max-width: 768px) {
-        .hero-logo {
-            width: 100px;
-            height: 100px;
-            border-width: 3px;
-        }
-        
-        .hero-company-name {
-            font-size: 2.2rem;
-        }
-        
-        .hero-tagline {
-            font-size: 1rem;
-        }
-        
-        .hero-subtitle {
-            font-size: 1.1rem;
-            margin: 1.5rem auto 2.5rem;
-        }
-        
-        .cta-title {
-            font-size: 2rem;
-        }
-        
-        .hero-buttons {
-            flex-direction: column;
-            align-items: center;
+        .hero-content {
+            padding-bottom: 3rem;
         }
         
         .hero-buttons .btn {
             width: 100%;
-            max-width: 300px;
-            margin-bottom: 1rem;
+            max-width: 280px;
         }
         
         .stat-number {
             font-size: 3rem;
         }
+        
+        .cta-title {
+            font-size: 2rem;
+        }
     }
     
     @media (max-width: 576px) {
-        .hero-logo {
-            width: 90px;
-            height: 90px;
-        }
-        
-        .hero-company-name {
-            font-size: 1.8rem;
-        }
-        
-        .hero-tagline {
-            font-size: 0.9rem;
-            letter-spacing: 1px;
+        .hero-content {
+            padding-bottom: 2rem;
         }
         
         .stat-number {
@@ -650,32 +382,15 @@
 @endpush
 
 @section('content')
-    <!-- Hero Section with Image Background -->
+    <!-- Hero Section - Button at Bottom Left -->
     <section class="hero-section">
-        <!-- Image Background - Using fl.jpeg with enhanced clarity -->
         <div class="hero-image-bg"></div>
-        <!-- Very subtle dark overlay for better text contrast -->
         <div class="hero-image-overlay"></div>
         
         <div class="container">
             <div class="hero-content">
-                <div class="hero-logo-container animate__animated animate__fadeInDown">
-                    {{-- <div class="hero-logo-wrapper">
-                        <!-- Logo remains unchanged - still using logo.jpeg -->
-                        <img src="{{ asset('images/logo.jpeg') }}" alt="Premium Farming Feeds" class="hero-logo">
-                        <div class="hero-logo-glow"></div>
-                    </div>
-                    <h1 class="hero-company-name animate__animated animate__fadeInUp">Premium Farming Feeds</h1>
-                    <div class="hero-tagline animate__animated animate__fadeInUp animate__delay-1s">Quality Livestock Nutrition</div> --}}
-                </div>
-                
-                <p class="hero-subtitle animate__animated animate__fadeInUp animate__delay-2s text-center">
-                    Scientifically formulated feeds that transform livestock productivity. 
-                    Trusted by thousands of farmers across Kenya for superior quality and proven results.
-                </p>
-                
-                <div class="hero-buttons animate__animated animate__fadeInUp animate__delay-3s">
-                    <a href="{{ route('shop.index') }}" class="btn btn-premium btn-lg">
+                <div class="hero-buttons animate__animated animate__fadeInUp">
+                    <a href="{{ route('shop.products') }}" class="btn btn-premium btn-lg">
                         <i class="bi bi-cart-plus me-2"></i>
                         Browse Products
                     </a>
@@ -751,7 +466,7 @@
         </div>
     </section>
 
-    <!-- Stats Section - All Green Version -->
+    <!-- Stats Section -->
     <section class="stats-section">
         <div class="container">
             <div class="section-title text-center mb-5">
@@ -780,17 +495,16 @@
                 @endforeach
             </div>
             
-            <!-- Trust Indicators -->
             <div class="row mt-5 pt-5">
                 <div class="col-12">
                     <div class="text-center">
                         <h4 class="mb-4 text-dark-green">Why Farmers Trust Us</h4>
                         <div class="row g-3 justify-content-center">
                             @foreach([
-                                ['icon' => 'shield-check', 'title' => 'Premium Quality', 'desc' => 'Guaranteed', 'color' => 'success'],
-                                ['icon' => 'truck', 'title' => 'Reliable Delivery', 'desc' => 'On-time service', 'color' => 'primary'],
-                                ['icon' => 'cash-coin', 'title' => 'Competitive Prices', 'desc' => 'Best value', 'color' => 'warning'],
-                                ['icon' => 'award', 'title' => 'Expert Advice', 'desc' => 'Professional support', 'color' => 'danger'],
+                                ['icon' => 'shield-check', 'title' => 'Premium Quality', 'desc' => 'Guaranteed'],
+                                ['icon' => 'truck', 'title' => 'Reliable Delivery', 'desc' => 'On-time service'],
+                                ['icon' => 'cash-coin', 'title' => 'Competitive Prices', 'desc' => 'Best value'],
+                                ['icon' => 'award', 'title' => 'Expert Advice', 'desc' => 'Professional support'],
                             ] as $trust)
                             <div class="col-lg-3 col-md-6">
                                 <div class="border rounded p-4 bg-light border-green">
@@ -833,18 +547,14 @@
 
 @push('scripts')
 <script>
-    // Additional animations for the home page
     document.addEventListener('DOMContentLoaded', function() {
-        // Counter animation for stats
         const statNumbers = document.querySelectorAll('.stat-number');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const target = entry.target;
                     const text = target.textContent;
-                    // Check if it's a percentage or regular number
                     if (text.includes('/')) {
-                        // For ratings like 4.8/5
                         const parts = text.split('/');
                         const value = parseFloat(parts[0]);
                         const total = parts[1];
@@ -860,7 +570,6 @@
                             }
                         }, 30);
                     } else if (text.includes('%')) {
-                        // For percentages
                         const value = parseInt(text);
                         let current = 0;
                         const increment = value / 30;
@@ -874,7 +583,6 @@
                             }
                         }, 30);
                     } else {
-                        // For regular numbers
                         const finalValue = parseInt(text);
                         let currentValue = 0;
                         const increment = finalValue / 30;
