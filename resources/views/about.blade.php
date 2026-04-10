@@ -6,7 +6,7 @@
 <style>
     /* Hero Section - Updated with new background */
     .about-hero {
-        background: url('/images/banner.jpeg') center/cover;
+        background: url('/images/abt1.jpeg') center/cover;
         background-attachment: fixed;
         padding: 18rem 0 5rem;
         background-color: rgb(250, 242, 242);
@@ -924,14 +924,15 @@
 <!-- Hero Section - Updated with new background -->
 <section class="about-hero">
     <div class="container">
-        <h1>Premium Farming Feeds</h1>
-        <p style= "font- ">
+        {{-- <h1>Premium Farming Feeds</h1> --}}
+        {{-- <p style= "font- ">
             Since 2020, we've been providing quality animal feeds to farmers across Kenya. 
             Our commitment to excellence and customer satisfaction has made us the trusted choice 
             for livestock nutrition.
-        </p>
+        </p> --}}
     </div>
 </section>
+
 
 <!-- Vision & Mission Section -->
 <section class="vision-mission-section">
@@ -1061,18 +1062,19 @@
 
         <div class="story-content">
             <div class="story-image">
-                <img src="{{ asset('images/onl.jpeg') }}" alt="Growth & Expansion" 
+                <img src="{{ asset('images/abt2.jpeg') }}" alt="Growth & Expansion" 
                      onerror="this.src='https://images.unsplash.com/photo-1574943320219-553eb213f72d?q=80&w=2000'">
             </div>
             <div class="story-text">
                 <h2>Growth & Expansion</h2>
                 <p>
                     Through consistent quality and excellent customer service, we expanded to three 
-                    branches across Kiambu County. Today, we serve thousands of farmers from small-scale 
-                    homesteads to large commercial farms.
+                    branches across Kiambu County, and later added a fully stocked agrovet — so farmers 
+                    can access quality feeds, animal health products, and expert advice all under one roof. 
+                    Today, we serve thousands of farmers from small-scale homesteads to large commercial farms.
                 </p>
                 <p>
-                    Our commitment to quality has remained unchanged - every bag of feed is produced 
+                    Our commitment to quality has remained unchanged — every bag of feed is produced 
                     with the same care and attention to detail as our very first batch.
                 </p>
             </div>
