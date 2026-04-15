@@ -239,6 +239,22 @@ Route::prefix('checkout')->group(function () {
     Route::post('/track', [CheckoutController::class, 'trackOrder'])->name('checkout.track.post');
 });
 
+Route::get('/api/ecommerce/pay/{orderId}', function ($orderId) {
+    return redirect()->route('payment.page', [
+        'orderId' => $orderId,
+        'token'   => request()->get('token', ''),
+    ]);
+});
+ 
+// ── Payment page (Blade) ──────────────────────────────────────
+Route::get('/payment/{orderId}',            [PaymentController::class, 'showPaymentPage'])->name('payment.page');
+ 
+// ── Payment API (called by the Blade page JS) ─────────────────
+Route::post('/api/ecommerce/pay/',          [PaymentController::class, 'initiatePayment'])->name('api.pay');
+Route::get('/api/payment/status/{orderId}', [PaymentController::class, 'checkPaymentStatus'])->name('payment.status');
+Route::post('/api/mpesa/callback',          [PaymentController::class, 'paymentCallback'])->name('mpesa.callback');
+ 
+
 /*
 |--------------------------------------------------------------------------
 | AUTHENTICATED ROUTES (Laravel auth — for admin/staff only)
