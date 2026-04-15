@@ -9,6 +9,7 @@ class VerifyCsrfToken extends Middleware
 
     protected $except = [
         'api/ecommerce/*',
+        'api/ecommerce/pay/',
         'api/ecommerce/csrf-token',
         'api/orders/*',
         // 'api/ecommerce/place-order',

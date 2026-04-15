@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -16,7 +15,6 @@ class PaymentController extends Controller
         $this->djangoBase = config('services.django_api.url', 'http://localhost:8000');
     }
 
-   
     public function showPaymentPage($orderId)
     {
         $token = request()->get('token', '');
@@ -25,10 +23,9 @@ class PaymentController extends Controller
             abort(403, 'Invalid payment link.');
         }
 
-        return view('payment.index', compact('orderId', 'token'));
+        return view('shop.payment', compact('orderId', 'token'));
     }
 
-   
     public function initiatePayment(Request $request)
     {
         try {
@@ -41,8 +38,9 @@ class PaymentController extends Controller
             $token   = $validated['token'];
 
             $response = Http::timeout(30)
+                ->withoutVerifying()
                 ->withHeaders(['Accept' => 'application/json'])
-                ->post($this->djangoBase . "/api/ecommerce/pay/{$orderId}/", [
+                ->post("{$this->djangoBase}/api/ecommerce/pay/{$orderId}/", [
                     'token' => $token,
                 ]);
 
@@ -73,15 +71,15 @@ class PaymentController extends Controller
         }
     }
 
-   
     public function checkPaymentStatus($orderId)
     {
         $token = request()->get('token', '');
 
         try {
             $response = Http::timeout(10)
+                ->withoutVerifying()
                 ->withHeaders(['Accept' => 'application/json'])
-                ->get($this->djangoBase . "/api/payment/status/{$orderId}/", [
+                ->get("{$this->djangoBase}/api/ecommerce/payment/status/{$orderId}/", [
                     'token' => $token,
                 ]);
 
@@ -97,13 +95,13 @@ class PaymentController extends Controller
         }
     }
 
-    
     public function paymentCallback(Request $request)
     {
         try {
             Http::timeout(10)
+                ->withoutVerifying()
                 ->withHeaders(['Accept' => 'application/json'])
-                ->post($this->djangoBase . '/api/mpesa/callback/', $request->all());
+                ->post("{$this->djangoBase}/api/mpesa/callback/", $request->all());
         } catch (\Exception $e) {
             Log::error('Payment callback error', ['error' => $e->getMessage()]);
         }

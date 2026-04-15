@@ -154,7 +154,7 @@
             <div class="status-sub" id="status-sub">Sending M-Pesa prompt to your number.</div>
         </div>
 
-        <button class="btn-retry" id="btn-retry" onclick="startPayment()">Try Again</button>
+        <button class="btn-retry" id="btn-retry" onclick="initiatePayment()">Try Again</button>
     </div>
 
     <div class="footer">Secured by M-Pesa &bull; Safaricom</div>
@@ -167,7 +167,7 @@
 
     let pollTimer    = null;
     let pollAttempts = 0;
-    const MAX_POLLS  = 24; 
+    const MAX_POLLS  = 24; // 24 × 5s = 2 minutes
 
     function setIcon(name) {
         ['sending', 'success', 'fail'].forEach(n =>
@@ -213,11 +213,12 @@
         }
     }
 
-    function startPayment() {
+    function initiatePayment() {
         clearInterval(pollTimer);
         pollAttempts = 0;
         setState('loading', 'Processing payment…', 'Sending M-Pesa prompt to your number.');
 
+        // Only order_id and token — phone is already on the order in Django
         fetch('/api/ecommerce/pay/', {
             method: 'POST',
             headers: {
@@ -258,25 +259,27 @@
                 return;
             }
 
-            fetch(`/api/payment/status/${ORDER_ID}?token=${TOKEN}`, {
+            fetch(`/api/ecommerce/payment/status/${ORDER_ID}?token=${TOKEN}`, {
                 headers: { 'Accept': 'application/json' }
             })
             .then(r => r.json())
             .then(data => {
-                if (data.payment_status === 'paid' || data.status === 'completed') {
+                if (data.status === 'PAID' || data.status === 'completed') {
                     clearInterval(pollTimer);
                     setState('success', 'Payment confirmed!', 'Thank you. Your order is on its way.');
-                } else if (data.payment_status === 'failed') {
+                } else if (data.status === 'failed') {
                     clearInterval(pollTimer);
                     setState('failed', 'Payment declined', data.message || 'The transaction was not completed.');
                 }
+                // any other status (pending) — keep polling silently
             })
-            .catch(() => {  });
+            .catch(() => { /* silent — keep polling */ });
 
         }, 5000);
     }
 
-    window.addEventListener('DOMContentLoaded', startPayment);
+    // Auto-trigger on page load
+    window.addEventListener('DOMContentLoaded', initiatePayment);
 </script>
 </body>
 </html>
