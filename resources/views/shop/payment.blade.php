@@ -75,8 +75,8 @@
         .ring-fill.spin { animation: spin-ring 1.4s linear infinite; }
         .ring-fill.done { animation: none; stroke-dashoffset: 0; transition: stroke-dashoffset 0.6s ease, stroke 0.3s; }
 
-        .ring-icon { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-        .ring-icon svg { display: none; }
+        .ring-icon { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+        .ring-icon svg { display: none; flex-shrink: 0; }
         .ring-icon svg.show { display: block; animation: pop-in 0.4s ease forwards; }
 
         .status-label {
@@ -137,8 +137,8 @@
                     <rect x="5" y="2" width="14" height="20" rx="2"/>
                     <line x1="12" y1="18" x2="12" y2="18.01"/>
                 </svg>
-                <svg id="icon-success" width="32" height="32" viewBox="0 0 24 24" fill="none"
-                     stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <svg id="icon-success" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                     stroke="#16a34a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="20 6 9 17 4 12"/>
                 </svg>
                 <svg id="icon-fail" width="26" height="26" viewBox="0 0 24 24" fill="none"
@@ -167,7 +167,7 @@
 
     let pollTimer    = null;
     let pollAttempts = 0;
-    const MAX_POLLS  = 24; // 24 × 5s = 2 minutes
+    const MAX_POLLS  = 8; // 8 × 5s = 40 seconds
 
     function setIcon(name) {
         ['sending', 'success', 'fail'].forEach(n =>
@@ -218,7 +218,6 @@
         pollAttempts = 0;
         setState('loading', 'Processing payment…', 'Sending M-Pesa prompt to your number.');
 
-        // Only order_id and token — phone is already on the order in Django
         fetch('/api/ecommerce/pay/', {
             method: 'POST',
             headers: {
@@ -264,14 +263,14 @@
             })
             .then(r => r.json())
             .then(data => {
-                if (data.status === 'PAID' || data.status === 'completed') {
+                if (data.status === 'PAID') {
                     clearInterval(pollTimer);
                     setState('success', 'Payment confirmed!', 'Thank you. Your order is on its way.');
-                } else if (data.status === 'failed') {
+                } else if (data.status === 'FAILED') {
                     clearInterval(pollTimer);
                     setState('failed', 'Payment declined', data.message || 'The transaction was not completed.');
                 }
-                // any other status (pending) — keep polling silently
+                // PENDING — keep polling silently
             })
             .catch(() => { /* silent — keep polling */ });
 
