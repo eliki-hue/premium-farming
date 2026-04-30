@@ -1,273 +1,392 @@
-@extends('layouts.shop')
+@extends('layouts.app')
 
-@section('title', 'Shopping Cart | Premium Farming Feeds')
+@section('title', 'Cart | Premium Farming Feeds')
 
 @section('content')
+<div class="container my-5">
 
-<div class="container py-5">
-    <!-- Page Header -->
-    <div class="mb-5">
-        <h1 class="fw-bold mb-3" style="font-size: 2.5rem; color: var(--primary-dark);">
-            <i class="bi bi-cart3 me-2"></i>
-            Your Shopping Cart
-        </h1>
-        <p class="text-muted">Review your items and proceed to checkout</p>
+    {{-- ─── Page Header ─── --}}
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+        <h3 class="mb-0 fw-bold" style="color:#2a6e3f;">
+            <i class="bi bi-cart3 me-2"></i>Your Cart
+        </h3>
+        <a href="{{ route('products') }}" class="btn btn-outline-success">
+            <i class="bi bi-arrow-left me-2"></i>Continue Shopping
+        </a>
     </div>
 
-    @if(count($cart) > 0)
-        <div class="row">
-            <!-- Cart Items -->
-            <div class="col-lg-8">
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-white border-0 py-4">
-                        <h5 class="mb-0 fw-bold">Cart Items ({{ count($cart) }})</h5>
-                    </div>
-                    <div class="card-body p-0">
-                        @foreach ($cart as $item)
-                        <div class="cart-item p-4 border-bottom">
-                            <div class="row align-items-center">
-                                <!-- Product Image -->
-                                <div class="col-md-2">
-                                    <div class="cart-image-container">
-                                        <img src="{{ asset($item['image']) }}" 
-                                             alt="{{ $item['name'] }}"
-                                             class="cart-product-image">
-                                    </div>
-                                </div>
-                                
-                                <!-- Product Details -->
-                                <div class="col-md-4">
-                                    <h6 class="fw-bold mb-1">{{ $item['name'] }}</h6>
-                                    <p class="text-muted small mb-2">Premium Quality Feed</p>
-                                    <div class="d-flex align-items-center">
-                                        <span class="badge bg-light text-dark me-2">
-                                            <i class="bi bi-check-circle text-success me-1"></i>
-                                            In Stock
-                                        </span>
-                                    </div>
-                                </div>
-                                
-                                <!-- Price -->
-                                <div class="col-md-2">
-                                    <div class="cart-price">
-                                        <span class="fw-bold" style="color: var(--primary-color);">
-                                            Ksh {{ number_format($item['price']) }}
-                                        </span>
-                                        <small class="text-muted d-block">per bag</small>
-                                    </div>
-                                </div>
-                                
-                                <!-- Quantity -->
-                                <div class="col-md-2">
-                                    <form action="{{ route('cart.update', $item['id']) }}" method="POST" class="quantity-form">
-                                        @csrf
-                                        <div class="input-group input-group-sm">
-                                            <button class="btn btn-outline-secondary" type="button" onclick="decreaseQuantity(this)">
-                                                <i class="bi bi-dash"></i>
-                                            </button>
-                                            <input type="number" 
-                                                   name="quantity"
-                                                   value="{{ $item['quantity'] }}"
-                                                   min="1" 
-                                                   max="100"
-                                                   class="form-control text-center quantity-input">
-                                            <button class="btn btn-outline-secondary" type="button" onclick="increaseQuantity(this)">
-                                                <i class="bi bi-plus"></i>
-                                            </button>
-                                        </div>
-                                        <button type="submit" class="btn btn-link btn-sm text-primary mt-1">
-                                            <small>Update</small>
-                                        </button>
-                                    </form>
-                                </div>
-                                
-                                <!-- Total & Remove -->
-                                <div class="col-md-2 text-end">
-                                    <div class="mb-2">
-                                        <strong class="cart-item-total">
-                                            Ksh {{ number_format($item['price'] * $item['quantity']) }}
-                                        </strong>
-                                    </div>
-                                    <form action="{{ route('cart.remove', $item['id']) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        <button type="submit" class="btn btn-link text-danger p-0">
-                                            <small><i class="bi bi-trash me-1"></i> Remove</small>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-                
-                <!-- Continue Shopping -->
-                <div class="mt-4">
-                    <a href="{{ route('shop.products') }}" class="btn btn-outline-primary">
-                        <i class="bi bi-arrow-left me-2"></i>
-                        Continue Shopping
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Order Summary -->
-            <div class="col-lg-4">
-                <div class="card shadow-sm border-0 sticky-top" style="top: 100px;">
-                    <div class="card-header bg-primary text-white py-3">
-                        <h5 class="mb-0">Order Summary</h5>
-                    </div>
-                    <div class="card-body">
-                        <!-- Subtotal -->
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Subtotal</span>
-                            <span>Ksh {{ number_format($subtotal ?? 0) }}</span>
-                        </div>
-                        
-                        <!-- Delivery -->
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Delivery</span>
-                            <span class="text-success">Free</span>
-                        </div>
-                        
-                        <!-- Tax -->
-                        <div class="d-flex justify-content-between mb-3">
-                            <span>Tax</span>
-                            <span>Included</span>
-                        </div>
-                        
-                        <hr>
-                        
-                        <!-- Grand Total -->
-                        <div class="d-flex justify-content-between mb-4">
-                            <span class="fw-bold">Grand Total</span>
-                            <span class="fw-bold fs-5" style="color: var(--primary-color);">
-                                Ksh {{ number_format($grandTotal) }}
-                            </span>
-                        </div>
-                        
-                        <!-- Checkout Button -->
-                        <a href="{{ route('checkout') }}" class="btn btn-primary w-100 py-3 fw-bold">
-                            <i class="bi bi-lock me-2"></i>
-                            Proceed to Checkout
-                        </a>
-                        
-                        <!-- Payment Methods -->
-                        <div class="mt-4 text-center">
-                            <p class="small text-muted mb-2">We accept:</p>
-                            <div class="d-flex justify-content-center gap-3">
-                                <span class="badge bg-light text-dark p-2">
-                                    <i class="bi bi-phone me-1"></i> M-Pesa
-                                </span>
-                                <span class="badge bg-light text-dark p-2">
-                                    <i class="bi bi-cash-coin me-1"></i> Cash
-                                </span>
-                                <span class="badge bg-light text-dark p-2">
-                                    <i class="bi bi-bank me-1"></i> Bank
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @else
-        <!-- Empty Cart -->
+    {{-- ─── Notification Alert ─── --}}
+    <div id="notificationAlert" class="alert d-none"></div>
+
+    {{-- ─── Cart Contents ─── --}}
+    <div id="cart" class="mt-3">
         <div class="text-center py-5">
-            <div class="empty-cart-icon mb-4">
-                <i class="bi bi-cart-x" style="font-size: 4rem; color: #ccc;"></i>
+            <div class="spinner-border text-success" role="status">
+                <span class="visually-hidden">Loading…</span>
             </div>
-            <h4 class="fw-bold mb-3">Your cart is empty</h4>
-            <p class="text-muted mb-4">Looks like you haven't added any products to your cart yet.</p>
-            <a href="{{ route('shop.products') }}" class="btn btn-primary btn-lg px-5">
-                <i class="bi bi-shop me-2"></i>
-                Start Shopping
-            </a>
+            <p class="text-muted mt-2">Loading your cart…</p>
         </div>
-    @endif
+    </div>
+
+    {{-- ─── Action Buttons (hidden until cart has items) ─── --}}
+    <div id="cartActions" class="mt-4 text-center d-none">
+        <button type="button" id="confirmOrderBtn" class="btn btn-success btn-lg px-5"
+                onclick="window.location.href='/checkout/details'">
+            <i class="bi bi-bag-check me-2"></i>Proceed to Checkout
+        </button>
+    </div>
 </div>
 
 <style>
-    /* Cart Item Styles */
-    .cart-item {
-        transition: background-color 0.3s ease;
+    .table th { background-color: #f8fdf9; color: #2a6e3f; font-weight: 600; }
+    .table td { vertical-align: middle; }
+
+    .btn-success {
+        background: linear-gradient(135deg, #2a6e3f, #3a8e5c);
+        border: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
     }
-    
-    .cart-item:hover {
-        background-color: rgba(42, 110, 63, 0.02);
+    .btn-success:hover:not(:disabled) {
+        background: linear-gradient(135deg, #1e5a2f, #2a6e3f);
+        transform: translateY(-1px);
     }
-    
-    .cart-image-container {
-        width: 80px;
-        height: 80px;
+    .btn-success:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+    .btn-outline-success {
+        border-color: #2a6e3f;
+        color: #2a6e3f;
+        font-weight: 600;
+    }
+    .btn-outline-success:hover {
+        background: #2a6e3f;
+        color: white;
+    }
+
+    .empty-cart-icon {
+        font-size: 4rem;
+        color: #c8e6c9;
+    }
+
+    .cart-toast {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: white;
+        border-left: 5px solid #25D366;
         border-radius: 10px;
-        overflow: hidden;
-        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        padding: 15px 25px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        z-index: 9999;
         display: flex;
         align-items: center;
+        gap: 10px;
+        animation: slideInRight 0.3s ease;
+        max-width: 400px;
+    }
+
+    @keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to   { transform: translateX(0);    opacity: 1; }
+    }
+
+    .qty-input {
+        width: 65px;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 4px 6px;
+        font-size: 0.95rem;
+    }
+
+    .qty-input:focus {
+        outline: none;
+        border-color: #2a6e3f;
+        box-shadow: 0 0 0 2px rgba(42,110,63,0.15);
+    }
+
+    .btn-qty {
+        width: 30px;
+        height: 30px;
+        display: inline-flex;
+        align-items: center;
         justify-content: center;
+        border-radius: 6px;
+        border: 1px solid #dee2e6;
+        background: #fff;
+        color: #495057;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        padding: 0;
+        font-size: 0.9rem;
     }
-    
-    .cart-product-image {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        padding: 10px;
+
+    .btn-qty:hover {
+        background: #f0f9f3;
+        border-color: #2a6e3f;
+        color: #2a6e3f;
     }
-    
-    .quantity-input {
-        max-width: 70px;
-        border-color: #ddd;
-    }
-    
-    .quantity-input:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(42, 110, 63, 0.25);
-    }
-    
-    .cart-item-total {
-        font-size: 1.1rem;
-        color: var(--primary-color);
-    }
-    
-    /* Empty Cart */
-    .empty-cart-icon {
-        opacity: 0.5;
-    }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-        .cart-item {
-            padding: 1rem !important;
-        }
-        
-        .cart-image-container {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 1rem;
+
+    @media (max-width: 576px) {
+        .cart-toast {
+            bottom: 15px;
+            right: 15px;
+            left: 15px;
+            max-width: 100%;
         }
     }
 </style>
 
 <script>
-    function increaseQuantity(button) {
-        const input = button.parentElement.querySelector('.quantity-input');
-        input.value = parseInt(input.value) + 1;
+(function () {
+    'use strict';
+
+    const CSRF = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+   
+    const API = {
+        load:   '/proxy/cart',
+        update: '/proxy/cart/update',
+        remove: '/proxy/cart/remove',
+    };
+
+    let cart = { id: null, items: [], subtotal: 0, total_items: 0 };
+
+    // ─── Toast ─────────────────────────────────────────────────────────────────
+    function showToast(message, type = 'success', duration = 4000) {
+        const existingToast = document.querySelector('.cart-toast');
+        if (existingToast) existingToast.remove();
+
+        const toast = document.createElement('div');
+        toast.className = 'cart-toast';
+
+        const icon = document.createElement('i');
+        icon.className = type === 'success' ? 'bi bi-check-circle-fill text-success'
+                       : type === 'error'   ? 'bi bi-exclamation-circle-fill text-danger'
+                       :                      'bi bi-info-circle-fill text-info';
+
+        const text = document.createElement('span');
+        text.textContent = message;
+
+        toast.appendChild(icon);
+        toast.appendChild(text);
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.transition = 'opacity 0.3s ease';
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, duration);
     }
-    
-    function decreaseQuantity(button) {
-        const input = button.parentElement.querySelector('.quantity-input');
-        if (parseInt(input.value) > 1) {
-            input.value = parseInt(input.value) - 1;
+
+    // ─── Load Cart ─────────────────────────────────────────────────────────────
+    async function loadCart() {
+        try {
+            const res = await fetch(API.load, {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': CSRF,
+                },
+                credentials: 'same-origin',
+            });
+
+            if (!res.ok) {
+                console.warn('[loadCart] Cart endpoint returned', res.status);
+                renderEmpty();
+                return;
+            }
+
+            cart = await res.json();
+
+            // Persist cart ID for checkout page
+            if (cart.id) {
+                sessionStorage.setItem('cart_id', cart.id);
+            }
+
+            renderCart();
+            updateCartBadge();
+
+        } catch (err) {
+            console.error('[loadCart] Network error:', err);
+            renderEmpty();
         }
     }
-    
-    // Auto-update quantity when changed
-    document.querySelectorAll('.quantity-input').forEach(input => {
-        input.addEventListener('change', function() {
-            if (this.value < 1) this.value = 1;
-            if (this.value > 100) this.value = 100;
+
+    // ─── Render: Empty State ───────────────────────────────────────────────────
+    function renderEmpty() {
+        document.getElementById('cart').innerHTML = `
+            <div class="text-center py-5">
+                <i class="bi bi-cart-x empty-cart-icon d-block mb-3"></i>
+                <h5 class="text-muted">Your cart is empty</h5>
+                <p class="text-muted mb-4">Browse our products and add items to get started.</p>
+                <a href="{{ route('products') }}" class="btn btn-success px-4">
+                    <i class="bi bi-bag me-2"></i>Shop Now
+                </a>
+            </div>
+        `;
+        document.getElementById('cartActions').classList.add('d-none');
+    }
+
+    // ─── Render: Cart Table ────────────────────────────────────────────────────
+    function renderCart() {
+        const container = document.getElementById('cart');
+
+        if (!cart.items || cart.items.length === 0) {
+            renderEmpty();
+            return;
+        }
+
+        let rows = '';
+        cart.items.forEach(item => {
+            const lineTotal = (item.unit_price * item.quantity).toLocaleString('en-KE', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            });
+            const unitPrice = Number(item.unit_price).toLocaleString('en-KE', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            });
+
+            rows += `
+                <tr>
+                    <td class="fw-semibold">${escapeHtml(item.product_name)}</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-1">
+                            <button class="btn-qty" onclick="changeQuantity(${item.product}, ${item.quantity - 1})" title="Decrease">
+                                <i class="bi bi-dash"></i>
+                            </button>
+                            <input
+                                type="number"
+                                min="1"
+                                value="${item.quantity}"
+                                class="qty-input"
+                                onchange="changeQuantity(${item.product}, parseInt(this.value) || 1)"
+                                onblur="if(!this.value || this.value < 1) this.value = 1">
+                            <button class="btn-qty" onclick="changeQuantity(${item.product}, ${item.quantity + 1})" title="Increase">
+                                <i class="bi bi-plus"></i>
+                            </button>
+                        </div>
+                    </td>
+                    <td>KES ${unitPrice}</td>
+                    <td class="fw-semibold text-success">KES ${lineTotal}</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-danger" onclick="removeItem(${item.product})" title="Remove">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
         });
+
+        const subtotal = Number(cart.subtotal).toLocaleString('en-KE', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        });
+
+        container.innerHTML = `
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th style="min-width:170px">Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Total</th>
+                            <th style="width:50px"></th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>
+            <div class="text-end mt-3">
+                <span class="text-muted me-2">Subtotal (${cart.total_items ?? cart.items.length} item${(cart.total_items ?? cart.items.length) !== 1 ? 's' : ''}):</span>
+                <span class="fs-4 fw-bold" style="color:#2a6e3f;">KES ${subtotal}</span>
+            </div>
+        `;
+
+        document.getElementById('cartActions').classList.remove('d-none');
+    }
+
+    // ─── Change Quantity ───────────────────────────────────────────────────────
+    window.changeQuantity = async function (productId, quantity) {
+        quantity = parseInt(quantity);
+
+        if (isNaN(quantity) || quantity <= 0) {
+            removeItem(productId);
+            return;
+        }
+
+        try {
+            await fetch(API.update, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': CSRF,
+                    'Accept': 'application/json',
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({ product: productId, quantity }),
+            });
+
+            await loadCart();
+
+        } catch (err) {
+            console.error('[changeQuantity]', err);
+            showToast('Could not update quantity. Try again.', 'error');
+        }
+    };
+
+    // ─── Remove Item ───────────────────────────────────────────────────────────
+    window.removeItem = async function (productId) {
+        try {
+            await fetch(API.remove, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': CSRF,
+                    'Accept': 'application/json',
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({ product: productId }),
+            });
+
+            await loadCart();
+            showToast('Item removed from cart.', 'success');
+
+        } catch (err) {
+            console.error('[removeItem]', err);
+            showToast('Could not remove item. Try again.', 'error');
+        }
+    };
+
+    // ─── Update navbar cart badge ──────────────────────────────────────────────
+    function updateCartBadge() {
+        const badge = document.querySelector('.cart-badge');
+        if (!badge) return;
+        const count = cart.total_items ?? (cart.items ? cart.items.length : 0);
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'flex' : 'none';
+    }
+
+    // ─── Escape HTML ───────────────────────────────────────────────────────────
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    // ─── Init ──────────────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+        loadCart();
     });
+
+})();
 </script>
 
 @endsection

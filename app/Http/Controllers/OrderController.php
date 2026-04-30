@@ -2,83 +2,136 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
-use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
+    protected string $djangoBase;
 
-  public function index()
-{
-    $orders = Order::with('customer')->latest()->get();
-    $customers = Customer::all();
-
-    return view('shop.orders', compact('orders', 'customers'));
-}
-
-
-    public function create()
+    public function __construct()
     {
-        $products = Product::where('quantity', '>', 0)->get();
-        return view('orders.create', compact('products'));
-
-         $customers = Customer::all();
-          return view('shop.orders.store', compact('customers'));
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'customer_name' => 'required|string|max:255',
-            'customer_phone' => 'required|string|max:100',
-            'items' => 'required|array|min:1',
-            'items.*.product_id' => 'required|exists:products,id',
-            'items.*.quantity' => 'required|integer|min:1',
-            'delivery_address' => 'nullable|string',
-            'delivery_date' => 'nullable|date',
-        ]);
-
-        DB::transaction(function () use ($request) {
-            $order = Order::create([
-                'customer_name' => $request->customer_name,
-                'customer_phone' => $request->customer_phone,
-                'delivery_address' => $request->delivery_address,
-                'delivery_date' => $request->delivery_date ? Carbon::parse($request->delivery_date) : null,
-                'status' => 'pending',
-                'total' => 0,
-            ]);
-
-            $total = 0;
-            foreach ($request->items as $item) {
-                $product = Product::findOrFail($item['product_id']);
-                $qty = (int) $item['quantity'];
-
-                // decrease stock
-                if ($product->quantity < $qty) {
-                    throw new \Exception("Insufficient stock for {$product->name}");
-                }
-                $product->quantity -= $qty;
-                $product->save();
-
-                $lineTotal = $product->price * $qty;
-                $order->orderItems()->create([
-                    'product_id' => $product->id,
-                    'quantity' => $qty,
-                    'price' => $product->price,
-                    'line_total' => $lineTotal,
-                ]);
-                $total += $lineTotal;
-            }
-
-            $order->total = $total;
-            $order->save();
-        });
-
-        return redirect()->route('orders.index')->with('success', 'Order placed successfully.');
+        $this->djangoBase = rtrim(config('services.django_api.url'), '/');
     }
 
     
+    private function djangoAuthHeaders(): array
+    {
+        $headers = ['Accept' => 'application/json'];
+
+        $token = Session::get('django_token');
+
+        if ($token) {
+            $headers['Authorization'] = 'Bearer ' . $token;
+        } else {
+           
+            $headers['X-Session-ID'] = Session::getId();
+        }
+
+        return $headers;
+    }
+
+    
+    public function getCsrfToken()
+    {
+        try {
+            $response = Http::withHeaders([
+                'ngrok-skip-browser-warning' => '1',
+            ])->withOptions([
+                'verify' => false,
+            ])->get($this->djangoBase . '/api/ecommerce/csrf-token/');
+
+            if (!$response->successful()) {
+                Log::error('[OrderController] CSRF fetch failed', [
+                    'status' => $response->status(),
+                    'body'   => $response->body(),
+                ]);
+                return response()->json(['error' => 'Failed to fetch CSRF token'], 500);
+            }
+
+          
+            $setCookie = $response->header('Set-Cookie');
+            if ($setCookie) {
+                preg_match('/csrftoken=([^;]+)/', $setCookie, $csrfMatches);
+                if (!empty($csrfMatches[1])) {
+                    Session::put('django_csrftoken_cookie', $csrfMatches[1]);
+                }
+            }
+
+            return response()->json($response->json());
+
+        } catch (\Exception $e) {
+            Log::error('[OrderController] getCsrfToken exception: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    
+    public function createOrder(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'cart_id'       => 'required|string',
+                'customer_name' => 'required|string',
+                'phone_number'  => 'required|string',
+                'django_csrf'   => 'nullable|string', 
+            ]);
+
+            $djangoCsrf = $data['django_csrf'] ?? null;
+            unset($data['django_csrf']); 
+
+            
+            $headers = array_merge(
+                $this->djangoAuthHeaders(),
+                [
+                    'Content-Type'               => 'application/json',
+                    'ngrok-skip-browser-warning' => '1',
+                ]
+            );
+
+            if ($djangoCsrf) {
+                $headers['X-CSRFToken'] = $djangoCsrf;
+            }
+
+            $csrftokenCookie = Session::get('django_csrftoken_cookie');
+            if ($csrftokenCookie) {
+                $headers['Cookie'] = "csrftoken={$csrftokenCookie}";
+            }
+
+            $response = Http::withHeaders($headers)
+                ->withOptions(['verify' => false])
+                ->post($this->djangoBase . '/api/ecommerce/place-order/', $data);
+
+            Log::info('[OrderController] place-order', [
+                'status'       => $response->status(),
+                'session_id'   => Session::getId(),
+                'has_token'    => Session::has('django_token'),
+                'body'         => $response->body(),
+            ]);
+
+            return response()->json($response->json(), $response->status());
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors'  => $e->errors(),
+            ], 422);
+
+        } catch (\Exception $e) {
+            Log::error('[OrderController] createOrder exception: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+   
+    public function showConfirmation(Request $request, string $orderId)
+    {
+        return view('checkout.confirmation', ['orderId' => $orderId]);
+    }
 }

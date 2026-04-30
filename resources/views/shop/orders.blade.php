@@ -1,159 +1,79 @@
-@extends('layouts.shop')
+{{-- resources/views/shop/orders.blade.php --}}
+@extends('layouts.app')
 
-@section('title', 'Orders')
+@section('title', 'My Orders')
 
 @section('content')
-<div class="container mt-4">
-
-    <h2 class="mb-4 fw-bold">Orders</h2>
-
-    {{-- ========================= --}}
-    {{-- Create New Order Form --}}
-    {{-- ========================= --}}
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header bg-success text-white fw-bold">
-            Create New Order
-        </div>
-
-        <div class="card-body">
-
-            <form action="{{ route('orders.store') }}" method="POST">
-                @csrf
-
-                <div class="row mb-3">
-
-                    {{-- Customer --}}
-                    <div class="col-md-4">
-                        <label class="fw-semibold">Select Customer</label>
-                        <select name="customer_id" class="form-select" required>
-                            <option value="">-- choose customer --</option>
-
-                            @foreach($customers as $customer)
-                                <option value="{{ $customer->id }}">
-                                    {{ $customer->name }} ({{ $customer->phone ?? 'No phone' }})
-                                </option>
-                            @endforeach
-
-                        </select>
-                    </div>
-
-                    {{-- Total Amount --}}
-                    <div class="col-md-4">
-                        <label class="fw-semibold">Total Amount (KES)</label>
-                        <input type="number" step="0.01" name="total" 
-                               class="form-control" placeholder="Enter total amount" required>
-                    </div>
-
-                    {{-- Status --}}
-                    <div class="col-md-4">
-                        <label class="fw-semibold">Order Status</label>
-                        <select name="status" class="form-select" required>
-                            <option value="pending">Pending</option>
-                            <option value="completed">Completed</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                    </div>
-
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">My Orders</h4>
                 </div>
-
-                <button type="submit" class="btn btn-success px-4 fw-bold">
-                    Save Order
-                </button>
-
-            </form>
-
+                <div class="card-body">
+                    @if(isset($customerInfo) && !empty($customerInfo))
+                        <div class="alert alert-info mb-4">
+                            <i class="bi bi-person-circle me-2"></i>
+                            <strong>Customer:</strong> {{ $customerInfo['name'] ?? 'N/A' }} | 
+                            <strong>Phone:</strong> {{ $customerInfo['phone'] ?? 'N/A' }}
+                        </div>
+                    @endif
+                    
+                    @if(empty($orders))
+                        <div class="text-center py-5">
+                            <i class="bi bi-box-seam" style="font-size: 4rem; color: #c8e6c9;"></i>
+                            <h5 class="mt-3 text-muted">No orders found</h5>
+                            <p class="text-muted">Start shopping to place your first order.</p>
+                            <a href="/shop" class="btn btn-success mt-3">
+                                <i class="bi bi-bag me-2"></i>Start Shopping
+                            </a>
+                        </div>
+                    @else
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Date</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Payment</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($orders as $orderId => $order)
+                                    <tr>
+                                        <td>
+                                            <strong>{{ $orderId }}</strong>
+                                        </td>
+                                        <td>{{ \Carbon\Carbon::parse($order['created_at'])->format('M d, Y') }}</td>
+                                        <td>KES {{ number_format($order['subtotal']) }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ $order['status'] == 'completed' ? 'success' : ($order['status'] == 'pending' ? 'warning' : 'secondary') }}">
+                                                {{ ucfirst($order['status']) }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-{{ $order['payment_status'] == 'paid' ? 'success' : ($order['payment_status'] == 'pending' ? 'warning' : 'danger') }}">
+                                                {{ ucfirst($order['payment_status']) }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="/orders/{{ $orderId }}" class="btn btn-sm btn-outline-success">
+                                                View Details
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
-
-
-    {{-- ========================= --}}
-    {{-- Orders Table --}}
-    {{-- ========================= --}}
-    @if($orders->isEmpty())
-        <div class="alert alert-info text-center py-3">
-            No orders available.
-        </div>
-    @else
-
-        <table class="table table-hover table-bordered align-middle shadow-sm mb-5">
-
-            <thead class="table-dark">
-                <tr>
-                    <th class="text-center">Order #</th>
-                    <th>Customer</th>
-                    <th class="text-center">Total</th>
-                    <th class="text-center">Status</th>
-                    <th class="text-center">Date</th>
-                </tr>
-            </thead>
-
-            <tbody>
-            @foreach($orders as $order)
-                <tr>
-                    <td class="text-center fw-semibold">{{ $order->order_number ?? 'N/A' }}</td>
-
-                    <td>
-                        @if($order->customer)
-                            <span class="fw-medium">{{ $order->customer->name }}</span>
-                        @else
-                            <span class="text-muted">No customer</span>
-                        @endif
-                    </td>
-
-                    <td class="text-center fw-bold text-success">
-                        KES {{ number_format($order->total, 2) }}
-                    </td>
-
-                    <td class="text-center">
-                        <span class="badge bg-primary px-3 py-2">
-                            {{ ucfirst($order->status) }}
-                        </span>
-                    </td>
-
-                    <td class="text-center">
-                        {{ $order->created_at->format('d M Y') }}
-                    </td>
-                </tr>
-            @endforeach
-            </tbody>
-
-        </table>
-
-    @endif
-
-
-    {{-- ========================= --}}
-    {{-- CUSTOMERS WITH THEIR ORDERS --}}
-    {{-- ========================= --}}
-    <h3 class="fw-bold mt-5 mb-3">Customers & Their Orders</h3>
-
-    <table class="table table-bordered shadow-sm">
-        <thead class="table-success">
-            <tr>
-                <th>Customer</th>
-                <th>Phone</th>
-                <th>Total Orders</th>
-                <th>Last Order Date</th>
-            </tr>
-        </thead>
-
-        <tbody>
-        @foreach($customers as $customer)
-            <tr>
-                <td class="fw-semibold">{{ $customer->name }}</td>
-                <td>{{ $customer->phone ?? 'N/A' }}</td>
-                <td>{{ $customer->orders->count() }}</td>
-                <td>
-                    @if($customer->orders && $customer->orders->isNotEmpty())
-                        {{ $customer->orders->last()->created_at->format('d M Y') }}
-                    @else
-                        <i>No orders</i>
-                    @endif
-                </td>
-            </tr>
-        @endforeach
-        </tbody>
-    </table>
-
 </div>
 @endsection

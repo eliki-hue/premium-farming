@@ -14,10 +14,34 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function index()
-    {
-        return view('profile');
+   public function index(Request $request)
+{
+    $djangoUrl = config('services.django.url');
+    $endpoint = $djangoUrl . '/api/auth/me/';
+
+    try {
+        $token = $request->cookie('django_token');
+        $http = Http::withOptions([
+            'verify' => false,
+            'timeout' => 15,
+        ]);
+
+        if ($token) {
+            $http = $http->withToken($token);
+        }
+
+        $response = $http->get($endpoint);
+        $userData = $response->successful() ? $response->json() : null;
+    } catch (\Throwable $e) {
+        Log::error('Error fetching profile from Django', ['msg' => $e->getMessage()]);
+        $userData = null;
     }
+
+    return view('profile', [
+        'userData' => $userData,
+    ]);
+}
+
     
     public function edit(Request $request): View
     {

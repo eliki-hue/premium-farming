@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Services\DjangoApiService;
+
 
 use App\Models\Product;
 use App\Models\PosProduct;  // Make sure PosProduct model exists
@@ -11,6 +13,9 @@ class PosProductController extends Controller
     // ADD THIS INDEX METHOD
     public function index()
     {
+        $response = DjangoApiService::client()
+            ->get('/api/products/');
+
         $products = PosProduct::all();  // or Product::all() if using Product model
         return view('products.index', compact('product'));
     }

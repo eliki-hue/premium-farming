@@ -502,6 +502,7 @@ $lowStockProducts = $products->where('stock', '<=', 5)->values();
                 <h5 class="modal-title fw-bold">➕ Add New Product</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
+            <!-- FIXED: Changed from route('pos.products') to route('pos.product.store') or use a direct URL -->
             <form action="{{ route('pos.products') }}" method="POST">
                 @csrf
                 <div class="modal-body">

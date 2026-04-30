@@ -1,0 +1,20 @@
+[33mb8a975d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfetching[m[33m)[m HEAD@{0}: commit: My local changes
+[33meb46aac[m[33m ([m[1;31morigin/fetching[m[33m)[m HEAD@{1}: commit: initial auth
+[33m02fbb13[m HEAD@{2}: commit (merge): modified auth
+[33m5830881[m HEAD@{3}: checkout: moving from fetching to fetching
+[33m5830881[m HEAD@{4}: commit: initial commit
+[33m0ad78bb[m HEAD@{5}: commit: fetching products modified
+[33m4754c4d[m[33m ([m[1;32mmain[m[33m)[m HEAD@{6}: checkout: moving from main to fetching
+[33m4754c4d[m[33m ([m[1;32mmain[m[33m)[m HEAD@{7}: checkout: moving from main to main
+[33m4754c4d[m[33m ([m[1;32mmain[m[33m)[m HEAD@{8}: commit: fetching products
+[33m994b781[m HEAD@{9}: commit: checkout modification
+[33m7ea6a6d[m HEAD@{10}: commit: login changes
+[33m707a2d8[m HEAD@{11}: commit: commited themodified e-commerce site changes
+[33m2d374e9[m HEAD@{12}: commit: commited the e-commerce site changes
+[33m59ed156[m HEAD@{13}: commit: commited the pos changes
+[33mbe21ed0[m HEAD@{14}: commit: Initial commit
+[33m6309a2f[m HEAD@{15}: commit: initial commit
+[33m089f91c[m HEAD@{16}: commit (merge): Resolve merge conflict
+[33m3dbf831[m HEAD@{17}: commit: Initial commit
+[33m01b781e[m HEAD@{18}: commit: Initial commit
+[33m0cfb706[m HEAD@{19}: commit: Initial commit

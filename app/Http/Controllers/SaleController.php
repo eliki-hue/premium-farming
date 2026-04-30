@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Services\DjangoApiService;
 
 use Illuminate\Http\Request;
 use App\Models\Sale;
@@ -40,6 +41,10 @@ class SaleController extends Controller
      */
     public function index(Request $request)
     {
+
+    $response = DjangoApiService::client()
+            ->get('/api/sales/');
+
         $date = $request->input('date', now()->toDateString());
         $month = $request->input('month', now()->format('Y-m'));
 

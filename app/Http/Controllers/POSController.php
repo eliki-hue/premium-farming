@@ -73,6 +73,36 @@ class POSController extends Controller
 
     // POS Modules --------------------------
 
+public function storeProduct(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'required|string',
+            'selling_price' => 'required|numeric|min:0',
+            'buying_price' => 'nullable|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'unit' => 'required|string',
+            'low_stock_warning' => 'nullable|integer|min:1',
+        ]);
+
+        try {
+            PosProduct::create([
+                'name' => $request->name,
+                'category' => $request->category,
+                'selling_price' => $request->selling_price,
+                'buying_price' => $request->buying_price,
+                'stock' => $request->stock,
+                'unit' => $request->unit,
+                'low_stock_warning' => $request->low_stock_warning ?? 5,
+            ]);
+
+            return redirect()->back()->with('success', '✅ Product added successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', '❌ Failed to add product: ' . $e->getMessage());
+        }
+    }
+
+
     public function categories() {
         $products = Product::where('quantity', '>', 0)->get();
         return view('pos.categories', ['mode' => 'pos', 'products' => $products]);

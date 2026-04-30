@@ -5,15 +5,19 @@
 @section('content')
 
 <div class="min-h-screen pt-24">
-    <!-- Hero Section -->
-    <section class="hero-section">
+    <!-- Hero Section with Full Background Image -->
+    <section class="hero-section-full-bg">
+        <div class="hero-bg-container">
+            <img src="{{ asset('images/economy.jpeg') }}" alt="Premium Poultry Farming" class="hero-bg-image">
+        </div>
+        
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-12 text-center">
-                    <h1 class="hero-title mb-4 animate__animated animate__fadeInDown">
+                    <h1 class="hero-title-full-bg mb-4 animate__animated animate__fadeInDown">
                         Premium Poultry Feeds
                     </h1>
-                    <p class="hero-subtitle mb-5 animate__animated animate__fadeInUp animate__delay-1s">
+                    <p class="hero-subtitle-full-bg mb-5 animate__animated animate__fadeInUp animate__delay-1s">
                         Scientifically formulated feeds for optimal growth, health, and egg production
                     </p>
                 </div>
@@ -21,6 +25,7 @@
         </div>
     </section>
 
+    <!-- Rest of your code remains exactly the same... -->
     <!-- Stats Section -->
     <section class="py-5 bg-white">
         <div class="container">
@@ -332,7 +337,7 @@
                 <p class="cta-text">
                     Join thousands of successful poultry farmers using Premium Farming Feeds.
                 </p>
-                <a href="{{ route('shop.products') }}" class="btn btn-dark btn-lg px-5 py-3 fw-bold me-3">
+                <a href="{{ route('products') }}" class="btn btn-dark btn-lg px-5 py-3 fw-bold me-3">
                     <i class="bi bi-cart-check me-2"></i>
                     Order Feeds Now
                 </a>
@@ -346,17 +351,56 @@
 </div>
 
 <style>
-    .hero-section {
-        min-height: 60vh;
-        background: linear-gradient(rgba(42, 110, 63, 0.9), rgba(30, 82, 46, 0.9)),
-                    url('https://images.unsplash.com/photo-1595698164298-131a42c1aba2?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
-        background-size: cover;
-        background-position: center;
+    /* Hero Section with Full Background Fill */
+    .hero-section-full-bg {
+        position: relative;
+        min-height: 90vh;
         display: flex;
         align-items: center;
-        position: relative;
         overflow: hidden;
         color: white;
+        margin-top: 76px;
+    }
+    
+    .hero-bg-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+    
+    .hero-bg-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Changed to cover to fill the background */
+        object-position: center center;
+        filter: brightness(0.95) contrast(1.05);
+    }
+    
+    .hero-section-full-bg .container {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .hero-title-full-bg {
+        font-size: 4rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        color: white;
+        text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7);
+        line-height: 1.2;
+    }
+    
+    .hero-subtitle-full-bg {
+        font-size: 1.5rem;
+        font-weight: 300;
+        opacity: 0.95;
+        color: white;
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+        max-width: 800px;
+        margin: 0 auto;
     }
     
     /* Product Card Styles */
@@ -367,13 +411,13 @@
         border-radius: 20px;
         overflow: hidden;
         background: white;
-        box-shadow: var(--shadow-soft);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     
     .product-card:hover {
         transform: translateY(-10px);
-        box-shadow: var(--shadow-medium);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15);
     }
     
     .product-image-container {
@@ -437,7 +481,7 @@
     .price-tag {
         font-size: 1.75rem;
         font-weight: 800;
-        color: var(--primary-color);
+        color: #2a6e3f;
         margin-bottom: 0.5rem;
     }
     
@@ -448,8 +492,150 @@
         margin-bottom: 1.5rem;
     }
     
+    /* Stats Cards */
+    .stat-card {
+        text-align: center;
+        padding: 30px 20px;
+        border-radius: 15px;
+        background: linear-gradient(135deg, rgba(42, 110, 63, 0.1), rgba(30, 82, 46, 0.05));
+        border: 2px solid rgba(42, 110, 63, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        border-color: #2a6e3f;
+        box-shadow: 0 10px 20px rgba(42, 110, 63, 0.1);
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #2a6e3f;
+        margin-bottom: 10px;
+    }
+    
+    .stat-label {
+        font-size: 1.1rem;
+        color: #555;
+        font-weight: 600;
+    }
+    
+    /* Section Styles */
+    .section {
+        padding: 80px 0;
+    }
+    
+    .section-title {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+    
+    .section-title h2 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #2a6e3f;
+        margin-bottom: 15px;
+    }
+    
+    .section-title p {
+        font-size: 1.2rem;
+        color: #666;
+    }
+    
+    /* Premium Card */
+    .premium-card {
+        padding: 30px;
+        border-radius: 20px;
+        background: white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border: 1px solid #eaeaea;
+        transition: all 0.3s ease;
+    }
+    
+    .premium-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(42, 110, 63, 0.15);
+    }
+    
+    /* CTA Section */
+    .cta-section {
+        padding: 100px 0;
+        background: linear-gradient(135deg, #2a6e3f, #1a4f2d);
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-title {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .cta-text {
+        font-size: 1.3rem;
+        margin-bottom: 40px;
+        opacity: 0.9;
+    }
+    
+    /* Buttons */
+    .btn-premium {
+        background: linear-gradient(135deg, #2a6e3f, #1a4f2d);
+        color: white;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-premium:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(42, 110, 63, 0.4);
+        color: white;
+    }
+    
+    .btn-dark {
+        background: #1a1a1a;
+        border: none;
+    }
+    
+    .btn-dark:hover {
+        background: #333;
+    }
+    
+    .btn-outline-light:hover {
+        background: rgba(255,255,255,0.1);
+    }
+    
     /* Responsive */
+    @media (max-width: 992px) {
+        .hero-title-full-bg {
+            font-size: 3rem;
+        }
+        
+        .hero-subtitle-full-bg {
+            font-size: 1.3rem;
+        }
+    }
+    
     @media (max-width: 768px) {
+        .hero-section-full-bg {
+            min-height: 70vh;
+            margin-top: 56px;
+        }
+        
+        .hero-title-full-bg {
+            font-size: 2.5rem;
+        }
+        
+        .hero-subtitle-full-bg {
+            font-size: 1.2rem;
+        }
+        
         .product-image-container {
             height: 240px;
         }
@@ -457,7 +643,89 @@
         .product-image-full {
             padding: 20px;
         }
+        
+        .cta-title {
+            font-size: 2.2rem;
+        }
+        
+        .section {
+            padding: 60px 0;
+        }
+        
+        .section-title h2 {
+            font-size: 2rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .hero-title-full-bg {
+            font-size: 2rem;
+        }
+        
+        .hero-subtitle-full-bg {
+            font-size: 1rem;
+        }
+        
+        .hero-section-full-bg {
+            min-height: 60vh;
+        }
+        
+        .cta-title {
+            font-size: 1.8rem;
+        }
+        
+        .cta-section {
+            padding: 60px 0;
+        }
+    }
+    
+    /* Animation for scroll */
+    .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    .animate-on-scroll.visible {
+        opacity: 1;
+        transform: translateY(0);
     }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animation on scroll
+    const animateElements = document.querySelectorAll('.animate-on-scroll');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+    
+    animateElements.forEach(element => {
+        observer.observe(element);
+    });
+    
+    // Add to cart animation
+    document.querySelectorAll('form[action*="cart.add"]').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const button = this.querySelector('button[type="submit"]');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="bi bi-check-circle me-2"></i> Added!';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }, 2000);
+        });
+    });
+});
+</script>
 
 @endsection

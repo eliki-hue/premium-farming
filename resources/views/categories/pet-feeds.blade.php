@@ -251,7 +251,7 @@
                 <p class="cta-text">
                     Premium quality feeds for healthy, happy pets.
                 </p>
-                <a href="{{ route('shop.products') }}" class="btn btn-dark btn-lg px-5 py-3 fw-bold">
+                <a href="{{ route('products') }}" class="btn btn-dark btn-lg px-5 py-3 fw-bold">
                     <i class="bi bi-cart-check me-2"></i>
                     Shop Pet Feeds
                 </a>

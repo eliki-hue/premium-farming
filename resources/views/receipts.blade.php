@@ -12,59 +12,58 @@
     </style>
 </head>
 <body onload="window.print()">
-    <div class="receipt">
-        <div class="header">
-            <h2>🐄 FARM FEED SHOP</h2>
-            <p>Nairobi, Kenya<br>Tel: 07XX XXX XXX</p>
-            <p><strong>RECEIPT #{{ $receipt['order_id'] }}</strong><br>
-            {{ $receipt['date'] }} {{ $receipt['time'] }}</p>
-        </div>
+<div class="receipt">
+    <div class="header">
+        <h2>🐄 FARM FEED SHOP</h2>
+        <p>Nairobi, Kenya<br>Tel: 07XX XXX XXX</p>
+        <p><strong>RECEIPT #{{ $receipt['order_id'] }}</strong><br>{{ $receipt['date'] }} {{ $receipt['time'] }}</p>
+    </div>
 
-        <div class="customer">
-            <strong>CASHIER: {{ $receipt['cashier'] ?? 'Guest' }}</strong><br>
-            <strong>PAYMENT: {{ strtoupper($receipt['payment_method']) }}</strong>
-        </div>
+    <div class="customer">
+        <strong>CASHIER: {{ $receipt['cashier'] }}</strong><br>
+        <strong>PAYMENT: {{ strtoupper($receipt['payment_method']) }}</strong>
+    </div>
 
-        @if($receipt['payment_method'] == 'mpesa')
-        <div class="mpesa">
-            <strong>M-PESA DETAILS:</strong><br>
-            Paybill: <strong>247247</strong><br>
-            Account: <strong>470470</strong><br>
-            Phone: {{ $receipt['phone'] ?? 'N/A' }}
+    @if($receipt['payment_method'] == 'mpesa')
+    <div class="mpesa">
+        <strong>M-PESA DETAILS:</strong><br>
+        Paybill: <strong>247247</strong><br>
+        Account: <strong>470470</strong><br>
+        Phone: {{ $receipt['phone'] ?? 'N/A' }}
+    </div>
+    @endif
+
+    <div class="items">
+        @foreach($receipt['items'] as $item)
+        <div class="item">
+            <span>{{ $item['name'] }} ({{ $item['quantity'] }})</span>
+            <span>KSh {{ number_format($item['price'] * $item['quantity']) }}</span>
         </div>
+        @endforeach
+    </div>
+
+    <div class="total">
+        <div class="item"><span>SUBTOTAL</span><span>KSh {{ number_format($receipt['subtotal']) }}</span></div>
+        @if($receipt['discount'] > 0)
+        <div class="item"><span>DISCOUNT</span><span>-KSh {{ number_format($receipt['discount']) }}</span></div>
         @endif
-
-        <div class="items">
-            @foreach($receipt['items'] as $item)
-            <div class="item">
-                <span>{{ $item['name'] }} ({{ $item['quantity'] }})</span>
-                <span>KSh {{ number_format($item['price'] * $item['quantity']) }}</span>
-            </div>
-            @endforeach
-        </div>
-
-        <div class="total">
-            <div class="item"><span>SUBTOTAL</span><span>KSh {{ number_format($receipt['subtotal']) }}</span></div>
-            @if($receipt['discount'] > 0)
-            <div class="item"><span>DISCOUNT</span><span>-KSh {{ number_format($receipt['discount']) }}</span></div>
-            @endif
-            <div class="item"><span>VAT (16%)</span><span>KSh {{ number_format($receipt['vat']) }}</span></div>
-            <div style="font-size: 16px; margin-top: 10px;">
-                <strong>TOTAL: KSh {{ number_format($receipt['grand_total']) }}</strong>
-            </div>
-        </div>
-
-        @if($receipt['payment_method'] == 'cash' && isset($receipt['change']))
-        <div style="margin-top: 15px; font-size: 14px;">
-            <strong>CASH TENDERED: KSh {{ number_format($receipt['amount_paid']) }}</strong><br>
-            <strong>CHANGE: KSh {{ number_format($receipt['change']) }}</strong>
-        </div>
-        @endif
-
-        <div style="text-align: center; margin-top: 20px; font-size: 10px;">
-            THANK YOU FOR YOUR BUSINESS!<br>
-            Visit us again 🐄
+        <div class="item"><span>VAT (16%)</span><span>KSh {{ number_format($receipt['vat']) }}</span></div>
+        <div style="font-size: 16px; margin-top: 10px;">
+            <strong>TOTAL: KSh {{ number_format($receipt['grand_total']) }}</strong>
         </div>
     </div>
+
+    @if($receipt['payment_method'] == 'cash' && isset($receipt['change']))
+    <div style="margin-top: 15px; font-size: 14px;">
+        <strong>CASH TENDERED: KSh {{ number_format($receipt['amount_paid']) }}</strong><br>
+        <strong>CHANGE: KSh {{ number_format($receipt['change']) }}</strong>
+    </div>
+    @endif
+
+    <div style="text-align: center; margin-top: 20px; font-size: 10px;">
+        THANK YOU FOR YOUR BUSINESS!<br>
+        Visit us again 🐄
+    </div>
+</div>
 </body>
 </html>
