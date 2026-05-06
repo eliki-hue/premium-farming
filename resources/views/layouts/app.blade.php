@@ -757,13 +757,35 @@
                             Products
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('products') }}">All Products</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ route('category.poultry') }}">Poultry Feeds</a></li>
-                            <li><a class="dropdown-item" href="{{ route('category.dairy') }}">Dairy Feeds</a></li>
-                            <li><a class="dropdown-item" href="{{ route('category.swine') }}">Swine Feeds</a></li>
-                            <li><a class="dropdown-item" href="{{ route('category.pet-feeds') }}">Pet Feeds</a></li>
-                            <li><a class="dropdown-item" href="{{ route('category.by-products') }}">Raw Materials</a></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('category.show', 'poultry') }}">
+                                    Poultry Feeds
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item" href="{{ route('category.show', 'dairy') }}">
+                                    Dairy Feeds
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item" href="{{ route('category.show', 'swine') }}">
+                                    Swine Feeds
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item" href="{{ route('category.show', 'pet-feeds') }}">
+                                    Pet Feeds
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item" href="{{ route('category.show', 'by-products') }}">
+                                    Raw Materials
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     
