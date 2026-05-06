@@ -1,68 +1,63 @@
 <?php
+
 namespace App\Http\Controllers;
 
-
-use App\Models\Category;
-use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Http;
 
 class CategoryController extends Controller
 {
-// Display all main categories
-public function index()
-{
-$categories = Category::all();
-return view('categories.index', compact('categories'));
-}
+    /*
+    |--------------------------------------------------------------------------
+    | Categories Listing
+    |--------------------------------------------------------------------------
+    */
+
+    public function index()
+    {
+        $apiUrl = config('services.django_api.url');
+
+        $response = Http::get(
+            $apiUrl . '/categories/'
+        );
+
+        if (!$response->successful()) {
+            abort(500, 'Unable to load categories');
+        }
+
+        $categories = $response->json();
+
+        return view('categories.index', [
+            'categories' => $categories
+        ]);
+    }
 
 
-// Show feeds inside a category
-public function show($slug)
-{
-    $category = Category::where('slug', $slug)->firstOrFail();
-    $feeds = $category->feeds;
+    /*
+    |--------------------------------------------------------------------------
+    | Single Category Products
+    |--------------------------------------------------------------------------
+    */
 
-    return view('shop.categories.show', compact('category', 'feeds','items'));
-}
+    public function show($slug)
+    {
+        $apiUrl = config('services.django_api.url');
 
+        $response = Http::get(
+            $apiUrl . '/products/',
+            [
+                'category' => $slug
+            ]
+        );
 
+        if (!$response->successful()) {
+            abort(500, 'Unable to load products');
+        }
 
-// Store a new category
-public function store(Request $request)
-{
-$validated = $request->validate([
-'name' => 'required|unique:categories,name',
-'slug' => 'required|unique:categories,slug',
-'description' => 'nullable|string',
-'image' => 'nullable|string',
-]);
+        $products = $response->json();
 
-
-Category::create($validated);
-return redirect()->back()->with('success', 'Category created successfully');
-}
-
-
-// Update a category
-public function update(Request $request, Category $category)
-{
-$validated = $request->validate([
-'name' => 'required',
-'slug' => 'required',
-'description' => 'nullable|string',
-'image' => 'nullable|string',
-]);
-
-
-$category->update($validated);
-return redirect()->back()->with('success', 'Category updated successfully');
-}
-
-
-// Delete a category
-public function destroy(Category $category)
-{
-$category->delete();
-return redirect()->back()->with('success', 'Category deleted successfully');
-}
+        return view('categories.show', [
+            'products' => $products,
+            'slug' => $slug
+        ]);
+    }
 }

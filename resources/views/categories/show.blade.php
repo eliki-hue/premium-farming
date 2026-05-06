@@ -1,30 +1,70 @@
 @extends('layouts.app')
 
+@section('title', ucfirst($slug) . ' Feeds | Premium Farming Feeds')
+
 @section('content')
+
 <div class="container mx-auto py-8">
 
-    <h1 class="text-3xl font-bold mb-6">{{ $category->name }} Feeds</h1>
+    {{-- Page Title --}}
+    <h1 class="text-3xl font-bold mb-8 capitalize">
+        {{ str_replace('-', ' ', $slug) }} Feeds
+    </h1>
 
-    <p class="text-gray-700 mb-6">{{ $category->description }}</p>
 
+    {{-- Products Grid --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          @foreach ($items as $item)
-        <div class="border rounded shadow p-4">
-            <img src="{{ asset('storage/' . $item->image) }}"
-                 class="w-full h-40 object-cover rounded">
 
-            <h3 class="text-xl font-semibold mt-3">{{ $item->name }}</h3>
+        @forelse ($products as $product)
 
-            <p class="text-gray-600">{{ $item->description }}</p>
+            <div class="border rounded shadow p-4 bg-white">
 
-            <p class="font-bold text-green-700 mt-2">Ksh {{ number_format($item->price,2) }}</p>
+                {{-- Product Image --}}
+                <img
+                    src="{{ $product['image'] ?? 'https://via.placeholder.com/400x300?text=No+Image' }}"
+                    alt="{{ $product['name'] }}"
+                    class="w-full h-56 object-cover rounded"
+                >
 
-            <button class="mt-3 bg-blue-600 text-white px-3 py-1 rounded">
-                Add to Cart
-            </button>
-        </div>
-    @endforeach
+                {{-- Product Name --}}
+                <h3 class="text-xl font-semibold mt-4">
+                    {{ $product['name'] }}
+                </h3>
+
+                {{-- Description --}}
+                <p class="text-gray-600 mt-2">
+                    {{ $product['description'] ?? '' }}
+                </p>
+
+                {{-- Price --}}
+                <p class="font-bold text-green-700 mt-3">
+                    Ksh {{ number_format($product['unit_price'], 2) }}
+                </p>
+
+                {{-- View Product --}}
+                <a
+                    href="/product/{{ $product['slug'] }}"
+                    class="inline-block mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                    View Product
+                </a>
+
+            </div>
+
+        @empty
+
+            <div class="col-span-3 text-center py-16">
+
+                <h2 class="text-2xl font-semibold text-gray-600">
+                    No products found in this category
+                </h2>
+
+            </div>
+
+        @endforelse
+
     </div>
 
 </div>
+
 @endsection
