@@ -872,12 +872,54 @@
                 <!-- Categories -->
                 <div class="col-lg-3 col-md-6">
                     <h6>Categories</h6>
+
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="{{ route('category.poultry') }}" class="text-white-50">Poultry Feeds</a></li>
-                        <li class="mb-2"><a href="{{ route('category.dairy') }}" class="text-white-50">Dairy Feeds</a></li>
-                        <li class="mb-2"><a href="{{ route('category.swine') }}" class="text-white-50">Swine Feeds</a></li>
-                        <li class="mb-2"><a href="{{ route('category.pet-feeds') }}" class="text-white-50">Pet Feeds</a></li>
-                        <li class="mb-2"><a href="{{ route('category.by-products') }}" class="text-white-50">Raw Materials</a></li>
+
+                        <li class="mb-2">
+                            <a
+                                href="{{ route('category.show', 'poultry') }}"
+                                class="text-white-50"
+                            >
+                                Poultry Feeds
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a
+                                href="{{ route('category.show', 'dairy') }}"
+                                class="text-white-50"
+                            >
+                                Dairy Feeds
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a
+                                href="{{ route('category.show', 'swine') }}"
+                                class="text-white-50"
+                            >
+                                Swine Feeds
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a
+                                href="{{ route('category.show', 'pet-feeds') }}"
+                                class="text-white-50"
+                            >
+                                Pet Feeds
+                            </a>
+                        </li>
+
+                        <li class="mb-2">
+                            <a
+                                href="{{ route('category.show', 'by-products') }}"
+                                class="text-white-50"
+                            >
+                                Raw Materials
+                            </a>
+                        </li>
+
                     </ul>
                 </div>
                 
