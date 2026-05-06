@@ -417,7 +417,7 @@
                     ['name' => 'Goat Feeds', 'slug' => 'goat-feeds', 'icon' => '🐐', 'desc' => 'Specialized feeds for dairy & meat goats'],
                 ] as $cat)
                 <div class="col-lg-4 col-md-6">
-                    <a href="{{ route('category.show', $cat['slug']) }}" }}" class="text-decoration-none">
+                    <a href="{{ route('category.show', $cat['slug']) }}" class="text-decoration-none">
                         <div class="category-card animate-on-scroll">
                             <div class="category-icon mb-3">
                                 {{ $cat['icon'] }}
