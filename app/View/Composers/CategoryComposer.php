@@ -4,30 +4,50 @@ namespace App\View\Composers;
 
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class CategoryComposer
 {
-    public function compose(View $view)
+    public function compose(View $view): void
     {
+        $categories = [];
+
         try {
 
-            $apiUrl = config('services.django_api.url');
+            $apiUrl = rtrim(
+                config('services.django_api.url'),
+                '/'
+            );
 
             $response = Http::timeout(10)
+                ->acceptJson()
                 ->get($apiUrl . '/categories/');
 
-            $categories = [];
-
             if ($response->successful()) {
-                $categories = $response->json();
+
+                $data = $response->json();
+
+                if (is_array($data)) {
+                    $categories = $data;
+                }
+
+            } else {
+
+                Log::error('Category API failed', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+
             }
 
-            $view->with('globalCategories', $categories);
+        } catch (\Throwable $e) {
 
-        } catch (\Exception $e) {
-
-            $view->with('globalCategories', []);
+            Log::error('Category composer error', [
+                'message' => $e->getMessage(),
+            ]);
 
         }
+
+        $view->with('globalCategories', $categories);
     }
 }
