@@ -745,6 +745,10 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarPremium" aria-controls="navbarPremium" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
+            <pre>
+            {{ print_r($globalCategories, true) }}
+            </pre>
             
             <div class="collapse navbar-collapse" id="navbarPremium">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
