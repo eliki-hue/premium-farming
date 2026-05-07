@@ -758,15 +758,21 @@
                         </a>
                         <ul class="dropdown-menu">
 
+                            {{-- All Products --}}
                             <li>
                                 <a class="dropdown-item" href="{{ route('products') }}">
                                     All Products
                                 </a>
                             </li>
 
-                            <li><hr class="dropdown-divider"></li>
+                            {{-- Divider --}}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
 
-                            @foreach($globalCategories as $category)
+
+                            {{-- Categories --}}
+                            @forelse($globalCategories ?? [] as $category)
 
                                 <li>
                                     <a
@@ -777,7 +783,15 @@
                                     </a>
                                 </li>
 
-                            @endforeach
+                            @empty
+
+                                <li>
+                                    <span class="dropdown-item text-muted">
+                                        No categories available
+                                    </span>
+                                </li>
+
+                            @endforelse
 
                         </ul>
                     </li>
