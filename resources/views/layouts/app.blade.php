@@ -746,9 +746,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <pre>
-            {{ print_r($globalCategories, true) }}
-            </pre>
+            
             
             <div class="collapse navbar-collapse" id="navbarPremium">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
