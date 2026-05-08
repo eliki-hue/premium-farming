@@ -190,11 +190,11 @@
                         <a href="{{ route('cart.view') }}" class="list-group-item list-group-item-action border-0">
                             <i class="fas fa-shopping-cart me-2"></i> View Cart
                         </a>
-                        @if(auth()->user()->pos_access ?? false)
+                        {{-- @if(auth()->user()->pos_access ?? false)
                         <a href="{{ route('pos.sell') }}" class="list-group-item list-group-item-action border-0 text-success">
                             <i class="fas fa-cash-register me-2"></i> POS System
                         </a>
-                        @endif
+                        @endif --}}
                     </div>
                 </div>
             </div>

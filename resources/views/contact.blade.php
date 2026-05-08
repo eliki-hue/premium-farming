@@ -63,7 +63,7 @@
                                 @foreach([
                                     ['number' => '0700 680 017', 'label' => 'Customer Service', 'icon' => 'bi-headset'],
                                     ['number' => '0708 488 688', 'label' => 'Sales & Orders', 'icon' => 'bi-cart'],
-                                    ['number' => '0711 633 900', 'label' => 'Technical Support', 'icon' => 'bi-tools']
+                                    ['number' => '0711 633 900', 'label' => 'Administration Support', 'icon' => 'bi-tools']
                                 ] as $contact)
                                 <div class="contact-item d-flex align-items-center mb-3 p-3 bg-white rounded-3 shadow-sm">
                                     <div class="me-3">

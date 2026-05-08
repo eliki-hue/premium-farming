@@ -43,7 +43,7 @@ class CategoryController extends Controller
         $apiUrl = config('services.django_api.url');
 
         $response = Http::get(
-            $apiUrl . '/products/',
+            $apiUrl . '/public/products/',
             [
                 'category' => $slug
             ]
