@@ -41,7 +41,7 @@
         width: 100%;
         height: 100%;
         z-index: 0;
-        background-image: url('{{ asset('images/Website Banner.jpeg') }}');
+        background-image: url('{{ asset('images/bann.jpeg') }}');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -390,7 +390,7 @@
         <div class="container">
             <div class="hero-content">
                 <div class="hero-buttons animate__animated animate__fadeInUp">
-                    <a href="{{ route('shop.products') }}" class="btn btn-premium btn-lg">
+                    <a href="{{ route('products') }}" class="btn btn-premium btn-lg">
                         <i class="bi bi-cart-plus me-2"></i>
                         Browse Products
                     </a>
@@ -399,7 +399,7 @@
         </div>
     </section>
 
-    <!-- Categories Section -->
+    {{-- <!-- Categories Section -->
     <section class="section bg-light">
         <div class="container">
             <div class="section-title animate-on-scroll text-center">
@@ -433,7 +433,7 @@
                 @endforeach
             </div>
         </div>
-    </section>
+    </section> --}}
 
     <!-- Features Section -->
     <section class="section">

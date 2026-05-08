@@ -753,49 +753,11 @@
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ url('/') }}">Home</a>
                     </li>
-                    
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Products
                         </a>
-                        <ul class="dropdown-menu">
-
-                            {{-- All Products --}}
-                            <li>
-                                <a class="dropdown-item" href="{{ route('products') }}">
-                                    All Products
-                                </a>
-                            </li>
-
-                            {{-- Divider --}}
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-
-
-                            {{-- Categories --}}
-                            @forelse($globalCategories ?? [] as $category)
-
-                                <li>
-                                    <a
-                                        class="dropdown-item"
-                                        href="{{ route('category.show', $category['slug']) }}"
-                                    >
-                                        {{ $category['name'] }}
-                                    </a>
-                                </li>
-
-                            @empty
-
-                                <li>
-                                    <span class="dropdown-item text-muted">
-                                        No categories available
-                                    </span>
-                                </li>
-
-                            @endforelse
-
-                        </ul>
+                        
                     </li>
                     
                     <li class="nav-item">
@@ -858,7 +820,7 @@
                         <a href="https://wa.me/254700680017" target="_blank" aria-label="WhatsApp" class="text-white">
                             <i class="bi bi-whatsapp"></i>
                         </a>  
-                        <a href="https://www.youtube.com/@PremiumfarmingFeeds" target="_blank" aria-label="YouTube" class="text-white">
+                        <a href="https://www.youtube.com/@PremiumFeeds1" target="_blank" aria-label="YouTube" class="text-white">
                             <i class="bi bi-youtube"></i>
                         </a>                  
                     </div>
@@ -878,7 +840,7 @@
                     </ul>
                 </div>
                 
-                <!-- Categories -->
+                {{-- <!-- Categories -->
                 <div class="col-lg-3 col-md-6">
                     <h6>Categories</h6>
 
@@ -930,7 +892,7 @@
                         </li>
 
                     </ul>
-                </div>
+                </div> --}}
                 
                 <!-- Contact Info -->
                 <div class="col-lg-3">
