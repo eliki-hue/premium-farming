@@ -751,20 +751,11 @@
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ url('/') }}">Home</a>
                     </li>
-                    
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Products
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('products') }}">All Products</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ route('category.poultry') }}">Poultry Feeds</a></li>
-                            <li><a class="dropdown-item" href="{{ route('category.dairy') }}">Dairy Feeds</a></li>
-                            <li><a class="dropdown-item" href="{{ route('category.swine') }}">Swine Feeds</a></li>
-                            <li><a class="dropdown-item" href="{{ route('category.pet-feeds') }}">Pet Feeds</a></li>
-                            <li><a class="dropdown-item" href="{{ route('category.by-products') }}">Raw Materials</a></li>
-                        </ul>
+                        
                     </li>
                     
                     <li class="nav-item">
@@ -827,7 +818,7 @@
                         <a href="https://wa.me/254700680017" target="_blank" aria-label="WhatsApp" class="text-white">
                             <i class="bi bi-whatsapp"></i>
                         </a>  
-                        <a href="https://www.youtube.com/@PremiumfarmingFeeds" target="_blank" aria-label="YouTube" class="text-white">
+                        <a href="https://www.youtube.com/@PremiumFeeds1" target="_blank" aria-label="YouTube" class="text-white">
                             <i class="bi bi-youtube"></i>
                         </a>                  
                     </div>
@@ -847,7 +838,7 @@
                     </ul>
                 </div>
                 
-                <!-- Categories -->
+                {{-- <!-- Categories -->
                 <div class="col-lg-3 col-md-6">
                     <h6>Categories</h6>
                     <ul class="list-unstyled">
@@ -857,7 +848,7 @@
                         <li class="mb-2"><a href="{{ route('category.pet-feeds') }}" class="text-white-50">Pet Feeds</a></li>
                         <li class="mb-2"><a href="{{ route('category.by-products') }}" class="text-white-50">Raw Materials</a></li>
                     </ul>
-                </div>
+                </div> --}}
                 
                 <!-- Contact Info -->
                 <div class="col-lg-3">

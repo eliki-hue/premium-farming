@@ -1269,7 +1269,7 @@
                 <h3>Naomi</h3>
                 <p class="team-role">General Manager</p>
                 <p class="team-bio">
-                    Manages daily operations and customer relations at our Turitu branch.
+                    Manages daily operations and customer relations in all branches.
                 </p>
             </div>
         </div>

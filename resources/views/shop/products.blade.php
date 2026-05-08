@@ -8,7 +8,7 @@
 <section class="hero-section-products">
     {{-- Single Background Image Banner --}}
     <div class="hero-banner">
-        <img src="{{ asset('images/banner1.jpeg') }}" alt="Premium Farming Feeds Banner" class="banner-image">
+        <img src="{{ asset('images/bann.jpeg') }}" alt="Premium Farming Feeds Banner" class="banner-image">
         <div class="banner-overlay"></div>
     </div>
 
