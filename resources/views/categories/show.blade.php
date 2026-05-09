@@ -15,53 +15,73 @@
     {{-- Products Grid --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-        @forelse ($products as $product)
+        @if(!empty($products) && count($products) > 0)
+            <div class="row g-4">
+                @foreach($products as $product)
+                    <div class="col-md-3 col-sm-6">
+                        <div class="product-card">
+                            <div class="product-image-wrapper">
+                                <div class="product-badge">New</div>
+                                <img
+                                    src="{{ $product['image'] ?? $product['image_url'] ?? asset('images/no-image.png') }}"
+                                    alt="{{ $product['name'] ?? $product['product_name'] ?? 'Product' }}"
+                                    class="product-image"
+                                    loading="lazy">
+                                
+                            </div>
+                            
+                            <div class="product-content">
+                                <h3 class="product-title">
+                                    {{ $product['name'] ?? $product['product_name'] ?? 'Unknown Product' }}
+                                </h3>
+                                
+                                <!-- <div class="product-meta">
+                                    @if(!empty($product['sku'] ?? $product['sku_code'] ?? null))
+                                        <span class="product-sku">
+                                            <i class="bi bi-upc-scan"></i> SKU: {{ $product['sku'] ?? $product['sku_code'] }}
+                                        </span>
+                                    @endif
+                                </div> -->
+                                
+                                <div class="product-price">
+                                    <span class="currency">KES</span>
+                                    <span class="amount">{{ number_format($product['unit_price'] ?? $product['price'] ?? $product['selling_price'] ?? 0, 2) }}</span>
+                                </div>
+                                
+                                {{-- ── Add to Cart: available to ALL users (guests + logged-in) ── --}}
+                                <div class="product-actions">
+                                    <button
+                                        class="btn-add-to-cart"
+                                        data-product-id="{{ $product['id'] }}"
+                                        data-product-name="{{ $product['name'] ?? $product['product_name'] }}"
+                                        onclick="addItem(event, {{ $product['id'] }}, 1)">
+                                        <i class="bi bi-cart-plus"></i>
+                                        <span>Add to Cart</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
 
-            <div class="border rounded shadow p-4 bg-white">
-
-                {{-- Product Image --}}
-                <img
-                    src="{{ $product['image'] ?? 'https://via.placeholder.com/400x300?text=No+Image' }}"
-                    alt="{{ $product['name'] }}"
-                    class="w-full h-56 object-cover rounded"
-                >
-
-                {{-- Product Name --}}
-                <h3 class="text-xl font-semibold mt-4">
-                    {{ $product['name'] }}
-                </h3>
-
-                {{-- Description --}}
-                <p class="text-gray-600 mt-2">
-                    {{ $product['description'] ?? '' }}
-                </p>
-
-                {{-- Price --}}
-                <p class="font-bold text-green-700 mt-3">
-                    Ksh {{ number_format($product['unit_price'], 2) }}
-                </p>
-
-                {{-- View Product --}}
-                <a
-                    href="{{ isset($product['slug']) ? '/product/' . $product['slug'] : '#' }}"
-                    class="inline-block mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                    View Product
+            {{-- View Cart button — visible to all users --}}
+            <div class="text-center mt-5">
+                <a href="{{ route('cart.view') }}" class="btn-view-cart">
+                    <i class="bi bi-cart3 me-2"></i> View Cart
+                    <i class="bi bi-arrow-right ms-2"></i>
                 </a>
-
             </div>
-
-        @empty
-
-            <div class="col-span-3 text-center py-16">
-
-                <h2 class="text-2xl font-semibold text-gray-600">
-                    No products found in this category
-                </h2>
-
+        @else
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+                <h4>No products available</h4>
+                <p>Please check back later or contact us for assistance.</p>
             </div>
-
-        @endforelse
+        @endif
+    
 
     </div>
 

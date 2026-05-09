@@ -78,13 +78,13 @@
                                     {{ $product['name'] ?? $product['product_name'] ?? 'Unknown Product' }}
                                 </h3>
                                 
-                                <div class="product-meta">
+                                <!-- <div class="product-meta">
                                     @if(!empty($product['sku'] ?? $product['sku_code'] ?? null))
                                         <span class="product-sku">
                                             <i class="bi bi-upc-scan"></i> SKU: {{ $product['sku'] ?? $product['sku_code'] }}
                                         </span>
                                     @endif
-                                </div>
+                                </div> -->
                                 
                                 <div class="product-price">
                                     <span class="currency">KES</span>
