@@ -4,87 +4,147 @@
 
 @section('content')
 
-<div class="container mx-auto py-8">
+<section class="products-section py-5" id="products">
 
-    {{-- Page Title --}}
-    <h1 class="text-3xl font-bold mb-8 capitalize">
-        {{ str_replace('-', ' ', $slug) }} Feeds
-    </h1>
+    <div class="container">
 
+        {{-- Category Title --}}
+        <div class="text-center mb-5">
 
-    {{-- Products Grid --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <h2 class="section-title capitalize">
+                {{ str_replace('-', ' ', $slug) }} Feeds
+            </h2>
+
+            <p class="section-subtitle">
+                Premium quality feeds for your farming needs
+            </p>
+
+        </div>
 
         @if(!empty($products) && count($products) > 0)
+
             <div class="row g-4">
+
                 @foreach($products as $product)
+
                     <div class="col-md-3 col-sm-6">
+
                         <div class="product-card">
+
                             <div class="product-image-wrapper">
-                                <div class="product-badge">New</div>
+
+                                <div class="product-badge">
+                                    New
+                                </div>
+
                                 <img
                                     src="{{ $product['image'] ?? $product['image_url'] ?? asset('images/no-image.png') }}"
-                                    alt="{{ $product['name'] ?? $product['product_name'] ?? 'Product' }}"
+                                    alt="{{ $product['name'] ?? 'Product' }}"
                                     class="product-image"
-                                    loading="lazy">
-                                
-                            </div>
-                            
-                            <div class="product-content">
-                                <h3 class="product-title">
-                                    {{ $product['name'] ?? $product['product_name'] ?? 'Unknown Product' }}
-                                </h3>
-                                
-                                <!-- <div class="product-meta">
-                                    @if(!empty($product['sku'] ?? $product['sku_code'] ?? null))
-                                        <span class="product-sku">
-                                            <i class="bi bi-upc-scan"></i> SKU: {{ $product['sku'] ?? $product['sku_code'] }}
-                                        </span>
-                                    @endif
-                                </div> -->
-                                
-                                <div class="product-price">
-                                    <span class="currency">KES</span>
-                                    <span class="amount">{{ number_format($product['unit_price'] ?? $product['price'] ?? $product['selling_price'] ?? 0, 2) }}</span>
+                                    loading="lazy"
+                                >
+
+                                <div class="product-overlay">
+
+                                    <a
+                                        href="/products/{{ $product['slug'] ?? $product['id'] }}"
+                                        class="quick-view-btn text-decoration-none"
+                                    >
+                                        <i class="bi bi-eye"></i>
+                                        View Product
+                                    </a>
+
                                 </div>
-                                
-                                {{-- ── Add to Cart: available to ALL users (guests + logged-in) ── --}}
+
+                            </div>
+
+                            <div class="product-content">
+
+                                <h3 class="product-title">
+                                    {{ $product['name'] ?? 'Unknown Product' }}
+                                </h3>
+
+                                <div class="product-price">
+
+                                    <span class="currency">
+                                        KES
+                                    </span>
+
+                                    <span class="amount">
+                                        {{ number_format($product['unit_price'] ?? 0, 2) }}
+                                    </span>
+
+                                </div>
+
                                 <div class="product-actions">
+
                                     <button
                                         class="btn-add-to-cart"
                                         data-product-id="{{ $product['id'] }}"
-                                        data-product-name="{{ $product['name'] ?? $product['product_name'] }}"
-                                        onclick="addItem(event, {{ $product['id'] }}, 1)">
+                                        data-product-name="{{ $product['name'] }}"
+                                        onclick="addItem(event, {{ $product['id'] }}, 1)"
+                                    >
+
                                         <i class="bi bi-cart-plus"></i>
-                                        <span>Add to Cart</span>
+
+                                        <span>
+                                            Add to Cart
+                                        </span>
+
                                     </button>
+
                                 </div>
+
                             </div>
+
                         </div>
+
                     </div>
+
                 @endforeach
+
             </div>
 
-            {{-- View Cart button — visible to all users --}}
+            {{-- View Cart --}}
             <div class="text-center mt-5">
-                <a href="{{ route('cart.view') }}" class="btn-view-cart">
-                    <i class="bi bi-cart3 me-2"></i> View Cart
+
+                <a
+                    href="{{ route('cart.view') }}"
+                    class="btn-view-cart"
+                >
+
+                    <i class="bi bi-cart3 me-2"></i>
+
+                    View Cart
+
                     <i class="bi bi-arrow-right ms-2"></i>
+
                 </a>
+
             </div>
+
         @else
+
             <div class="empty-state">
+
                 <div class="empty-state-icon">
                     <i class="bi bi-box-seam"></i>
                 </div>
-                <h4>No products available</h4>
-                <p>Please check back later or contact us for assistance.</p>
+
+                <h4>
+                    No products available
+                </h4>
+
+                <p>
+                    Please check back later or contact us for assistance.
+                </p>
+
             </div>
+
         @endif
-    
 
     </div>
 
-</div>
+</section>
 
 @endsection
