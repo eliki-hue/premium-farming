@@ -40,7 +40,7 @@ class CartProxyController extends Controller
             
             $response = Http::timeout(10)
                 ->withHeaders($headers)
-                ->get("{$this->djangoBase}/api/ecommerce/cart/");
+                ->get("{$this->djangoBase}/ecommerce/cart/");
 
             $data = $response->json() ?? [];
             
@@ -75,7 +75,7 @@ class CartProxyController extends Controller
             
             $response = Http::timeout(10)
                 ->withHeaders($headers)
-                ->post("{$this->djangoBase}/api/ecommerce/cart/items/", $validated);
+                ->post("{$this->djangoBase}/ecommerce/cart/items/", $validated);
 
             $data = $response->json() ?? [];
             
@@ -108,7 +108,7 @@ class CartProxyController extends Controller
             
             $response = Http::timeout(10)
                 ->withHeaders($headers)
-                ->patch("{$this->djangoBase}/api/ecommerce/cart/items/update/", $validated);
+                ->patch("{$this->djangoBase}/ecommerce/cart/items/update/", $validated);
 
             return response()->json($response->json(), $response->status());
             
@@ -129,7 +129,7 @@ class CartProxyController extends Controller
             
             $response = Http::timeout(10)
                 ->withHeaders($headers)
-                ->post("{$this->djangoBase}/api/ecommerce/cart/items/remove/", [
+                ->post("{$this->djangoBase}/ecommerce/cart/items/remove/", [
                     'product' => $validated['product'],
                 ]);
 
