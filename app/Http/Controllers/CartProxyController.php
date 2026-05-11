@@ -75,7 +75,7 @@ class CartProxyController extends Controller
             
             $response = Http::timeout(10)
                 ->withHeaders($headers)
-                ->post("{$this->djangoBase}/ecommerce/cart/items/", $validated);
+                ->post("{$this->djangoBase}/ecommerce/cart/add/", $validated);
 
             $data = $response->json() ?? [];
             
