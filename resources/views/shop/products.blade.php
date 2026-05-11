@@ -565,7 +565,7 @@
         btn.disabled = true;
 
         try {
-            const response = await fetch('/proxy/cart/add', {
+            const response = await fetch('/proxy/cart/items/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
