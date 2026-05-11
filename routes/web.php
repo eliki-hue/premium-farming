@@ -206,13 +206,13 @@ Route::post('/api/mpesa/callback', [PaymentController::class, 'paymentCallback']
 | WHATSAPP ROUTES (authenticated)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['web', 'auth'])->group(function () {
-    Route::post('/whatsapp/redirect',     [WhatsAppRedirectController::class, 'redirectToWhatsApp'])->name('whatsapp.redirect');
-    Route::post('/api/whatsapp/redirect', [WhatsAppRedirectController::class, 'apiRedirect'])->name('api.whatsapp.redirect');
-    Route::get('/checkout/resume/{orderId}',  [CheckoutResumeController::class, 'resumeCheckout'])->name('checkout.resume');
-    Route::post('/api/checkout/complete',     [CheckoutResumeController::class, 'completeCheckout'])->name('api.checkout.complete');
-    Route::post('/api/webhook/update-delivery', [CheckoutResumeController::class, 'webhookUpdateDelivery'])->name('api.webhook.update-delivery');
-});
+// Route::middleware(['web', 'auth'])->group(function () {
+//     Route::post('/whatsapp/redirect',     [WhatsAppRedirectController::class, 'redirectToWhatsApp'])->name('whatsapp.redirect');
+//     Route::post('/api/whatsapp/redirect', [WhatsAppRedirectController::class, 'apiRedirect'])->name('api.whatsapp.redirect');
+//     Route::get('/checkout/resume/{orderId}',  [CheckoutResumeController::class, 'resumeCheckout'])->name('checkout.resume');
+//     Route::post('/api/checkout/complete',     [CheckoutResumeController::class, 'completeCheckout'])->name('api.checkout.complete');
+//     Route::post('/api/webhook/update-delivery', [CheckoutResumeController::class, 'webhookUpdateDelivery'])->name('api.webhook.update-delivery');
+// });
 
 Route::post('/api/whatsapp/prepare-order',      [WhatsAppOrderController::class, 'prepareWhatsAppOrder']);
 Route::post('/api/checkout/complete-whatsapp',  [WhatsAppOrderController::class, 'completeCheckout']);
