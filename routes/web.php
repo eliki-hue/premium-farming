@@ -214,6 +214,25 @@ Route::post('/api/mpesa/callback', [PaymentController::class, 'paymentCallback']
 //     Route::post('/api/webhook/update-delivery', [CheckoutResumeController::class, 'webhookUpdateDelivery'])->name('api.webhook.update-delivery');
 // });
 
+Route::middleware(['web', 'auth'])->group(function () {
+
+    Route::post(
+        '/api/whatsapp/prepare-order',
+        [WhatsAppOrderController::class, 'prepareWhatsAppOrder']
+    )->name('whatsapp.prepare');
+
+    Route::get(
+        '/checkout/resume/{orderRef}',
+        [WhatsAppOrderController::class, 'resumeCheckout']
+    )->name('checkout.resume');
+
+    Route::post(
+        '/api/checkout/complete-whatsapp',
+        [WhatsAppOrderController::class, 'completeCheckout']
+    )->name('checkout.complete.whatsapp');
+
+});
+
 Route::post('/api/whatsapp/prepare-order',      [WhatsAppOrderController::class, 'prepareWhatsAppOrder']);
 Route::post('/api/checkout/complete-whatsapp',  [WhatsAppOrderController::class, 'completeCheckout']);
 
