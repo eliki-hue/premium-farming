@@ -8,9 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
-    Log::info('[PaymentController] payment payload', [
-    'payload' => $request->all(),
-    ]);
+    
     protected $djangoBase;
 
     public function __construct()
@@ -36,6 +34,10 @@ class PaymentController extends Controller
                 'order_id' => 'required',
                 'token'    => 'required|string',
             ]);
+            Log::info('[PaymentController] payment payload', [
+            'payload' => $validated,
+            ]);
+
 
             $orderId = $validated['order_id'];
             $token   = $validated['token'];
@@ -46,6 +48,11 @@ class PaymentController extends Controller
                 ->post("{$this->djangoBase}/api/ecommerce/pay/{$orderId}/", [
                     'token' => $token,
                 ]);
+
+             Log::info('[PaymentController] payment response', [
+            'status' => $response->status(),
+            'body' => $response->body(),
+            ]);
 
             if ($response->successful()) {
                 return response()->json([
@@ -111,8 +118,4 @@ class PaymentController extends Controller
 
         return response()->json(['ResultCode' => 0, 'ResultDesc' => 'Accepted']);
     }
-    Log::info('[PaymentController] payment response', [
-    'status' => $response->status(),
-    'body' => $response->body(),
-    ]);
 }
