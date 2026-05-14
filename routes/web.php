@@ -96,13 +96,24 @@ Route::delete('/cart/remove', [CartController::class, 'remove']);
 | DJANGO CART PROXY
 |--------------------------------------------------------------------------
 */
-Route::prefix('proxy/cart')->group(function () {
-    Route::get('/',          [CartProxyController::class, 'load']);
-    Route::post('/add',      [CartProxyController::class, 'add']);
-    Route::patch('/update',  [CartProxyController::class, 'update']);
-    Route::delete('/remove', [CartProxyController::class, 'remove']);
-});
+// Route::prefix('proxy/cart')->group(function () {
+//     Route::get('/',          [CartProxyController::class, 'load']);
+//     Route::post('/add',      [CartProxyController::class, 'add']);
+//     Route::patch('/update',  [CartProxyController::class, 'update']);
+//     Route::delete('/remove', [CartProxyController::class, 'remove']);
+// });
 
+
+Route::prefix('proxy/cart')->group(function () {
+
+    Route::get('/', [CartProxyController::class, 'load']);
+
+    Route::post('/items', [CartProxyController::class, 'add']);
+
+    Route::patch('/items/update', [CartProxyController::class, 'update']);
+
+    Route::delete('/items/remove', [CartProxyController::class, 'remove']);
+});
 /*
 |--------------------------------------------------------------------------
 | DJANGO CHECKOUT PROXY
