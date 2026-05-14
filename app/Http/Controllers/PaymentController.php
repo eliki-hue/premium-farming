@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
+    Log::info('[PaymentController] payment payload', [
+    'payload' => $request->all(),
+    ]);
     protected $djangoBase;
 
     public function __construct()
@@ -108,4 +111,8 @@ class PaymentController extends Controller
 
         return response()->json(['ResultCode' => 0, 'ResultDesc' => 'Accepted']);
     }
+    Log::info('[PaymentController] payment response', [
+    'status' => $response->status(),
+    'body' => $response->body(),
+    ]);
 }
