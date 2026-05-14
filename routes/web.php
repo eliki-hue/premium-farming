@@ -106,13 +106,13 @@ Route::delete('/cart/remove', [CartController::class, 'remove']);
 
 Route::prefix('proxy/cart')->group(function () {
 
-    Route::get('/api/', [CartProxyController::class, 'load']);
+    Route::get('/', [CartProxyController::class, 'load']);
 
-    Route::post('/api/items', [CartProxyController::class, 'add']);
+    Route::post('/items', [CartProxyController::class, 'add']);
 
-    Route::patch('/api/items/update', [CartProxyController::class, 'update']);
+    Route::patch('/items/update', [CartProxyController::class, 'update']);
 
-    Route::delete('/api/items/remove', [CartProxyController::class, 'remove']);
+    Route::delete('/items/remove', [CartProxyController::class, 'remove']);
 });
 /*
 |--------------------------------------------------------------------------
