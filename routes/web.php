@@ -106,13 +106,13 @@ Route::delete('/cart/remove', [CartController::class, 'remove']);
 
 Route::prefix('proxy/cart')->group(function () {
 
-    Route::get('/', [CartProxyController::class, 'load']);
+    Route::get('/api/', [CartProxyController::class, 'load']);
 
-    Route::post('/items', [CartProxyController::class, 'add']);
+    Route::post('/api/items', [CartProxyController::class, 'add']);
 
-    Route::patch('/items/update', [CartProxyController::class, 'update']);
+    Route::patch('/api/items/update', [CartProxyController::class, 'update']);
 
-    Route::delete('/items/remove', [CartProxyController::class, 'remove']);
+    Route::delete('/api/items/remove', [CartProxyController::class, 'remove']);
 });
 /*
 |--------------------------------------------------------------------------
@@ -167,16 +167,16 @@ Route::prefix('checkout')->group(function () {
 Route::post('/api/ecommerce/place-order/', [OrderController::class, 'createOrder']);
 
 // Step 4: Order confirmation page
-Route::get('/order/confirmation/{orderId}', [OrderController::class, 'showConfirmation'])->name('order.confirmation');
+Route::get('/api/order/confirmation/{orderId}', [OrderController::class, 'showConfirmation'])->name('order.confirmation');
 
 // Step 5: Prepare WhatsApp message
 Route::post('/api/order/whatsapp', [OrderController::class, 'prepareWhatsApp'])->name('api.order.whatsapp');
 
 // Final confirmed page
-Route::get('/order/confirmed/{orderId}', [OrderController::class, 'finalConfirmation'])->name('order.confirmed');
+Route::get('/api/order/confirmed/{orderId}', [OrderController::class, 'finalConfirmation'])->name('order.confirmed');
 
 // CSRF token endpoint
-Route::get('/ecommerce/csrf-token/', [OrderController::class, 'getCsrfToken']);
+Route::get('/api/ecommerce/csrf-token/', [OrderController::class, 'getCsrfToken']);
 
 /*
 |--------------------------------------------------------------------------
@@ -201,7 +201,7 @@ Route::get('/api/ecommerce/pay/{orderId}', function ($orderId) {
 });
 
 // Blade payment page
-Route::get('/payment/{orderId}', [PaymentController::class, 'showPaymentPage'])->name('payment.page');
+Route::get('/api/payment/{orderId}', [PaymentController::class, 'showPaymentPage'])->name('payment.page');
 
 // Blade JS: trigger STK push
 Route::post('/api/ecommerce/pay/', [PaymentController::class, 'initiatePayment'])->name('api.pay');
