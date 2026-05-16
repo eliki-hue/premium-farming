@@ -81,16 +81,10 @@
                                     <button
                                         class="btn-add-to-cart"
                                         data-product-id="{{ $product['id'] }}"
-                                        data-product-name="{{ $product['name'] }}"
-                                        onclick="addItem(event, {{ $product['id'] }}, 1)"
-                                    >
-
+                                        data-product-name="{{ $product['name'] ?? $product['product_name'] }}"
+                                        onclick="addItem(event, {{ $product['id'] }}, 1)">
                                         <i class="bi bi-cart-plus"></i>
-
-                                        <span>
-                                            Add to Cart
-                                        </span>
-
+                                        <span>Add to Cart</span>
                                     </button>
 
                                 </div>
@@ -560,3 +554,116 @@
         .product-price .amount { font-size: 1.3rem; }
     }
 </style>
+
+@push('scripts')
+<script>
+(function () {
+    'use strict';
+
+    const CSRF = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+   
+    window.addItem = async function (event, productId, quantity) {
+        const btn = event.currentTarget;
+        const originalHTML = btn.innerHTML;
+        const productName = btn.getAttribute('data-product-name') || 'Item';
+
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Adding...';
+        btn.disabled = true;
+
+        try {
+            const response = await fetch('/proxy/cart/items/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': CSRF,
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({ product: productId, quantity: quantity }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                btn.innerHTML = '<i class="bi bi-check-circle me-2"></i>Added!';
+                btn.style.background = 'linear-gradient(135deg, #28a745, #34ce57)';
+                
+                showToast(`${productName} added to cart!`, 'success');
+                updateCartBadge(data.total_items ?? null);
+
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="bi bi-cart-plus"></i><span>Add to Cart</span>';
+                    btn.style.background = '';
+                    btn.disabled = false;
+                }, 2500);
+
+            } else if (response.status === 401) {
+                
+                showToast('Could not add to cart. Please refresh and try again.', 'error');
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+
+            } else {
+                const msg = data?.detail || data?.message || 'Could not add to cart. Try again.';
+                showToast(msg, 'error');
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+
+        } catch (err) {
+            console.error('[addItem] Network error:', err);
+            showToast('Network error. Please check your connection.', 'error');
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+        }
+    };
+
+    function updateCartBadge(count) {
+        if (count === null || count === undefined) return;
+        const badge = document.querySelector('.cart-badge');
+        if (!badge) return;
+        badge.textContent = count;
+        badge.style.display = count > 0 ? 'flex' : 'none';
+    }
+
+    window.quickView = function (productId) {
+        console.log('Quick view for product:', productId);
+    };
+
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('cart-toast');
+        const msg   = document.getElementById('cart-toast-msg');
+        const icon  = toast.querySelector('i');
+
+        msg.textContent = message;
+        toast.className = 'cart-toast' + (type === 'error' ? ' error' : '');
+        
+        icon.className = type === 'error'
+            ? 'bi bi-exclamation-circle-fill me-2 text-danger'
+            : 'bi bi-check-circle-fill me-2 text-success';
+
+        toast.style.display = 'flex';
+        toast.style.opacity = '1';
+
+        clearTimeout(toast._hideTimer);
+        toast._hideTimer = setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => {
+                toast.style.display = 'none';
+                toast.style.opacity = '1';
+            }, 300);
+        }, 3000);
+    }
+
+    setTimeout(function () {
+        document.querySelectorAll('.alert').forEach(function (alert) {
+            const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+
+})();
+</script>
+@endpush
