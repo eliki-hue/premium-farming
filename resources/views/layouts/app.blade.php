@@ -818,17 +818,7 @@
                     <div class="text-center mt-5">
 
                 
-                <a
-                    href="{{ route('cart.view') }}"
-                    class="navbar-cart-btn"
-                    aria-label="Shopping Cart"
-                >
-                    <i class="bi bi-cart3"></i>
-
-                    @if($cartCount > 0)
-                        <span class="cart-badge">{{ $cartCount }}</span>
-                    @endif
-                </a>
+               
 
             </div>
                     <li class="nav-item">
