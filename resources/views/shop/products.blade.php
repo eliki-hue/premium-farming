@@ -60,7 +60,7 @@
                     <div class="col-md-3 col-sm-6">
                         <div class="product-card">
                             <div class="product-image-wrapper">
-                                <div class="product-badge">New</div>
+                                <!-- <div class="product-badge">New</div> -->
                                 <img
                                     src="{{ $product['image'] ?? $product['image_url'] ?? asset('images/no-image.png') }}"
                                     alt="{{ $product['name'] ?? $product['product_name'] ?? 'Product' }}"

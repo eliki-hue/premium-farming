@@ -33,9 +33,9 @@
 
                             <div class="product-image-wrapper">
 
-                                <div class="product-badge">
+                                <!-- <div class="product-badge">
                                     New
-                                </div>
+                                </div> -->
 
                                 <img
                                     src="{{ $product['image'] ?? $product['image_url'] ?? asset('images/no-image.png') }}"
