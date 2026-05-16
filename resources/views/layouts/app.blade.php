@@ -814,7 +814,7 @@
                         <a class="nav-link {{ request()->routeIs('orders') ? 'active' : '' }}" href="/orders">My Orders</a>
                     </li>
                     
-                    {{-- <li class="nav-item">
+                    <li class="nav-item">
                         <div class="navbar-cart-container">
                             <button class="navbar-cart-btn" data-bs-toggle="modal" data-bs-target="#cartModal" aria-label="Shopping Cart">
                                 <i class="bi bi-cart3"></i>
@@ -823,7 +823,7 @@
                                 @endif
                             </button>
                         </div>
-                    </li> --}}
+                    </li> 
                 </ul>
             </div>
         </div>
