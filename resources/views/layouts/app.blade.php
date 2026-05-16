@@ -817,18 +817,7 @@
 
                     <div class="text-center mt-5">
 
-                <a
-                    href="{{ route('cart.view') }}"
-                    class="btn-view-cart"
-                >
-
-                    <i class="bi bi-cart3 me-2"></i>
-
-                    View Cart
-
-                    <i class="bi bi-arrow-right ms-2"></i>
-
-                </a>
+                
                 <a
                     href="{{ route('cart.view') }}"
                     class="navbar-cart-btn"
@@ -844,12 +833,18 @@
             </div>
                     <li class="nav-item">
                         <div class="navbar-cart-container">
-                            <button class="navbar-cart-btn" data-bs-toggle="modal" data-bs-target="#cartModal" aria-label="Shopping Cart">
+                            <a
+                                href="{{ route('cart.view') }}"
+                                class="navbar-cart-btn"
+                                aria-label="Shopping Cart"
+                            >
                                 <i class="bi bi-cart3"></i>
+
                                 @if($cartCount > 0)
                                     <span class="cart-badge">{{ $cartCount }}</span>
                                 @endif
-                            </button>
+                            </a>
+
                         </div>
                     </li> 
                 </ul>
