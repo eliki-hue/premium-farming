@@ -88,7 +88,7 @@
                                 
                                 <div class="product-price">
                                     <span class="currency">KES</span>
-                                    <span class="amount">{{ number_format($product['unit_price'] ?? $product['price'] ?? $product['selling_price'] ?? 0, 2) }}</span>
+                                    <span class="amount">{{ number_format($product['price_per_bag'] ?? $product['price'] ?? $product['selling_price'] ?? 0, 2) }}</span>
                                 </div>
                                 
                                 {{-- ── Add to Cart: available to ALL users (guests + logged-in) ── --}}
