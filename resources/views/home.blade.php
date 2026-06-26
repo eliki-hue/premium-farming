@@ -469,23 +469,21 @@
     <!-- Hero Section - Responsive with separate images -->
     <section class="hero-section">
         <!-- Desktop Image (hidden on mobile) -->
-        <img 
-            src="{{ asset('images/bann.jpeg') }}" 
-            alt="Premium Farming Feeds Hero Banner" 
-            class="hero-image-desktop"
-            loading="eager"
-            fetchpriority="high">
-        
-        <!-- Mobile Image (hidden on desktop) -->
-        <img 
-            src="{{ asset('images/bann-mobile.png') }}" 
-            alt="Premium Farming Feeds Hero Banner Mobile" 
-            class="hero-image-mobile"
-            loading="eager"
-            fetchpriority="high">
-        
-        <!-- Overlay -->
-        <div class="hero-image-overlay"></div>
+       <div class="hero-image-container">
+
+            <img
+                src="{{ asset('images/bann.jpeg') }}"
+                class="hero-image-desktop"
+                alt="Hero Banner">
+
+            <img
+                src="{{ asset('images/bann-mobile.png') }}"
+                class="hero-image-mobile"
+                alt="Hero Banner Mobile">
+
+            <div class="hero-image-overlay"></div>
+
+        </div>
         
         <div class="container">
             <div class="hero-content">
