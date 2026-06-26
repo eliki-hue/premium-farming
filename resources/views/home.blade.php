@@ -529,7 +529,7 @@
             <!-- Mobile image for small screens (up to 575px) -->
             <source 
                 media="(max-width: 575px)" 
-                srcset="{{ asset('images/product page banner image for mobile.png') }}">
+                srcset="{{ asset('images/bann-mobile.png') }}">
             
             <!-- Tablet image for medium screens (576px - 991px) -->
             <source 
