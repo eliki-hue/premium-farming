@@ -25,7 +25,7 @@
                             <i class="bi bi-box-seam" style="font-size: 4rem; color: #c8e6c9;"></i>
                             <h5 class="mt-3 text-muted">No orders found</h5>
                             <p class="text-muted">Start shopping to place your first order.</p>
-                            <a href="/shop" class="btn btn-success mt-3">
+                            <a href="/products" class="btn btn-success mt-3">
                                 <i class="bi bi-bag me-2"></i>Start Shopping
                             </a>
                         </div>
