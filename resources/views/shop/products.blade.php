@@ -143,6 +143,7 @@
         overflow: hidden;
         color: white;
         margin-top: 0; /* Changed from 76px to 0 */
+        padding-top: 76px;
     }
 
     /* Single Banner Background */
