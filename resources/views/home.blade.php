@@ -53,17 +53,6 @@
         object-position: center center;
         display: block;
     }
-
-    .hero-image-bg {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 0;
-        /* This will be hidden when picture is used, but kept as fallback */
-        display: none;
-    }
     
     .hero-image-overlay {
         position: absolute;
@@ -544,7 +533,7 @@
                 fetchpriority="high">
         </picture>
         
-        <!-- Fallback overlay if picture fails -->
+        <!-- Overlay -->
         <div class="hero-image-overlay"></div>
         
         <div class="container">
