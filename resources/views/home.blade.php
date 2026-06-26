@@ -25,15 +25,35 @@
         --shadow-medium: 0 8px 30px rgba(42, 110, 63, 0.15);
     }
 
-    /* Hero Section */
+    /* Hero Section - Enhanced Responsive */
     .hero-section {
         min-height: 90vh;
         position: relative;
         display: flex;
         align-items: center;
         overflow: hidden;
+        background: #1a1a1a; /* Fallback color */
     }
     
+    /* Responsive Hero Image using Picture element */
+    .hero-picture {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+    }
+
+    .hero-picture source,
+    .hero-picture img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+        display: block;
+    }
+
     .hero-image-bg {
         position: absolute;
         top: 0;
@@ -41,13 +61,8 @@
         width: 100%;
         height: 100%;
         z-index: 0;
-        background-image: url('{{ asset('images/bann.jpeg') }}');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        image-rendering: -webkit-optimize-contrast;
-        image-rendering: crisp-edges;
-        filter: contrast(1.05) brightness(1.05) saturate(1.1);
+        /* This will be hidden when picture is used, but kept as fallback */
+        display: none;
     }
     
     .hero-image-overlay {
@@ -56,7 +71,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.15);
+        background: rgba(0, 0, 0, 0.25);
         z-index: 1;
         pointer-events: none;
     }
@@ -342,9 +357,67 @@
         border-color: rgba(42, 110, 63, 0.1) !important;
     }
 
-    @media (max-width: 768px) {
+    /* ─────────────────────────── RESPONSIVE BREAKPOINTS ─────────────────────────── */
+    
+    /* Large screens (1200px and up) */
+    @media (min-width: 1200px) {
+        .hero-section,
+        .hero-picture,
+        .hero-picture source,
+        .hero-picture img {
+            min-height: 90vh;
+            max-height: 100vh;
+        }
+    }
+
+    /* Desktop (992px - 1199px) */
+    @media (min-width: 992px) and (max-width: 1199px) {
+        .hero-section,
+        .hero-picture,
+        .hero-picture source,
+        .hero-picture img {
+            min-height: 85vh;
+            max-height: 95vh;
+        }
+    }
+
+    /* Tablet (768px - 991px) */
+    @media (min-width: 768px) and (max-width: 991px) {
+        .hero-section,
+        .hero-picture,
+        .hero-picture source,
+        .hero-picture img {
+            min-height: 70vh;
+            max-height: 85vh;
+        }
+
         .hero-content {
+            height: 70vh;
             padding-bottom: 3rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+        }
+        
+        .cta-title {
+            font-size: 2.5rem;
+        }
+    }
+
+    /* Mobile Large (576px - 767px) */
+    @media (min-width: 576px) and (max-width: 767px) {
+        .hero-section,
+        .hero-picture,
+        .hero-picture source,
+        .hero-picture img {
+            min-height: 60vh;
+            max-height: 75vh;
+        }
+
+        .hero-content {
+            height: 60vh;
+            padding-bottom: 2.5rem;
         }
         
         .hero-buttons .btn {
@@ -353,17 +426,38 @@
         }
         
         .stat-number {
-            font-size: 3rem;
+            font-size: 2.8rem;
         }
         
         .cta-title {
             font-size: 2rem;
         }
+
+        .cta-text {
+            font-size: 1.1rem;
+        }
     }
-    
-    @media (max-width: 576px) {
+
+    /* Mobile Small (up to 575px) */
+    @media (max-width: 575px) {
+        .hero-section,
+        .hero-picture,
+        .hero-picture source,
+        .hero-picture img {
+            min-height: 50vh;
+            max-height: 65vh;
+        }
+
         .hero-content {
+            height: 50vh;
             padding-bottom: 2rem;
+        }
+        
+        .hero-buttons .btn {
+            width: 100%;
+            max-width: 250px;
+            padding: 0.6rem 1.5rem;
+            font-size: 0.95rem;
         }
         
         .stat-number {
@@ -375,16 +469,82 @@
         }
         
         .cta-text {
-            font-size: 1.1rem;
+            font-size: 1rem;
+        }
+
+        .cta-section {
+            padding: 4rem 0;
+        }
+
+        .btn-premium {
+            padding: 0.6rem 1.5rem;
+            font-size: 0.95rem;
+        }
+    }
+
+    /* Extra Small (up to 400px) */
+    @media (max-width: 400px) {
+        .hero-section,
+        .hero-picture,
+        .hero-picture source,
+        .hero-picture img {
+            min-height: 40vh;
+            max-height: 55vh;
+        }
+
+        .hero-content {
+            height: 40vh;
+            padding-bottom: 1.5rem;
+        }
+        
+        .hero-buttons .btn {
+            max-width: 200px;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.85rem;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+        }
+        
+        .cta-title {
+            font-size: 1.5rem;
+        }
+        
+        .cta-text {
+            font-size: 0.9rem;
         }
     }
 </style>
 @endpush
 
 @section('content')
-    <!-- Hero Section - Button at Bottom Left -->
+    <!-- Hero Section - Responsive with Picture Element -->
     <section class="hero-section">
-        <div class="hero-image-bg"></div>
+        <picture class="hero-picture">
+            <!-- Mobile image for small screens (up to 575px) -->
+            <source 
+                media="(max-width: 575px)" 
+                srcset="{{ asset('images/product page banner image for mobile.png') }}">
+            
+            <!-- Tablet image for medium screens (576px - 991px) -->
+            <source 
+                media="(max-width: 991px)" 
+                srcset="{{ asset('images/bann.jpeg') }}">
+            
+            <!-- Desktop image for larger screens -->
+            <img 
+                src="{{ asset('images/bann.jpeg') }}" 
+                alt="Premium Farming Feeds Hero Banner" 
+                loading="eager"
+                fetchpriority="high">
+        </picture>
+        
+        <!-- Fallback overlay if picture fails -->
         <div class="hero-image-overlay"></div>
         
         <div class="container">
@@ -399,42 +559,8 @@
         </div>
     </section>
 
-    {{-- <!-- Categories Section -->
-    <section class="section bg-light">
-        <div class="container">
-            <div class="section-title animate-on-scroll text-center">
-                <h2>Our Product Categories</h2>
-                <p>Comprehensive nutrition solutions for all livestock types</p>
-            </div>
-            
-            <div class="row g-4">
-                @foreach([
-                    ['name' => 'Poultry Feeds', 'slug' => 'poultry', 'icon' => '🐔', 'desc' => 'Broiler, layers & kienyeji feeds for optimal growth'],
-                    ['name' => 'Dairy Feeds', 'slug' => 'dairy', 'icon' => '🐄', 'desc' => 'Specialized feeds for higher milk production'],
-                    ['name' => 'Swine Feeds', 'slug' => 'swine', 'icon' => '🐖', 'desc' => 'Complete nutrition for pigs at all growth stages'],
-                    ['name' => 'Pet Feeds', 'slug' => 'pet-feeds', 'icon' => '🐶', 'desc' => 'Premium nutrition for dogs, cats & rabbits'],
-                    ['name' => 'By-products', 'slug' => 'by-products', 'icon' => '🌾', 'desc' => 'Maize germ, wheat bran & supplements'],
-                    ['name' => 'Goat Feeds', 'slug' => 'goat-feeds', 'icon' => '🐐', 'desc' => 'Specialized feeds for dairy & meat goats'],
-                ] as $cat)
-                <div class="col-lg-4 col-md-6">
-                    <a href="{{ route('category.show', $cat['slug']) }}" class="text-decoration-none">
-                        <div class="category-card animate-on-scroll">
-                            <div class="category-icon mb-3">
-                                {{ $cat['icon'] }}
-                            </div>
-                            <h4 class="fw-bold mb-2 text-dark-green">{{ $cat['name'] }}</h4>
-                            <p class="text-muted mb-0">{{ $cat['desc'] }}</p>
-                            <div class="mt-3">
-                                <span class="text-green fw-bold">Explore →</span>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </section> --}}
-
+    
+    
     <!-- Features Section -->
     <section class="section">
         <div class="container">
