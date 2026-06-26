@@ -390,7 +390,7 @@
         .main-content {
             min-height: 60vh;
             width: 100%;
-            padding: 2rem 0;
+            /* padding: 2rem 0; */
         }
         
         /* ============================
