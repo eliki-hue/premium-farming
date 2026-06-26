@@ -8,19 +8,24 @@
 <section class="hero-section-products">
     {{-- Single Background Image Banner with responsive images --}}
     <div class="hero-banner">
+
         <picture>
-            <!-- Mobile image for small screens -->
-            <source 
-                media="(max-width: 768px)" 
-                srcset="{{ asset('images/product page banner image for mobile.png') }}">
-            
-            <!-- Desktop image for larger screens -->
-            <img 
-                src="{{ asset('images/bann.jpeg') }}" 
-                alt="Premium Farming Feeds Banner" 
+
+            {{-- Mobile Banner --}}
+            <source
+                media="(max-width: 768px)"
+                srcset="{{ asset('images/bann-mobile.png') }}">
+
+            {{-- Desktop Banner --}}
+            <img
+                src="{{ asset('images/bann.jpeg') }}"
+                alt="Premium Farming Feeds"
                 class="banner-image">
+
         </picture>
+
         <div class="banner-overlay"></div>
+
     </div>
 
     {{-- <div class="hero-overlay">
@@ -147,52 +152,48 @@
 
 <style>
     /* ─────────────────────────── HERO SECTION ─────────────────────────── */
-    .hero-section-products {
-        position: relative;
-        min-height: 50vh;
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-        color: white;
-        margin-top: 0;
-        /* padding-top: 60px; Space for navbar */
-    }
+    /* ==========================================================
+   HERO SECTION
+========================================================== */
 
-    .hero-banner {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-        overflow: hidden;
-    }
+.hero-section-products{
 
-    .banner-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
-        display: block;
-    }
+    position:relative;
 
-    .banner-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.45);
-        z-index: 2;
-        pointer-events: none;
-    }
+    margin-top:76px;
 
-    .hero-overlay {
-        position: relative;
-        z-index: 3;
-        padding: 60px 0;
-        width: 100%;
-    }
+    overflow:hidden;
+
+    background:#fff;
+}
+
+.hero-banner{
+
+    position:relative;
+
+    width:100%;
+}
+
+.banner-image{
+
+    display:block;
+
+    width:100%;
+
+    height:auto;
+
+}
+
+.banner-overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    background:rgba(0,0,0,.18);
+
+    pointer-events:none;
+}
 
     .hero-title {
         font-size: 2.8rem;
@@ -529,8 +530,8 @@
     /* ─────────────────────────── RESPONSIVE ─────────────────────────── */
     @media (max-width: 992px) {
         .hero-section-products {
-            min-height: 45vh;
-            padding-top: 70px;
+            
+            margin-top: 70px;
         }
         
         .hero-overlay {
@@ -599,17 +600,24 @@
     }
 
     @media (max-width: 576px) {
-        .hero-section-products {
-            min-height: 35vh;
-            padding-top: 56px;
+        .hero-section-products{
+
+            margin-top:56px;
         }
-        
-        .hero-overlay { 
-            padding: 30px 0;
+
+        .section-title{
+
+            font-size:1.8rem;
         }
-        
-        .hero-title { 
-            font-size: 1.6rem;
+
+        .product-title{
+
+            font-size:1rem;
+        }
+
+        .product-price .amount{
+
+            font-size:1.3rem;
         }
         
         .hero-subtitle {
