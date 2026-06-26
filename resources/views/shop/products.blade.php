@@ -4,43 +4,28 @@
 
 @section('content')
 
-{{-- ─────────────────────────── HERO WITH HORIZONTAL SLIDESHOW ─────────────────────────── --}}
+{{-- ─────────────────────────── HERO WITH RESPONSIVE BANNER ─────────────────────────── --}}
 <section class="hero-section-products">
-    {{-- Single Background Image Banner with responsive images --}}
     <div class="hero-banner">
-
         <picture>
-
-            {{-- Mobile Banner --}}
-            <source
-                media="(max-width: 768px)"
-                srcset="{{ asset('images/bann-mobile.png') }}">
-
-            {{-- Desktop Banner --}}
-            <img
-                src="{{ asset('images/bann.jpeg') }}"
-                alt="Premium Farming Feeds"
+            <!-- Mobile image for small screens -->
+            <source 
+                media="(max-width: 767px)" 
+                srcset="{{ asset('images/product page banner image for mobile.png') }}">
+            
+            <!-- Tablet image for medium screens -->
+            <source 
+                media="(max-width: 991px)" 
+                srcset="{{ asset('images/bann.jpeg') }}">
+            
+            <!-- Desktop image for larger screens -->
+            <img 
+                src="{{ asset('images/bann.jpeg') }}" 
+                alt="Premium Farming Feeds Banner" 
                 class="banner-image">
-
         </picture>
-
         <div class="banner-overlay"></div>
-
     </div>
-
-    {{-- <div class="hero-overlay">
-        <div class="container">
-            <div class="row align-items-center min-vh-50">
-                <div class="col-lg-12 text-center">
-                    <h1 class="hero-title mb-3">Premium Farming Products</h1>
-                    <p class="hero-subtitle mb-4">Quality feeds for all your livestock needs</p>
-                    <a href="#products" class="btn btn-success btn-lg px-4">
-                        <i class="bi bi-arrow-down me-2"></i> Browse Products
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div> --}}
 </section>
 
 {{-- ─────────────────────────── FLASH MESSAGES ─────────────────────────── --}}
@@ -76,7 +61,6 @@
                     <div class="col-md-3 col-sm-6">
                         <div class="product-card">
                             <div class="product-image-wrapper">
-                                <!-- <div class="product-badge">New</div> -->
                                 <img
                                     src="{{ $product['image'] ?? $product['image_url'] ?? asset('images/no-image.png') }}"
                                     alt="{{ $product['name'] ?? $product['product_name'] ?? 'Product' }}"
@@ -94,20 +78,11 @@
                                     {{ $product['name'] ?? $product['product_name'] ?? 'Unknown Product' }}
                                 </h3>
                                 
-                                <!-- <div class="product-meta">
-                                    @if(!empty($product['sku'] ?? $product['sku_code'] ?? null))
-                                        <span class="product-sku">
-                                            <i class="bi bi-upc-scan"></i> SKU: {{ $product['sku'] ?? $product['sku_code'] }}
-                                        </span>
-                                    @endif
-                                </div> -->
-                                
                                 <div class="product-price">
                                     <span class="currency">KES</span>
                                     <span class="amount">{{ number_format($product['price_per_bag'] ?? $product['price'] ?? $product['selling_price'] ?? 0, 2) }}</span>
                                 </div>
                                 
-                                {{-- ── Add to Cart: available to ALL users (guests + logged-in) ── --}}
                                 <div class="product-actions">
                                     <button
                                         class="btn-add-to-cart"
@@ -124,7 +99,6 @@
                 @endforeach
             </div>
 
-            {{-- View Cart button — visible to all users --}}
             <div class="text-center mt-5">
                 <a href="{{ route('cart.view') }}" class="btn-view-cart">
                     <i class="bi bi-cart3 me-2"></i> View Cart
@@ -151,90 +125,72 @@
 
 
 <style>
+    /* Reset and Base */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
     /* ─────────────────────────── HERO SECTION ─────────────────────────── */
-    /* ==========================================================
-   HERO SECTION
-========================================================== */
-
-.hero-section-products{
-
-    position:relative;
-
-    margin-top:76px;
-
-    overflow:hidden;
-
-    background:#fff;
-}
-
-.hero-banner{
-
-    position:relative;
-
-    width:100%;
-}
-
-.banner-image{
-
-    display:block;
-
-    width:100%;
-
-    height:auto;
-
-}
-
-.banner-overlay{
-
-    position:absolute;
-
-    inset:0;
-
-    background:rgba(0,0,0,.18);
-
-    pointer-events:none;
-}
-
-    .hero-title {
-        font-size: 2.8rem;
-        font-weight: 800;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-        animation: fadeInUp 1s ease;
+    .hero-section-products {
+        position: relative;
+        width: 100%;
+        height: auto;
+        min-height: 400px;
+        max-height: 600px;
+        overflow: hidden;
+        background: #1a1a1a;
+        margin: 0;
+        padding: 0;
+        display: block;
     }
 
-    .hero-subtitle {
-        font-size: 1.2rem;
-        text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
-        animation: fadeInUp 1s ease 0.2s both;
+    .hero-banner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        min-height: 400px;
+        max-height: 600px;
+        overflow: hidden;
     }
 
-    .hero-overlay .btn-success {
-        animation: fadeInUp 1s ease 0.4s both;
-        background: linear-gradient(135deg, #2a6e3f, #3a8e5c);
-        border: none;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    .hero-banner picture,
+    .hero-banner img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        min-height: 400px;
+        max-height: 600px;
     }
 
-    .hero-overlay .btn-success:hover {
-        background: linear-gradient(135deg, #1e5a2f, #2a6e3f);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    .banner-image {
+        width: 100%;
+        height: 100%;
+        min-height: 400px;
+        max-height: 600px;
+        object-fit: cover;
+        object-position: center center;
+        display: block;
     }
 
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .banner-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 2;
+        pointer-events: none;
     }
 
     /* ─────────────────────────── PRODUCTS SECTION ─────────────────────────── */
     .products-section {
         background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        padding: 60px 0;
+        position: relative;
+        z-index: 3;
     }
 
     .section-title {
@@ -301,20 +257,6 @@
         transform: scale(1.1);
     }
 
-    .product-badge {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: linear-gradient(135deg, #ff6b6b, #ff4757);
-        color: white;
-        padding: 5px 12px;
-        border-radius: 25px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        z-index: 2;
-        box-shadow: 0 4px 10px rgba(255, 71, 87, 0.3);
-    }
-
     .product-overlay {
         position: absolute;
         top: 0;
@@ -374,21 +316,6 @@
         -webkit-box-orient: vertical;
     }
 
-    .product-meta {
-        margin-bottom: 15px;
-    }
-
-    .product-sku {
-        font-size: 0.8rem;
-        color: #999;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        background: #f8f9fa;
-        padding: 4px 10px;
-        border-radius: 15px;
-    }
-
     .product-price {
         margin-bottom: 20px;
         display: flex;
@@ -407,10 +334,6 @@
         font-weight: 700;
         color: #2a6e3f;
         line-height: 1;
-    }
-
-    .product-actions {
-        width: 100%;
     }
 
     .btn-add-to-cart {
@@ -440,10 +363,6 @@
         opacity: 0.75;
         cursor: not-allowed;
         transform: none;
-    }
-
-    .btn-add-to-cart i {
-        font-size: 1.2rem;
     }
 
     .btn-view-cart {
@@ -478,17 +397,6 @@
         font-size: 4rem;
         color: #dee2e6;
         margin-bottom: 20px;
-    }
-
-    .empty-state h4 {
-        color: #495057;
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
-
-    .empty-state p {
-        color: #868e96;
-        margin-bottom: 0;
     }
 
     /* ─────────────────────────── CART TOAST ─────────────────────────── */
@@ -527,53 +435,65 @@
         }
     }
 
-    /* ─────────────────────────── RESPONSIVE ─────────────────────────── */
-    @media (max-width: 992px) {
-        .hero-section-products {
-            
-            margin-top: 70px;
-        }
-        
-        .hero-overlay {
-            padding: 50px 0;
-        }
-        
-        .hero-title {
-            font-size: 2.5rem;
+    /* ─────────────────────────── RESPONSIVE BREAKPOINTS ─────────────────────────── */
+    
+    /* Large screens (1200px and up) */
+    @media (min-width: 1200px) {
+        .hero-section-products,
+        .hero-banner,
+        .hero-banner picture,
+        .hero-banner img,
+        .banner-image {
+            min-height: 500px;
+            max-height: 700px;
         }
     }
 
-    @media (max-width: 768px) {
-        .hero-section-products {
-            min-height: 40vh;
-            padding-top: 60px;
+    /* Desktop (992px - 1199px) */
+    @media (min-width: 992px) and (max-width: 1199px) {
+        .hero-section-products,
+        .hero-banner,
+        .hero-banner picture,
+        .hero-banner img,
+        .banner-image {
+            min-height: 450px;
+            max-height: 650px;
+        }
+    }
+
+    /* Tablet (768px - 991px) */
+    @media (min-width: 768px) and (max-width: 991px) {
+        .hero-section-products,
+        .hero-banner,
+        .hero-banner picture,
+        .hero-banner img,
+        .banner-image {
+            min-height: 350px;
+            max-height: 500px;
         }
 
-        .hero-overlay { 
-            padding: 40px 0;
+        .section-title {
+            font-size: 2.2rem;
         }
-        
-        .hero-title { 
+    }
+
+    /* Mobile Large (576px - 767px) */
+    @media (min-width: 576px) and (max-width: 767px) {
+        .hero-section-products,
+        .hero-banner,
+        .hero-banner picture,
+        .hero-banner img,
+        .banner-image {
+            min-height: 300px;
+            max-height: 400px;
+        }
+
+        .section-title {
             font-size: 2rem;
         }
-        
-        .hero-subtitle { 
+
+        .section-subtitle {
             font-size: 1rem;
-        }
-        
-        .section-title { 
-            font-size: 2rem;
-        }
-        
-        .section-subtitle { 
-            font-size: 1rem;
-        }
-        
-        .cart-toast {
-            bottom: 15px;
-            right: 15px;
-            left: 15px;
-            max-width: 100%;
         }
 
         .product-card {
@@ -592,57 +512,29 @@
         .product-price .amount {
             font-size: 1.3rem;
         }
-
-        .btn-add-to-cart {
-            padding: 10px;
-            font-size: 0.9rem;
-        }
     }
 
-    @media (max-width: 576px) {
-        .hero-section-products{
-
-            margin-top:56px;
+    /* Mobile Small (up to 575px) */
+    @media (max-width: 575px) {
+        .hero-section-products,
+        .hero-banner,
+        .hero-banner picture,
+        .hero-banner img,
+        .banner-image {
+            min-height: 250px;
+            max-height: 350px;
         }
 
-        .section-title{
-
-            font-size:1.8rem;
+        .products-section {
+            padding: 40px 0;
         }
 
-        .product-title{
-
-            font-size:1rem;
-        }
-
-        .product-price .amount{
-
-            font-size:1.3rem;
-        }
-        
-        .hero-subtitle {
-            font-size: 0.95rem;
-        }
-        
-        .section-title { 
+        .section-title {
             font-size: 1.8rem;
         }
-        
+
         .section-subtitle {
             font-size: 0.95rem;
-        }
-        
-        .product-title { 
-            font-size: 0.95rem;
-        }
-        
-        .product-price .amount { 
-            font-size: 1.2rem;
-        }
-
-        .btn-view-cart {
-            padding: 12px 30px;
-            font-size: 1rem;
         }
 
         .product-card {
@@ -652,24 +544,47 @@
         .product-content {
             padding: 12px;
         }
+
+        .product-title {
+            font-size: 0.95rem;
+            height: 2.4em;
+        }
+
+        .product-price .amount {
+            font-size: 1.2rem;
+        }
+
+        .btn-add-to-cart {
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+
+        .btn-add-to-cart i {
+            font-size: 1rem;
+        }
+
+        .btn-view-cart {
+            padding: 12px 30px;
+            font-size: 1rem;
+        }
+
+        .cart-toast {
+            bottom: 15px;
+            right: 15px;
+            left: 15px;
+            max-width: 100%;
+        }
     }
 
+    /* Extra Small (up to 400px) */
     @media (max-width: 400px) {
-        .hero-section-products {
-            min-height: 30vh;
-            padding-top: 56px;
-        }
-        
-        .hero-overlay { 
-            padding: 20px 0;
-        }
-        
-        .hero-title { 
-            font-size: 1.3rem;
-        }
-        
-        .hero-subtitle { 
-            font-size: 0.85rem;
+        .hero-section-products,
+        .hero-banner,
+        .hero-banner picture,
+        .hero-banner img,
+        .banner-image {
+            min-height: 200px;
+            max-height: 300px;
         }
 
         .section-title {
@@ -681,21 +596,17 @@
         }
 
         .product-title {
-            font-size: 0.9rem;
-            height: 2.4em;
+            font-size: 0.85rem;
+            height: 2.2em;
         }
 
         .product-price .amount {
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .btn-add-to-cart {
             padding: 8px;
-            font-size: 0.85rem;
-        }
-
-        .btn-add-to-cart i {
-            font-size: 1rem;
+            font-size: 0.8rem;
         }
     }
 </style>
@@ -747,7 +658,6 @@
                 }, 2500);
 
             } else if (response.status === 401) {
-                
                 showToast('Could not add to cart. Please refresh and try again.', 'error');
                 btn.innerHTML = originalHTML;
                 btn.disabled = false;
