@@ -137,12 +137,12 @@
 <style>
     .hero-section-products {
         position: relative;
-        min-height: 60vh;
+        min-height: 50vh; /* Reduced from 60vh */
         display: flex;
         align-items: center;
         overflow: hidden;
         color: white;
-        margin-top: 76px;
+        margin-top: 0; /* Changed from 76px to 0 */
     }
 
     /* Single Banner Background */
@@ -160,6 +160,7 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+        object-position: center; /* Added to center the image */
         display: block;
     }
 
@@ -177,11 +178,93 @@
     .hero-overlay {
         position: relative;
         z-index: 3;
-        padding: 90px 0;
+        padding: 60px 0; /* Reduced from 90px */
         width: 100%;
     }
 
-    .hero-title {
+    /* ... rest of your styles remain the same ... */
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+        .hero-section-products {
+            min-height: 40vh; /* Smaller on mobile */
+            margin-top: 0; /* Ensure no top margin */
+        }
+
+        .hero-overlay { 
+            padding: 40px 0; /* Reduced padding */
+        }
+        
+        .hero-title { 
+            font-size: 2rem; /* Slightly smaller */
+        }
+        
+        .hero-subtitle { 
+            font-size: 1rem; 
+        }
+        
+        .section-title { 
+            font-size: 2rem; 
+        }
+        
+        .section-subtitle { 
+            font-size: 1rem; 
+        }
+        
+        .cart-toast {
+            bottom: 15px;
+            right: 15px;
+            left: 15px;
+            max-width: 100%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .hero-section-products {
+            min-height: 35vh; /* Even smaller on very small screens */
+        }
+        
+        .hero-overlay { 
+            padding: 30px 0; 
+        }
+        
+        .hero-title { 
+            font-size: 1.6rem; 
+        }
+        
+        .section-title { 
+            font-size: 1.8rem; 
+        }
+        
+        .product-title { 
+            font-size: 1rem; 
+        }
+        
+        .product-price .amount { 
+            font-size: 1.3rem; 
+        }
+    }
+
+    /* Extra small devices */
+    @media (max-width: 400px) {
+        .hero-section-products {
+            min-height: 30vh;
+        }
+        
+        .hero-overlay { 
+            padding: 20px 0; 
+        }
+        
+        .hero-title { 
+            font-size: 1.4rem; 
+        }
+        
+        .hero-subtitle { 
+            font-size: 0.9rem; 
+        }
+    }
+
+    /* .hero-title {
         font-size: 2.8rem;
         font-weight: 800;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
@@ -192,7 +275,7 @@
         font-size: 1.2rem;
         text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
         animation: fadeInUp 1s ease 0.2s both;
-    }
+    } */
 
     .hero-overlay .btn-success {
         animation: fadeInUp 1s ease 0.4s both;
