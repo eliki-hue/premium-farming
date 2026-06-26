@@ -35,8 +35,8 @@
         background: #1a1a1a; /* Fallback color */
     }
     
-    /* Responsive Hero Image using Picture element */
-    .hero-picture {
+    /* Hero Image Container */
+    .hero-image-container {
         position: absolute;
         top: 0;
         left: 0;
@@ -45,13 +45,22 @@
         z-index: 0;
     }
 
-    .hero-picture source,
-    .hero-picture img {
+    /* Desktop image (hidden on mobile) */
+    .hero-image-desktop {
         width: 100%;
         height: 100%;
         object-fit: cover;
         object-position: center center;
         display: block;
+    }
+
+    /* Mobile image (hidden on desktop) */
+    .hero-image-mobile {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+        display: none;
     }
     
     .hero-image-overlay {
@@ -189,60 +198,6 @@
         box-shadow: var(--shadow-medium);
     }
     
-    /* Category Cards */
-    .category-card {
-        background: var(--card-bg);
-        border-radius: 8px;
-        padding: 2.5rem 2rem;
-        text-align: center;
-        box-shadow: var(--shadow-soft);
-        transition: all 0.3s ease;
-        height: 100%;
-        border: 1px solid rgba(42, 110, 63, 0.08);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .category-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: var(--gradient-green);
-        transform: translateX(-100%);
-        transition: transform 0.4s ease;
-    }
-    
-    .category-card:hover::before {
-        transform: translateX(0);
-    }
-    
-    .category-card:hover {
-        transform: translateY(-10px);
-        border-color: var(--light-green);
-        box-shadow: var(--shadow-medium);
-    }
-    
-    .category-icon {
-        font-size: 3rem;
-        margin-bottom: 1.5rem;
-        display: inline-block;
-        transition: transform 0.3s ease;
-        color: var(--primary-green);
-        animation: leafFloat 3s ease-in-out infinite;
-    }
-
-    @keyframes leafFloat {
-        0%, 100% { transform: translateY(0) rotate(0deg); }
-        50% { transform: translateY(-10px) rotate(5deg); }
-    }
-    
-    .category-card:hover .category-icon {
-        transform: scale(1.2);
-    }
-    
     /* CTA Section */
     .cta-section {
         background: var(--gradient-dark-green);
@@ -350,32 +305,31 @@
     
     /* Large screens (1200px and up) */
     @media (min-width: 1200px) {
-        .hero-section,
-        .hero-picture,
-        .hero-picture source,
-        .hero-picture img {
+        .hero-section {
             min-height: 90vh;
             max-height: 100vh;
+        }
+
+        .hero-content {
+            height: 90vh;
         }
     }
 
     /* Desktop (992px - 1199px) */
     @media (min-width: 992px) and (max-width: 1199px) {
-        .hero-section,
-        .hero-picture,
-        .hero-picture source,
-        .hero-picture img {
+        .hero-section {
             min-height: 85vh;
             max-height: 95vh;
+        }
+
+        .hero-content {
+            height: 85vh;
         }
     }
 
     /* Tablet (768px - 991px) */
     @media (min-width: 768px) and (max-width: 991px) {
-        .hero-section,
-        .hero-picture,
-        .hero-picture source,
-        .hero-picture img {
+        .hero-section {
             min-height: 70vh;
             max-height: 85vh;
         }
@@ -396,10 +350,7 @@
 
     /* Mobile Large (576px - 767px) */
     @media (min-width: 576px) and (max-width: 767px) {
-        .hero-section,
-        .hero-picture,
-        .hero-picture source,
-        .hero-picture img {
+        .hero-section {
             min-height: 60vh;
             max-height: 75vh;
         }
@@ -427,12 +378,9 @@
         }
     }
 
-    /* Mobile Small (up to 575px) */
+    /* Mobile Small (up to 575px) - SHOW MOBILE IMAGE */
     @media (max-width: 575px) {
-        .hero-section,
-        .hero-picture,
-        .hero-picture source,
-        .hero-picture img {
+        .hero-section {
             min-height: 50vh;
             max-height: 65vh;
         }
@@ -440,6 +388,15 @@
         .hero-content {
             height: 50vh;
             padding-bottom: 2rem;
+        }
+
+        /* Show mobile image, hide desktop */
+        .hero-image-desktop {
+            display: none !important;
+        }
+
+        .hero-image-mobile {
+            display: block !important;
         }
         
         .hero-buttons .btn {
@@ -473,10 +430,7 @@
 
     /* Extra Small (up to 400px) */
     @media (max-width: 400px) {
-        .hero-section,
-        .hero-picture,
-        .hero-picture source,
-        .hero-picture img {
+        .hero-section {
             min-height: 40vh;
             max-height: 55vh;
         }
@@ -512,25 +466,23 @@
 @endpush
 
 @section('content')
-    <!-- Hero Section - Responsive with Picture Element -->
+    <!-- Hero Section - Responsive with separate images -->
     <section class="hero-section">
-        <picture>
-            Mobile image for small screens -->
-            <source 
-                media="(max-width: 767px)" 
-                <!-- <!-- srcset="{{ asset('images/product page banner image for mobile.png') }}"> -->
-             
-            Tablet image for medium screens
-            <source 
-                media="(max-width: 991px)" 
-                srcset="{{ asset('images/bann.jpeg') }}">
-            
-            Desktop image for larger screens
-             <img 
-                src="{{ asset('images/bann.jpeg') }}" 
-                alt="Premium Farming Feeds Banner" 
-                class="banner-image">
-        </picture>
+        <!-- Desktop Image (hidden on mobile) -->
+        <img 
+            src="{{ asset('images/bann.jpeg') }}" 
+            alt="Premium Farming Feeds Hero Banner" 
+            class="hero-image-desktop"
+            loading="eager"
+            fetchpriority="high">
+        
+        <!-- Mobile Image (hidden on desktop) -->
+        <img 
+            src="{{ asset('images/bann-mobile.png') }}" 
+            alt="Premium Farming Feeds Hero Banner Mobile" 
+            class="hero-image-mobile"
+            loading="eager"
+            fetchpriority="high">
         
         <!-- Overlay -->
         <div class="hero-image-overlay"></div>
@@ -547,8 +499,6 @@
         </div>
     </section>
 
-    
-    
     <!-- Features Section -->
     <section class="section">
         <div class="container">
