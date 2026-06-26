@@ -155,7 +155,7 @@
         overflow: hidden;
         color: white;
         margin-top: 0;
-        padding-top: 70px; /* Space for navbar */
+        /* padding-top: 60px; Space for navbar */
     }
 
     .hero-banner {
