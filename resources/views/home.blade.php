@@ -514,23 +514,22 @@
 @section('content')
     <!-- Hero Section - Responsive with Picture Element -->
     <section class="hero-section">
-        <picture class="hero-picture">
-            <!-- Mobile image for small screens (up to 575px) -->
+        <picture>
+            Mobile image for small screens -->
             <source 
-                media="(max-width: 575px)" 
-                srcset="{{ asset('images/bann-mobile.png') }}">
-            
-            <!-- Tablet image for medium screens (576px - 991px) -->
+                media="(max-width: 767px)" 
+                <!-- <!-- srcset="{{ asset('images/product page banner image for mobile.png') }}"> -->
+             
+            Tablet image for medium screens
             <source 
                 media="(max-width: 991px)" 
                 srcset="{{ asset('images/bann.jpeg') }}">
             
-            <!-- Desktop image for larger screens -->
-            <img 
+            Desktop image for larger screens
+             <img 
                 src="{{ asset('images/bann.jpeg') }}" 
-                alt="Premium Farming Feeds Hero Banner" 
-                loading="eager"
-                fetchpriority="high">
+                alt="Premium Farming Feeds Banner" 
+                class="banner-image">
         </picture>
         
         <!-- Overlay -->
