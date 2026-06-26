@@ -5,28 +5,28 @@
 @section('content')
 
 {{-- ─────────────────────────── HERO WITH RESPONSIVE BANNER ─────────────────────────── --}}
-<section class="hero-section-products">
+<!-- <section class="hero-section-products">
     <div class="hero-banner">
         <picture>
             <!-- Mobile image for small screens -->
-            <source 
-                media="(max-width: 767px)" 
-                srcset="{{ asset('images/product page banner image for mobile.png') }}">
-            
+            <!-- <source  -->
+                <!-- media="(max-width: 767px)"  -->
+                <!-- srcset="{{ asset('images/product page banner image for mobile.png') }}">
+             -->
             <!-- Tablet image for medium screens -->
-            <source 
+            <!-- <source 
                 media="(max-width: 991px)" 
-                srcset="{{ asset('images/bann.jpeg') }}">
+                srcset="{{ asset('images/bann.jpeg') }}"> -->
             
             <!-- Desktop image for larger screens -->
-            <img 
+            <!-- <img 
                 src="{{ asset('images/bann.jpeg') }}" 
                 alt="Premium Farming Feeds Banner" 
                 class="banner-image">
-        </picture>
-        <div class="banner-overlay"></div>
-    </div>
-</section>
+        </picture> -->
+        <!-- <div class="banner-overlay"></div> -->
+    <!-- </div> -->
+<!-- </section> --> -->
 
 {{-- ─────────────────────────── FLASH MESSAGES ─────────────────────────── --}}
 @if(session('success'))
