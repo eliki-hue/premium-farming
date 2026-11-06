@@ -153,7 +153,7 @@
 (function () {
     'use strict';
 
-    const WHATSAPP_NUMBER = '254741243693';
+    const WHATSAPP_NUMBER = @json(config('services.whatsapp.number'));
 
     const CSRF = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 

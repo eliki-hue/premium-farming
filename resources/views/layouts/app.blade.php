@@ -868,7 +868,7 @@
                         <a href="https://www.instagram.com/premiumfarmingfeeds/" target="_blank" aria-label="Instagram" class="text-white me-2">
                             <i class="bi bi-instagram"></i>
                         </a>       
-                        <a href="https://wa.me/254700680017" target="_blank" aria-label="WhatsApp" class="text-white">
+                        <a href="https://wa.me/{{ config('services.whatsapp.number') }}" target="_blank" aria-label="WhatsApp" class="text-white">
                             <i class="bi bi-whatsapp"></i>
                         </a>  
                         <a href="https://www.youtube.com/@PremiumFeeds1" target="_blank" aria-label="YouTube" class="text-white">

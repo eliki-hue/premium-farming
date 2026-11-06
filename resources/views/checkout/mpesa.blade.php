@@ -106,9 +106,9 @@
                                                 <div class="card-body text-center">
                                                     <h6><i class="fas fa-phone-alt me-2"></i>WhatsApp Contact</h6>
                                                     <div class="whatsapp-contact mt-3">
-                                                        <h4>+254 7XX XXX XXX</h4>
+                                                        <h4>{{ config('services.whatsapp.display') }}</h4>
                                                         <p class="mb-3">(Customer Support)</p>
-                                                        <a href="https://wa.me/2547XXXXXXXXX?text={{ urlencode($whatsappMessage) }}" 
+                                                        <a href="https://wa.me/{{ config('services.whatsapp.number') }}?text={{ urlencode($whatsappMessage) }}"
                                                            class="btn btn-success btn-lg" 
                                                            target="_blank">
                                                             <i class="fab fa-whatsapp me-2"></i>Chat on WhatsApp

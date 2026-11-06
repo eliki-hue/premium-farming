@@ -11,7 +11,7 @@ class WhatsAppService
     
     public function __construct()
     {
-        $this->businessNumber = env('WHATSAPP_NUMBER', '254712345678');
+        $this->businessNumber = config('services.whatsapp.number');
         $this->returnBaseUrl = env('APP_URL', 'http://localhost');
     }
     

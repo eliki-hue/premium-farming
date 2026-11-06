@@ -18,6 +18,11 @@ return [
         'key' => env('POSTMARK_API_KEY'),
     ],
 
+    'whatsapp' => [
+        'number' => env('WHATSAPP_NUMBER', '254700680017'),
+        'display' => env('WHATSAPP_DISPLAY_NUMBER', '+254 700 680 017'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Django API Service

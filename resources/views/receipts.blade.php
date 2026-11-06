@@ -15,7 +15,7 @@
 <div class="receipt">
     <div class="header">
         <h2>🐄 FARM FEED SHOP</h2>
-        <p>Nairobi, Kenya<br>Tel: 07XX XXX XXX</p>
+        <p>Nairobi, Kenya<br>Tel: {{ config('services.whatsapp.display') }}</p>
         <p><strong>RECEIPT #{{ $receipt['order_id'] }}</strong><br>{{ $receipt['date'] }} {{ $receipt['time'] }}</p>
     </div>
 

@@ -128,7 +128,7 @@
                     <div class="alert alert-info mt-4 mb-0">
                         <i class="bi bi-envelope me-2"></i>
                         A confirmation has been sent to your phone. For any questions, contact us at 
-                        <strong>0700680017</strong> or email <strong>premiumfarming@gmail.com</strong>
+                        <strong>{{ config('services.whatsapp.display') }}</strong> or email <strong>premiumfarming@gmail.com</strong>
                     </div>
                 </div>
             </div>

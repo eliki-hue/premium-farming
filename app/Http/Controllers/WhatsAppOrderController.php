@@ -19,7 +19,7 @@ class WhatsAppOrderController extends Controller
     public function __construct()
     {
         $this->djangoApiUrl = env('DJANGO_API_URL', 'http://localhost:8000');
-        $this->whatsappNumber = env('WHATSAPP_NUMBER', '0700680017');
+        $this->whatsappNumber = config('services.whatsapp.number');
     }
 
     /**

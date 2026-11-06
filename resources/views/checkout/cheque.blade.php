@@ -47,7 +47,7 @@
                                 <p>After issuing the cheque, please send the cheque details via WhatsApp:</p>
                                 
                                 <div class="text-center mb-3">
-                                    <a href="https://wa.me/2547XXXXXXXXX?text={{ urlencode($whatsappMessage) }}" 
+                                    <a href="https://wa.me/{{ config('services.whatsapp.number') }}?text={{ urlencode($whatsappMessage) }}"
                                        class="btn btn-success btn-lg" 
                                        target="_blank">
                                         <i class="fab fa-whatsapp me-2"></i>Confirm Cheque Details

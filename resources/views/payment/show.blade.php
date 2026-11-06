@@ -281,7 +281,7 @@
                 </form>
                 
                 <div class="whatsapp-support">
-                    <a href="https://wa.me/254700680017?text=Hello%2C%20I%20need%20help%20with%20order%20{{ urlencode($order['order_number']) }}" 
+                    <a href="https://wa.me/{{ config('services.whatsapp.number') }}?text=Hello%2C%20I%20need%20help%20with%20order%20{{ urlencode($order['order_number']) }}"
                        class="whatsapp-link" target="_blank">
                         <span>💬</span>
                         <span>Need help? Chat with us on WhatsApp</span>

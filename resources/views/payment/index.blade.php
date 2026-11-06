@@ -26,7 +26,7 @@
                         <div class="mb-3">
                             <label class="form-label">M-Pesa Phone Number</label>
                             <input type="tel" class="form-control" name="phone_number" id="phoneNumber" 
-                                   placeholder="0700680017" required>
+                                   placeholder="07XX XXX XXX" required>
                             <small class="text-muted">Enter the number that will receive the STK push</small>
                         </div>
                         
